@@ -31,9 +31,26 @@ global $wpdb;
  * options of another plugin using this prefix.
  */
 
-// Settings, recent errors, progress of the background job, cached theme scan, locks of the images.
+// Recent errors, progress of the background job, cached theme scan, locks of the images.
 $options = ['takopic_errors', 'takopic_job', 'takopic_theme_calls'];
-$option_prefixes = ['_takopic_', 'takopic_lock_'];
+$option_prefixes = ['takopic_lock_'];
+// The settings, by name: _ and the name of each field of Fields::sections(), as
+// WordPress does not load Takopic here. A prefix would delete the options of another
+// plugin starting with _takopic_.
+$settings = [
+	'takopic_jpg_enable',
+	'takopic_jpg_quality',
+	'takopic_png_enable',
+	'takopic_png_quality',
+	'takopic_webp_enable',
+	'takopic_webp_quality',
+	'takopic_avif_enable',
+	'takopic_avif_quality',
+	'takopic_display_formats',
+];
+foreach ($settings as $setting) {
+	$options[] = '_' . $setting;
+}
 // The background job library keeps its queue, status and lock in the site options,
 // under the identifier of the job: takopic_job, or takopic_2_job on the site 2 of a network.
 $site_options = [];
