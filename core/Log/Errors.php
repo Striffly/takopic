@@ -11,7 +11,7 @@
  * @package     Takopic
  * @author      Clément Gayot
  * @category    Log
- * @repo        https://github.com/Striffly/squidge
+ * @repo        https://github.com/Striffly/takopic
  *
  */
 

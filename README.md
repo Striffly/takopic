@@ -9,7 +9,7 @@
 Takopic compresses JPG and PNG images and converts them to WebP and AVIF on your own server, with `jpegoptim`, `optipng`,
 `cwebp` and `libavif`. Free, unlimited, no API key: your images never leave your server.
 
-[![GNU General Public License 3.0](https://img.shields.io/github/license/Striffly/squidge.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![GNU General Public License 3.0](https://img.shields.io/github/license/Striffly/takopic.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 
 ## Why?
@@ -41,7 +41,7 @@ Converts JPG and PNG images to `.avif` files using `libavif` with the appended e
 
 ## Installation
 
-1. Go to the [releases](https://github.com/Striffly/squidge/releases) section and download the plugin.
+1. Go to the [releases](https://github.com/Striffly/takopic/releases) section and download the plugin.
 2. Upload the `takopic` plugin to your `/wp-content/plugins/` directory.
 3. Activate the plugin through the "Plugins" menu in WordPress.
 4. Check the Settings tab under `Settings | Takopic` to ensure the libraries are installed, if they aren't,
