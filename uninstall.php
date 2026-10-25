@@ -31,8 +31,9 @@ global $wpdb;
  * options of another plugin using this prefix.
  */
 
-// Recent errors, progress of the background job, cached theme scan, locks of the images.
-$options = ['takopic_errors', 'takopic_job', 'takopic_theme_calls'];
+// Recent errors, progress of the background job, cached theme scan and versions of the
+// libraries, locks of the images.
+$options = ['takopic_errors', 'takopic_job', 'takopic_theme_calls', 'takopic_versions'];
 $option_prefixes = ['takopic_lock_'];
 // The settings, by name: _ and the name of each field of Fields::sections(), as
 // WordPress does not load Takopic here. A prefix would delete the options of another
