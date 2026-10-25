@@ -288,6 +288,22 @@
 	color: #1d2327;
 }
 
+.takopic-savings {
+	padding: 16px 20px 0;
+}
+
+.takopic-savings p {
+	margin: 0;
+}
+
+.takopic-savings__saved {
+	font-size: 15px;
+}
+
+.takopic-savings .description {
+	margin-top: 4px;
+}
+
 .takopic-status-label::before {
 	content: "";
 	display: inline-block;

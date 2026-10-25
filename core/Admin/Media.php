@@ -18,6 +18,7 @@ namespace Takopic\Admin;
 
 use Takopic\Package\Cleaner;
 use Takopic\Package\Optimiser;
+use Takopic\Package\Stats;
 use Takopic\Package\Status;
 
 if (!defined('ABSPATH')) {
@@ -104,7 +105,9 @@ class Media
 	}
 
 	/**
-	 * Renders the status of an image.
+	 * Renders the status of an image, and how much
+	 * lighter the files the site serves are than its
+	 * originals.
 	 *
 	 * @param string $name
 	 * @param int $id
@@ -122,6 +125,34 @@ class Media
 		}
 		$status = Status::of($id);
 		printf('<span class="takopic-status-label takopic-status-label--%s">%s</span>', esc_attr($status), esc_html(self::LABELS[$status]));
+		$bytes = Stats::of($id);
+		$reduction = $bytes ? Stats::reduction($bytes, Stats::served()) : null;
+		if ($reduction !== null) {
+			printf(' <span class="takopic-saved" title="%s">&middot; %s</span>', esc_attr($this->details($bytes)), esc_html($reduction));
+		}
+	}
+
+	/**
+	 * Returns the sizes of the files of an image, one
+	 * per line, for the title of its reduction.
+	 *
+	 * @param array $bytes See Stats::KEYS.
+	 * @return string
+	 * @since 1.0.0
+	 * @date 25/10/2026
+	 */
+	private function details($bytes)
+	{
+		$lines = [
+			'Original: ' . Stats::size($bytes['original']),
+			'Compressed: ' . Stats::size($bytes['compressed']) . ' (' . Stats::reduction($bytes, 'compressed') . ')',
+		];
+		if ($bytes['extra']) {
+			$lines[] = 'With WebP and AVIF: ' . Stats::size($bytes['modern']) . ' (' . Stats::reduction($bytes, 'modern') . ')';
+			$lines[] = 'WebP and AVIF files: ' . Stats::size($bytes['extra']);
+		}
+		$lines[] = Stats::served() === 'modern' ? 'The site serves the WebP and AVIF.' : 'The site serves the JPG or PNG.';
+		return implode("\n", $lines);
 	}
 
 	/**
@@ -274,6 +305,6 @@ class Media
 		if ($hook !== 'upload.php') {
 			return;
 		}
-		wp_add_inline_style('wp-admin', '.column-takopic{width:120px}.takopic-status-label::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:#a7aaad}.takopic-status-label--optimised::before{background:#00a32a}.takopic-status-label--outdated::before{background:#dba617}.takopic-status-label--error::before{background:#d63638}');
+		wp_add_inline_style('wp-admin', '.column-takopic{width:170px}.takopic-saved{white-space:nowrap}.takopic-status-label::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:#a7aaad}.takopic-status-label--optimised::before{background:#00a32a}.takopic-status-label--outdated::before{background:#dba617}.takopic-status-label--error::before{background:#d63638}');
 	}
 }

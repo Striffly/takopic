@@ -30,6 +30,8 @@ leave your server.
 - Spots the images optimised with older settings, or before the theme changed its image sizes, and makes their
   thumbnails again from the originals, scaled to the current maximum size.
 - Shows the status of each image in the media library, and its errors in plain words.
+- Shows the bytes saved, on each image of the media library and on the whole library, with what serving WebP and
+  AVIF would save, and the disk used by the originals and the WebP and AVIF files.
 
 **On the site**
 
@@ -172,6 +174,7 @@ Keep the `function_exists()` check: without it, the pages break while Takopic is
 | `wp takopic run`     | Optimises the whole media library, with the settings of the settings page.           |
 | `wp takopic clean`   | Removes the WebP and AVIF files. The JPG and PNG files stay compressed.              |
 | `wp takopic restore` | Restores the original images and removes every file made by Takopic.                     |
+| `wp takopic stats`   | Prints the bytes saved on the media library. `--rebuild` measures every image again. |
 | `wp takopic version` | Shows the version of Takopic.                                                            |
 
 `wp takopic run` takes these options:
@@ -181,6 +184,9 @@ Keep the `function_exists()` check: without it, the pages break while Takopic is
 - `--jpg=false`, `--png=false`, `--webp=false`, `--avif=false` turn a format off.
 - `--quality=<0-100>` (JPG and WebP), `--avif-quality=<0-100>`, `--avif-speed=<0-10>` and `--optimization=o<0-7>`
   (PNG) override the settings.
+
+`wp takopic stats` first measures the images optimised before Takopic counted the bytes saved, from the sizes of their files:
+nothing is encoded again.
 
 ### Filters
 
