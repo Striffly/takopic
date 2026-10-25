@@ -109,6 +109,28 @@ function takopic_image($image_id, $class = '', $lazy = false)
 Yes, the JPG and PNG files of the uploads folder are replaced with their compressed version, so your whole site
 uses them. The originals are kept in `uploads/takopic-originals/` and every new optimisation starts again from them.
 
+### Are the original images public?
+
+They should not be: the originals keep the metadata Takopic strips from the optimised images, such as the GPS position
+of a photo. Takopic writes a `.htaccess` in `uploads/takopic-originals/` denying the web access, which works with Apache and
+LiteSpeed. With nginx, add this rule to the `server` block of the site:
+
+```nginx
+location ^~ /wp-content/uploads/takopic-originals/ {
+	deny all;
+}
+```
+
+You can also keep the originals out of the web root with the `takopic_backup_dir` filter, before optimising any image.
+Takopic does not move the originals already kept: move the folder yourself when you change it.
+
+```php
+// e.g. next to the web root of a Bedrock site.
+add_filter('takopic_backup_dir', function () {
+	return dirname(ABSPATH, 2) . '/takopic-originals';
+});
+```
+
 ### What happens when I delete Takopic?
 
 Deleting Takopic removes its settings and data from the database, and keeps the files: the compressed images, their
