@@ -36,7 +36,7 @@ Takopic optimises the images of your media library with the libraries of your ow
 = For developers =
 
 * WP-CLI: `wp takopic run`, `clean`, `restore` and `health`. `wp takopic run --regenerate` makes the thumbnails again from the originals first.
-* Filters: `takopic_backup_dir` (folder of the originals), `takopic_nice` and `takopic_avif_jobs` (priority and threads of the libraries), `takopic_job_seconds_between_batches` and `takopic_job_default_time_limit` (pace of the background jobs), `takopic_binary_path` (path of a library installed out of the usual folders).
+* Filters: `takopic_backup_dir` (folder of the originals), `takopic_nice`, `takopic_avif_jobs` and `takopic_webp_mt` (priority and threads of the libraries), `takopic_job_seconds_between_batches` and `takopic_job_default_time_limit` (pace of the background jobs), `takopic_binary_path` (path of a library installed out of the usual folders).
 
 See the [README on GitHub](https://github.com/Striffly/takopic) for the details.
 
