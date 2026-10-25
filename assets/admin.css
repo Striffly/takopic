@@ -122,8 +122,7 @@
 }
 
 .takopic-job[data-state="running"] .takopic-job__progress,
-.takopic-job[data-state="paused"] .takopic-job__progress,
-.takopic-job[data-result] .takopic-job__result {
+.takopic-job[data-state="paused"] .takopic-job__progress {
 	display: block;
 }
 
@@ -134,8 +133,83 @@
 	display: none;
 }
 
+/* Sum up of the last job: success, with errors, or cancelled. */
 .takopic-job[data-result] .takopic-job__result {
-	margin-top: 12px;
+	display: flex;
+	align-items: flex-start;
+	gap: 12px;
+	margin-bottom: 20px;
+	padding: 12px 12px 12px 16px;
+	border-left: 4px solid var(--takopic-on);
+	border-radius: 4px;
+	background: var(--takopic-on-bg);
+}
+
+.takopic-job[data-result="warning"] .takopic-job__result {
+	border-left-color: #dba617;
+	background: #fcf9e8;
+}
+
+.takopic-job[data-result="cancelled"] .takopic-job__result {
+	border-left-color: var(--takopic-muted);
+	background: #f6f7f7;
+}
+
+.takopic-job__result-icon {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+	color: var(--takopic-on);
+}
+
+.takopic-job__result-icon::before {
+	content: "\f12a"; /* yes-alt */
+}
+
+.takopic-job[data-result="warning"] .takopic-job__result-icon {
+	color: #dba617;
+}
+
+.takopic-job[data-result="warning"] .takopic-job__result-icon::before {
+	content: "\f534"; /* warning */
+}
+
+.takopic-job[data-result="cancelled"] .takopic-job__result-icon {
+	color: var(--takopic-muted);
+}
+
+.takopic-job[data-result="cancelled"] .takopic-job__result-icon::before {
+	content: "\f14c"; /* info-outline */
+}
+
+.takopic-job__result > div {
+	flex: 1;
+}
+
+.takopic-job__result-title {
+	margin: 1px 0 2px;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.takopic-job__result-detail {
+	margin: 0;
+	color: #3c434a;
+}
+
+.takopic-job__result-close {
+	flex: none;
+	padding: 2px;
+	border: 0;
+	background: none;
+	color: var(--takopic-muted);
+	cursor: pointer;
+}
+
+.takopic-job__result-close:hover,
+.takopic-job__result-close:focus {
+	color: #1d2327;
 }
 
 .takopic-job__label {

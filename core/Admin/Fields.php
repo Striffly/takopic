@@ -319,6 +319,17 @@ class Fields
 			</ul>
 			<?php if (class_exists('Takopic_Vendor_WP_Background_Process')) : ?>
 				<div class="takopic-job" hidden>
+					<div class="takopic-job__result" role="status" aria-live="polite">
+						<span class="takopic-job__result-icon dashicons" aria-hidden="true"></span>
+						<div>
+							<p class="takopic-job__result-title"></p>
+							<p class="takopic-job__result-detail"></p>
+						</div>
+						<button type="button" class="takopic-job__result-close" data-control="dismiss">
+							<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
+							<span class="screen-reader-text">Dismiss</span>
+						</button>
+					</div>
 					<div class="takopic-job__actions">
 						<h3 class="takopic-job__group">Optimise</h3>
 						<div class="takopic-action">
@@ -352,7 +363,6 @@ class Fields
 							<button type="button" class="button-link button-link-delete" data-control="cancel">Cancel</button>
 						</div>
 					</div>
-					<p class="takopic-job__result" aria-live="polite"></p>
 				</div>
 			<?php endif; ?>
 		</div>
