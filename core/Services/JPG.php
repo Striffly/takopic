@@ -7,7 +7,7 @@
  * with the JPG mime type using the jpegoptim
  * library.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Class
@@ -15,13 +15,13 @@
  *
  */
 
-namespace Squidge\Services;
+namespace Takopic\Services;
 
-use Squidge\Log\Errors;
-use Squidge\Log\Logger;
-use Squidge\Package\Convertor;
-use Squidge\Package\Service;
-use Squidge\Types\Mimes;
+use Takopic\Log\Errors;
+use Takopic\Log\Logger;
+use Takopic\Package\Convertor;
+use Takopic\Package\Service;
+use Takopic\Types\Mimes;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly

@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Squidge
+ * Takopic
  *
- * Main squidge class.
+ * Main Takopic class.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Class
@@ -13,15 +13,15 @@
  *
  */
 
-namespace Squidge;
+namespace Takopic;
 
-use Squidge\Admin;
+use Takopic\Admin;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-final class Squidge
+final class Takopic
 {
 	/**
 	 * The plugin version number.
@@ -31,32 +31,32 @@ final class Squidge
 	var $version = '0.1.1';
 
 	/**
-	 * The instance of Squidge.
+	 * The instance of Takopic.
 	 *
 	 * @var null
 	 */
 	private static $instance = NULL;
 
 	/**
-	 * Boots Squidge and initialises the
+	 * Boots Takopic and initialises the
 	 * static instance, once.
 	 *
-	 * @return Squidge|null
+	 * @return Takopic|null
 	 * @date 24/11/2021
 	 * @since 0.1.0
 	 */
 	public static function boot()
 	{
 		if (self::$instance == null) {
-			$squidge = new Squidge();
-			$squidge->initialize();
-			self::$instance = $squidge;
+			$takopic = new Takopic();
+			$takopic->initialize();
+			self::$instance = $takopic;
 		}
 		return self::$instance;
 	}
 
 	/**
-	 * Sets up the Squidge plugin.
+	 * Sets up the Takopic plugin.
 	 *
 	 * @param void
 	 * @return void
@@ -66,21 +66,21 @@ final class Squidge
 	private function initialize()
 	{
 		$base = dirname(__FILE__);
-		$this->define('SQUIDGE_URL', plugin_dir_url($base));
-		$this->define('SQUIDGE_PATH', plugin_dir_path($base));
-		$this->define('SQUIDGE_BASENAME', plugin_basename(dirname($base)));
-		$this->define('SQUIDGE_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
-		$this->define('SQUIDGE_VERSION', $this->version);
+		$this->define('TAKOPIC_URL', plugin_dir_url($base));
+		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
+		$this->define('TAKOPIC_BASENAME', plugin_basename(dirname($base)));
+		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
+		$this->define('TAKOPIC_VERSION', $this->version);
 		$uploadData = wp_upload_dir();
-		$this->define('SQUIDGE_UPLOAD_DIR', $uploadData['basedir']);
-		$this->define('SQUIDGE_UPLOAD_URL', $uploadData['baseurl']);
+		$this->define('TAKOPIC_UPLOAD_DIR', $uploadData['basedir']);
+		$this->define('TAKOPIC_UPLOAD_URL', $uploadData['baseurl']);
 		new Admin\Fields();
 		new Admin\Upload();
 		new Admin\Notices();
 		new Admin\Media();
 		new Admin\Plugins();
 		// The background jobs need the dependencies of composer install.
-		if (class_exists('Squidge_Vendor_WP_Background_Process')) {
+		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
 			Package\Job::instance();
 			new Admin\Tools();
 		}

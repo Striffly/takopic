@@ -1,83 +1,95 @@
 /**
  * admin.css
  *
- * Admin style for the Squidge options page.
+ * Admin style for the Takopic options page.
  *
  * @author Ainsley Clark
  * @author URL:   https://www.ainsleyclark.com
  * @author email: info@ainsleyclark.com
  */
 
-.squidge-page {
-	--squidge-accent: var(--wp-admin-theme-color, #2271b1);
-	--squidge-border: #dcdcde;
-	--squidge-muted: #646970;
-	--squidge-on: #00a32a;
-	--squidge-on-bg: #edfaef;
-	--squidge-off: #d63638;
-	--squidge-off-bg: #fcf0f1;
+.takopic-page {
+	--takopic-accent: var(--wp-admin-theme-color, #2271b1);
+	--takopic-border: #dcdcde;
+	--takopic-muted: #646970;
+	--takopic-on: #00a32a;
+	--takopic-on-bg: #edfaef;
+	--takopic-off: #d63638;
+	--takopic-off-bg: #fcf0f1;
 	max-width: 880px;
+}
+
+.takopic-title__name {
+	font-weight: 400;
+	color: var(--takopic-muted);
+}
+
+.takopic-tagline {
+	margin: 4px 0 16px;
+	font-size: 14px;
+	font-style: italic;
+	color: var(--takopic-muted);
 }
 
 /* Tabs
    ========================================================================== */
 
-.squidge-page:not(.squidge-js) .squidge-tabs {
+.takopic-page:not(.takopic-js) .takopic-tabs {
 	display: none;
 }
 
-.squidge-tabs {
+.takopic-tabs {
 	margin-bottom: 20px;
 }
 
-.squidge-tabs .nav-tab {
+.takopic-tabs .nav-tab {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
 }
 
-.squidge-dot {
+.takopic-dot {
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
-	background: var(--squidge-off);
+	background: var(--takopic-off);
 }
 
-.squidge-dot--on {
-	background: var(--squidge-on);
+.takopic-dot--on {
+	background: var(--takopic-on);
 }
 
-.squidge-dot--muted {
+.takopic-dot--muted {
 	background: #a7aaad;
 }
 
-.squidge-panel {
+.takopic-panel {
 	margin-bottom: 20px;
 }
 
-.squidge-panel[hidden] {
+.takopic-panel[hidden] {
 	display: none;
 }
 
 /* Background job of the media library card. */
-.squidge-job {
+.takopic-job {
 	padding: 16px 20px;
 	border-top: 1px solid #f0f0f1;
 }
 
-.squidge-job__group {
+.takopic-job__group {
 	margin: 0 0 4px;
 	font-size: 13px;
 	text-transform: uppercase;
 	letter-spacing: .04em;
-	color: var(--squidge-muted);
+	color: var(--takopic-muted);
 }
 
-.squidge-job__group ~ .squidge-job__group {
+.takopic-job__group ~ .takopic-job__group {
 	margin-top: 16px;
 }
 
-.squidge-action {
+.takopic-action {
 	display: grid;
 	grid-template-columns: 210px 1fr;
 	align-items: center;
@@ -85,91 +97,91 @@
 	padding: 8px 0;
 }
 
-.squidge-action .button {
+.takopic-action .button {
 	justify-content: center;
 }
 
-.squidge-action .description {
+.takopic-action .description {
 	margin: 0;
 }
 
-.squidge-button-danger.button {
-	color: var(--squidge-off);
-	border-color: var(--squidge-off);
+.takopic-button-danger.button {
+	color: var(--takopic-off);
+	border-color: var(--takopic-off);
 }
 
 @media (max-width: 782px) {
-	.squidge-action {
+	.takopic-action {
 		grid-template-columns: 1fr;
 	}
 }
 
-.squidge-job__progress,
-.squidge-job__result {
+.takopic-job__progress,
+.takopic-job__result {
 	display: none;
 	margin: 0;
 }
 
-.squidge-job[data-state="running"] .squidge-job__progress,
-.squidge-job[data-state="paused"] .squidge-job__progress,
-.squidge-job[data-result] .squidge-job__result {
+.takopic-job[data-state="running"] .takopic-job__progress,
+.takopic-job[data-state="paused"] .takopic-job__progress,
+.takopic-job[data-result] .takopic-job__result {
 	display: block;
 }
 
-.squidge-job[data-state="running"] .squidge-job__actions,
-.squidge-job[data-state="paused"] .squidge-job__actions,
-.squidge-job[data-state="running"] [data-control="resume"],
-.squidge-job[data-state="paused"] [data-control="pause"] {
+.takopic-job[data-state="running"] .takopic-job__actions,
+.takopic-job[data-state="paused"] .takopic-job__actions,
+.takopic-job[data-state="running"] [data-control="resume"],
+.takopic-job[data-state="paused"] [data-control="pause"] {
 	display: none;
 }
 
-.squidge-job[data-result] .squidge-job__result {
+.takopic-job[data-result] .takopic-job__result {
 	margin-top: 12px;
 }
 
-.squidge-job__label {
+.takopic-job__label {
 	margin: 0 0 8px;
 }
 
-.squidge-job__bar {
+.takopic-job__bar {
 	width: 100%;
 	height: 8px;
 	margin-bottom: 12px;
-	accent-color: var(--squidge-accent);
+	accent-color: var(--takopic-accent);
 }
 
-.squidge-job__controls {
+.takopic-job__controls {
 	display: flex;
 	align-items: center;
 	gap: 12px;
 }
 
-/* How to use squidge_image(), in the display settings. */
-.squidge-theme-help {
+/* How to use takopic_image(), in the display settings. */
+.takopic-theme-help {
 	margin: 0 20px 16px;
 	padding: 12px 16px;
 	background: #f6f7f7;
-	border-left: 4px solid var(--squidge-accent);
+	border-left: 4px solid var(--takopic-accent);
 }
 
-.squidge-theme-help p {
+.takopic-theme-help p {
 	margin: 0 0 8px;
 }
 
-.squidge-theme-help p:last-child {
+.takopic-theme-help p:last-child {
 	margin-bottom: 0;
 }
 
-.squidge-theme-help pre {
+.takopic-theme-help pre {
 	margin: 0 0 8px;
 	padding: 10px 12px;
 	overflow-x: auto;
 	background: #fff;
-	border: 1px solid var(--squidge-border);
+	border: 1px solid var(--takopic-border);
 	border-radius: 4px;
 }
 
-.squidge-theme-help pre code {
+.takopic-theme-help pre code {
 	tab-size: 4;
 	padding: 0;
 	background: none;
@@ -177,12 +189,12 @@
 }
 
 /* Media library and display settings, below the status cards of the overview. */
-.squidge-library,
-.squidge-display {
+.takopic-library,
+.takopic-display {
 	margin-top: 20px;
 }
 
-.squidge-counts {
+.takopic-counts {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
 	gap: 12px;
@@ -190,19 +202,19 @@
 	padding: 16px 20px;
 }
 
-.squidge-counts__item {
+.takopic-counts__item {
 	margin: 0;
-	color: var(--squidge-muted);
+	color: var(--takopic-muted);
 }
 
-.squidge-counts__item strong {
+.takopic-counts__item strong {
 	display: block;
 	font-size: 22px;
 	line-height: 1.3;
 	color: #1d2327;
 }
 
-.squidge-status-label::before {
+.takopic-status-label::before {
 	content: "";
 	display: inline-block;
 	width: 8px;
@@ -212,80 +224,80 @@
 	background: #a7aaad;
 }
 
-.squidge-status-label--optimised::before {
-	background: var(--squidge-on);
+.takopic-status-label--optimised::before {
+	background: var(--takopic-on);
 }
 
-.squidge-status-label--outdated::before {
+.takopic-status-label--outdated::before {
 	background: #dba617;
 }
 
-.squidge-status-label--error::before {
-	background: var(--squidge-off);
+.takopic-status-label--error::before {
+	background: var(--takopic-off);
 }
 
 /* Overview
    ========================================================================== */
 
-.squidge-intro {
+.takopic-intro {
 	max-width: 640px;
 	margin: 0 0 20px;
 	font-size: 14px;
-	color: var(--squidge-muted);
+	color: var(--takopic-muted);
 }
 
-.squidge-status-grid {
+.takopic-status-grid {
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 	gap: 12px;
 }
 
-.squidge-status {
+.takopic-status {
 	display: flex;
 	flex-direction: column;
 	gap: 12px;
 	padding: 16px;
 	background: #fff;
-	border: 1px solid var(--squidge-border);
+	border: 1px solid var(--takopic-border);
 	border-radius: 8px;
 	color: inherit;
 	text-decoration: none;
 	transition: border-color .15s, box-shadow .15s;
 }
 
-.squidge-status:hover,
-.squidge-status:focus {
+.takopic-status:hover,
+.takopic-status:focus {
 	color: inherit;
-	border-color: var(--squidge-accent);
-	box-shadow: 0 0 0 1px var(--squidge-accent);
+	border-color: var(--takopic-accent);
+	box-shadow: 0 0 0 1px var(--takopic-accent);
 }
 
-.squidge-status__format {
+.takopic-status__format {
 	font-size: 18px;
 	font-weight: 600;
 }
 
-.squidge-status__head {
+.takopic-status__head {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 8px;
 }
 
-.squidge-status__library {
+.takopic-status__library {
 	display: inline-flex;
 	align-items: baseline;
 	gap: 2px;
 	font-size: 12px;
 	line-height: 18px;
 	white-space: nowrap;
-	color: var(--squidge-muted);
+	color: var(--takopic-muted);
 	padding-top: 10px;
 	border-top: 1px solid #f0f0f1;
 }
 
 /* Plain text here, so the library name lines up with the format title. */
-.squidge-status__library code {
+.takopic-status__library code {
 	margin: 0 6px 0 0;
 	padding: 0;
 	background: none;
@@ -294,22 +306,22 @@
 	color: #1d2327;
 }
 
-.squidge-status__library .dashicons {
+.takopic-status__library .dashicons {
 	align-self: center;
 	width: 16px;
 	height: 16px;
 	font-size: 16px;
 }
 
-.squidge-status__library--on .dashicons {
-	color: var(--squidge-on);
+.takopic-status__library--on .dashicons {
+	color: var(--takopic-on);
 }
 
-.squidge-status__library--off .dashicons {
-	color: var(--squidge-off);
+.takopic-status__library--off .dashicons {
+	color: var(--takopic-off);
 }
 
-.squidge-page code {
+.takopic-page code {
 	padding: 2px 6px;
 	border-radius: 4px;
 	font-size: 12px;
@@ -318,7 +330,7 @@
 /* Badge
    ========================================================================== */
 
-.squidge-badge {
+.takopic-badge {
 	display: inline-flex;
 	align-items: center;
 	gap: 6px;
@@ -329,11 +341,11 @@
 	line-height: 20px;
 	white-space: nowrap;
 	flex-shrink: 0;
-	color: var(--squidge-off);
-	background: var(--squidge-off-bg);
+	color: var(--takopic-off);
+	background: var(--takopic-off-bg);
 }
 
-.squidge-badge::before {
+.takopic-badge::before {
 	content: "";
 	width: 6px;
 	height: 6px;
@@ -341,44 +353,44 @@
 	background: currentColor;
 }
 
-.squidge-badge--on {
+.takopic-badge--on {
 	color: #007017;
-	background: var(--squidge-on-bg);
+	background: var(--takopic-on-bg);
 }
 
-.squidge-badge--muted {
-	color: var(--squidge-muted);
+.takopic-badge--muted {
+	color: var(--takopic-muted);
 	background: #f0f0f1;
 }
 
 /* Card
    ========================================================================== */
 
-.squidge-card {
+.takopic-card {
 	background: #fff;
-	border: 1px solid var(--squidge-border);
+	border: 1px solid var(--takopic-border);
 	border-radius: 8px;
 	overflow: hidden;
 }
 
-.squidge-card__header {
+.takopic-card__header {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 12px;
 	padding: 16px 20px;
-	border-bottom: 1px solid var(--squidge-border);
+	border-bottom: 1px solid var(--takopic-border);
 }
 
-.squidge-card__header--text {
+.takopic-card__header--text {
 	display: block;
 }
 
-.squidge-card__header--text .description {
+.takopic-card__header--text .description {
 	margin: 6px 0 0;
 }
 
-.squidge-card__header h2 {
+.takopic-card__header h2 {
 	display: flex;
 	align-items: center;
 	gap: 10px;
@@ -386,56 +398,56 @@
 	font-size: 18px;
 }
 
-.squidge-field {
+.takopic-field {
 	padding: 16px 20px;
 	border-bottom: 1px solid #f0f0f1;
 }
 
-.squidge-field:last-child {
+.takopic-field:last-child {
 	border-bottom: 0;
 }
 
-.squidge-field__label {
+.takopic-field__label {
 	display: block;
 	margin-bottom: 6px;
 	font-weight: 600;
 }
 
-.squidge-field .description {
+.takopic-field .description {
 	margin: 6px 0 0;
 }
 
-.squidge-field--toggle .description {
+.takopic-field--toggle .description {
 	margin-left: 46px;
 }
 
 /* Fade the options of a disabled format. */
-.squidge-card:has(.squidge-toggle input:not(:checked)) .squidge-field--option {
+.takopic-card:has(.takopic-toggle input:not(:checked)) .takopic-field--option {
 	opacity: .5;
 }
 
 /* Toggle
    ========================================================================== */
 
-.squidge-toggle {
+.takopic-toggle {
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
 	cursor: pointer;
 }
 
-.squidge-toggle .squidge-field__label {
+.takopic-toggle .takopic-field__label {
 	margin: 0;
 }
 
-.squidge-toggle input {
+.takopic-toggle input {
 	position: absolute;
 	opacity: 0;
 	width: 1px;
 	height: 1px;
 }
 
-.squidge-toggle__track {
+.takopic-toggle__track {
 	position: relative;
 	flex: none;
 	width: 36px;
@@ -445,7 +457,7 @@
 	transition: background .15s;
 }
 
-.squidge-toggle__track::after {
+.takopic-toggle__track::after {
 	content: "";
 	position: absolute;
 	top: 3px;
@@ -457,37 +469,37 @@
 	transition: transform .15s;
 }
 
-.squidge-toggle input:checked + .squidge-toggle__track {
-	background: var(--squidge-accent);
+.takopic-toggle input:checked + .takopic-toggle__track {
+	background: var(--takopic-accent);
 }
 
-.squidge-toggle input:checked + .squidge-toggle__track::after {
+.takopic-toggle input:checked + .takopic-toggle__track::after {
 	transform: translateX(16px);
 }
 
-.squidge-toggle input:focus-visible + .squidge-toggle__track {
-	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--squidge-accent);
+.takopic-toggle input:focus-visible + .takopic-toggle__track {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-accent);
 }
 
 /* Install instructions
    ========================================================================== */
 
-.squidge-install {
+.takopic-install {
 	padding: 14px 20px;
-	background: var(--squidge-off-bg);
-	border-bottom: 1px solid var(--squidge-border);
+	background: var(--takopic-off-bg);
+	border-bottom: 1px solid var(--takopic-border);
 }
 
-.squidge-install summary {
+.takopic-install summary {
 	font-weight: 600;
 	cursor: pointer;
 }
 
-.squidge-install__list {
+.takopic-install__list {
 	margin: 12px 0 0;
 }
 
-.squidge-install__list li {
+.takopic-install__list li {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -497,21 +509,21 @@
 	border-top: 1px solid rgba(0, 0, 0, .06);
 }
 
-.squidge-install__os {
+.takopic-install__os {
 	width: 70px;
 	font-weight: 600;
 }
 
-.squidge-install__list code {
+.takopic-install__list code {
 	background: #fff;
 }
 
 @media (max-width: 600px) {
-	.squidge-card__header {
+	.takopic-card__header {
 		flex-wrap: wrap;
 	}
 
-	.squidge-install__os {
+	.takopic-install__os {
 		width: 100%;
 	}
 }

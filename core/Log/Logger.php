@@ -6,7 +6,7 @@
  * Responsible for logging out informational and
  * error messages for the plugin.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Class
@@ -14,7 +14,7 @@
  *
  */
 
-namespace Squidge\Log;
+namespace Takopic\Log;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -49,7 +49,7 @@ class Logger
 
 	/**
 	 * Log uses the error_log function to log
-	 * out a Squidge message.
+	 * out an Takopic message.
 	 *
 	 * @param $message
 	 * @param $error
@@ -62,6 +62,6 @@ class Logger
 		if ($error) {
 			$type = '[ERROR]';
 		}
-		error_log(sprintf('Squidge: %s - %s', $type, $message));
+		error_log(sprintf('Takopic: %s - %s', $type, $message));
 	}
 }

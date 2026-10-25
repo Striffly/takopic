@@ -3,10 +3,10 @@
 /**
  * CLI
  *
- * Command for accessing Squidge compression
+ * Command for accessing Takopic compression
  * functions via the WP CLI.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @category    CLI
  * @repo        https://github.com/ainsleyclark/squidge
@@ -21,15 +21,15 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-use Squidge\Package\Cleaner;
-use Squidge\Package\Optimiser;
-use Squidge\Squidge;
-use Squidge\Services\JPG;
-use Squidge\Services\PNG;
-use Squidge\Services\WebP;
-use Squidge\Services\AVIF;
+use Takopic\Package\Cleaner;
+use Takopic\Package\Optimiser;
+use Takopic\Takopic;
+use Takopic\Services\JPG;
+use Takopic\Services\PNG;
+use Takopic\Services\WebP;
+use Takopic\Services\AVIF;
 
-class Squidge_CLI extends WP_CLI_Command
+class TAKOPIC_CLI extends WP_CLI_Command
 {
 
 	/**
@@ -41,7 +41,7 @@ class Squidge_CLI extends WP_CLI_Command
 	public function version()
 	{
 		$this->print_welcome();
-		WP_CLI::log(Squidge::boot()->version);
+		WP_CLI::log(Takopic::boot()->version);
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Squidge_CLI extends WP_CLI_Command
 
 	/**
 	 * Restores the original images and removes every
-	 * file made by Squidge (WebP, AVIF, backups).
+	 * file made by Takopic (WebP, AVIF, backups).
 	 *
 	 * @since 0.1.5
 	 * @date 25/10/2026
@@ -179,7 +179,7 @@ class Squidge_CLI extends WP_CLI_Command
 		foreach ($ids as $id) {
 			if (!Cleaner::restore($id)) {
 				$missing++;
-				WP_CLI::warning(get_the_title($id) . ': no original to restore, optimised by an older version of Squidge.');
+				WP_CLI::warning(get_the_title($id) . ': no original to restore, optimised by an older version of Takopic.');
 			}
 		}
 		WP_CLI::success('Restored ' . (count($ids) - $missing) . ' images' . ($missing ? ', ' . $missing . ' had no original.' : '.'));
@@ -193,7 +193,7 @@ class Squidge_CLI extends WP_CLI_Command
 	 */
 	private function print_welcome()
 	{
-		WP_CLI::line(WP_CLI::colorize('%GWelcome to the Squidge CLI...%n' . PHP_EOL));
+		WP_CLI::line(WP_CLI::colorize('%GWelcome to the Takopic CLI...%n' . PHP_EOL));
 	}
 
 	/**
@@ -215,6 +215,6 @@ class Squidge_CLI extends WP_CLI_Command
 }
 
 /**
- * Add the main Squidge command to the WP CLI.
+ * Add the main Takopic command to the WP CLI.
  */
-WP_CLI::add_command('squidge', 'Squidge_CLI');
+WP_CLI::add_command('takopic', 'TAKOPIC_CLI');

@@ -1,20 +1,20 @@
 /**
  * admin.js
  *
- * Tabs for the Squidge options page. Every panel stays
+ * Tabs for the Takopic options page. Every panel stays
  * in the same form, tabs only toggle their visibility.
  * Without JS, all panels are shown one after another.
  */
 
 (function () {
-	var page = document.querySelector('.squidge-page');
+	var page = document.querySelector('.takopic-page');
 	if (!page) {
 		return;
 	}
 
-	var tabs = page.querySelectorAll('.squidge-tabs [data-tab]');
+	var tabs = page.querySelectorAll('.takopic-tabs [data-tab]');
 	var panels = page.querySelectorAll('[data-panel]');
-	var storageKey = 'squidge-tab';
+	var storageKey = 'takopic-tab';
 
 	function exists(name) {
 		return !!page.querySelector('[data-panel="' + name + '"]');
@@ -56,7 +56,7 @@
 			initial = sessionStorage.getItem(storageKey);
 		} catch (e) {}
 	}
-	page.classList.add('squidge-js');
+	page.classList.add('takopic-js');
 	show(initial || 'overview');
 })();
 
@@ -66,15 +66,15 @@
  * cancels it, and keeps the counts up to date.
  */
 (function () {
-	var box = document.querySelector('.squidge-job');
-	var settings = window.squidgeJob;
+	var box = document.querySelector('.takopic-job');
+	var settings = window.takopicJob;
 	if (!box || !settings) {
 		return;
 	}
 
-	var label = box.querySelector('.squidge-job__label');
-	var bar = box.querySelector('.squidge-job__bar');
-	var result = box.querySelector('.squidge-job__result');
+	var label = box.querySelector('.takopic-job__label');
+	var bar = box.querySelector('.takopic-job__bar');
+	var result = box.querySelector('.takopic-job__result');
 	var timer = null;
 	// Set while a job runs on this page, to report its end.
 	var following = false;
@@ -82,7 +82,7 @@
 	var CONFIRMS = {
 		all: 'Re-optimise all images from their originals, with their thumbnails? This can take a while.',
 		remove_formats: 'Delete the WebP and AVIF files of all images?',
-		restore: 'Restore the original images and delete every file made by Squidge? The images will no longer be optimised.'
+		restore: 'Restore the original images and delete every file made by Takopic? The images will no longer be optimised.'
 	};
 
 	function request(action, data) {
@@ -132,7 +132,7 @@
 			result.textContent = (job.state === 'cancelled' ? 'Cancelled after ' : 'Done: ')
 				+ number(job.done) + ' / ' + number(job.total) + ' images processed'
 				+ (job.failed ? ', ' + number(job.failed) + ' with errors (see the Media library)' : '')
-				+ (job.missing ? ', ' + number(job.missing) + ' had no original to restore (optimised by an older version of Squidge)' : '')
+				+ (job.missing ? ', ' + number(job.missing) + ' had no original to restore (optimised by an older version of Takopic)' : '')
 				+ '.';
 			box.setAttribute('data-result', '');
 		}
@@ -142,7 +142,7 @@
 	}
 
 	function refresh() {
-		request('squidge_job_status').then(function (response) {
+		request('takopic_job_status').then(function (response) {
 			if (response.success) {
 				render(response.data);
 			}
@@ -157,7 +157,7 @@
 			if (CONFIRMS[job] && !window.confirm(CONFIRMS[job])) {
 				return;
 			}
-			request('squidge_job_start', {job: job}).then(function (response) {
+			request('takopic_job_start', {job: job}).then(function (response) {
 				if (response.success) {
 					render(response.data);
 				} else {
@@ -169,7 +169,7 @@
 			if (command === 'cancel' && !window.confirm('Cancel the job? The images already processed stay processed.')) {
 				return;
 			}
-			request('squidge_job_control', {command: command}).then(function (response) {
+			request('takopic_job_control', {command: command}).then(function (response) {
 				if (response.success) {
 					render(response.data);
 				}

@@ -3,13 +3,13 @@
 /**
  * Plugins
  *
- * Plugins warns on the plugins page before Squidge
+ * Plugins warns on the plugins page before Takopic
  * is deactivated: deleting it then does not restore
  * the originals, and the theme may call
- * squidge_image(). WordPress only shows "Delete" for
- * inactive plugins, when Squidge no longer runs.
+ * takopic_image(). WordPress only shows "Delete" for
+ * inactive plugins, when Takopic no longer runs.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Admin
@@ -17,10 +17,10 @@
  *
  */
 
-namespace Squidge\Admin;
+namespace Takopic\Admin;
 
-use Squidge\Package\Cleaner;
-use Squidge\Package\Service;
+use Takopic\Package\Cleaner;
+use Takopic\Package\Service;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -33,14 +33,14 @@ class Plugins
 	 *
 	 * @var string
 	 */
-	const NONCE = 'squidge_uninstall_info';
+	const NONCE = 'takopic_uninstall_info';
 
 	/**
 	 * Transient caching the theme files scan.
 	 *
 	 * @var string
 	 */
-	const THEME_TRANSIENT = 'squidge_theme_calls';
+	const THEME_TRANSIENT = 'takopic_theme_calls';
 
 	/**
 	 * Adds the script of the plugins page and its request.
@@ -67,21 +67,21 @@ class Plugins
 		if ($hook !== 'plugins.php' || !current_user_can('activate_plugins')) {
 			return;
 		}
-		wp_enqueue_script('squidge-plugins', SQUIDGE_URL . 'assets/plugins.js', [], filemtime(SQUIDGE_PATH . 'assets/plugins.js'), true);
-		wp_localize_script('squidge-plugins', 'squidgePlugins', [
-			'plugin' => plugin_basename(SQUIDGE_PATH . 'squidge.php'),
+		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/plugins.js', [], filemtime(TAKOPIC_PATH . 'assets/plugins.js'), true);
+		wp_localize_script('takopic-plugins', 'takopicPlugins', [
+			'plugin' => plugin_basename(TAKOPIC_PATH . 'takopic.php'),
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce(self::NONCE),
 			'restoreUrl' => Fields::page_url() . '#overview',
 			'themeCalls' => $this->theme_calls(),
 		]);
-		wp_add_inline_style('wp-admin', '.squidge-dialog{max-width:520px;padding:24px;border:0;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.25)}.squidge-dialog::backdrop{background:rgba(0,0,0,.4)}.squidge-dialog h2{margin-top:0}.squidge-dialog__actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}');
+		wp_add_inline_style('wp-admin', '.takopic-dialog{max-width:520px;padding:24px;border:0;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,.25)}.takopic-dialog::backdrop{background:rgba(0,0,0,.4)}.takopic-dialog h2{margin-top:0}.takopic-dialog__actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}');
 	}
 
 	/**
-	 * Sends the number of images Squidge processed and
+	 * Sends the number of images Takopic processed and
 	 * the size of the kept originals, shown before
-	 * deactivating Squidge.
+	 * deactivating Takopic.
 	 *
 	 * @since 0.1.5
 	 * @date 25/10/2026
@@ -119,8 +119,8 @@ class Plugins
 
 	/**
 	 * Determines if the active theme, or its parent,
-	 * calls squidge_image(): the pages using it break
-	 * while Squidge is deactivated. Cached for 12 hours.
+	 * calls takopic_image(): the pages using it break
+	 * while Takopic is deactivated. Cached for 12 hours.
 	 *
 	 * @return bool
 	 * @since 0.1.5
@@ -145,7 +145,7 @@ class Plugins
 
 	/**
 	 * Determines if a PHP or Blade file of a folder
-	 * calls squidge_image(), outside the dependencies.
+	 * calls takopic_image(), outside the dependencies.
 	 *
 	 * @param string $dir
 	 * @return bool
@@ -164,7 +164,7 @@ class Plugins
 			}
 		);
 		foreach (new \RecursiveIteratorIterator($directories) as $file) {
-			if ($file->getExtension() === 'php' && strpos(file_get_contents($file->getPathname()), 'squidge_image(') !== false) {
+			if ($file->getExtension() === 'php' && strpos(file_get_contents($file->getPathname()), 'takopic_image(') !== false) {
 				return true;
 			}
 		}

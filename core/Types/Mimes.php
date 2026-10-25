@@ -5,7 +5,7 @@
  *
  * Mime times for files stored here.
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Class
@@ -13,7 +13,7 @@
  *
  */
 
-namespace Squidge\Types;
+namespace Takopic\Types;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly

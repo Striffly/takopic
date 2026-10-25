@@ -8,7 +8,7 @@
  * as a list of recent errors (shown as an admin
  * notice until dismissed).
  *
- * @package     Squidge
+ * @package     Takopic
  * @version     0.1.4
  * @author      Ainsley Clark
  * @category    Log
@@ -16,7 +16,7 @@
  *
  */
 
-namespace Squidge\Log;
+namespace Takopic\Log;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -30,14 +30,14 @@ class Errors
 	 *
 	 * @var string
 	 */
-	const META_KEY = '_squidge_errors';
+	const META_KEY = '_takopic_errors';
 
 	/**
 	 * Option key of the recent errors.
 	 *
 	 * @var string
 	 */
-	const OPTION = 'squidge_errors';
+	const OPTION = 'takopic_errors';
 
 	/**
 	 * Number of recent errors kept.
