@@ -12,7 +12,7 @@ Squeezes images. Spills no ink, sends no bill. JPG, PNG, WebP and AVIF optimised
 
 == Description ==
 
-Takopic optimises the images of your media library with the libraries of your own server: `jpegoptim`, `optipng`, `cwebp` and `avifenc`. Free and unlimited, no API key, no quota: your images never leave your server.
+Takopic optimises the images of your media library with the libraries of your own server: `jpegoptim`, `optipng` or `oxipng`, `pngquant`, `cwebp` and `avifenc`. Free and unlimited, no API key, no quota: your images never leave your server.
 
 = Optimisation =
 
@@ -36,13 +36,13 @@ Takopic optimises the images of your media library with the libraries of your ow
 = For developers =
 
 * WP-CLI: `wp takopic run`, `clean`, `restore` and `health`. `wp takopic run --regenerate` makes the thumbnails again from the originals first.
-* Filters: `takopic_backup_dir` (folder of the originals), `takopic_nice`, `takopic_avif_jobs` and `takopic_webp_mt` (priority and threads of the libraries), `takopic_job_seconds_between_batches` and `takopic_job_default_time_limit` (pace of the background jobs), `takopic_binary_path` (path of a library installed out of the usual folders).
+* Filters: `takopic_backup_dir` (folder of the originals), `takopic_nice`, `takopic_avif_jobs`, `takopic_webp_mt` and `takopic_oxipng_threads` (priority and threads of the libraries), `takopic_job_seconds_between_batches` and `takopic_job_default_time_limit` (pace of the background jobs), `takopic_binary_path` (path of a library installed out of the usual folders).
 
 See the [README on GitHub](https://github.com/Striffly/takopic) for the details.
 
 == Installation ==
 
-Takopic needs a Linux or macOS server where PHP can run programs (`proc_open()` or `exec()`), with the libraries installed, e.g. on Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`. Each format works on its own: a missing library only turns its format off.
+Takopic needs a Linux or macOS server where PHP can run programs (`proc_open()` or `exec()`), with the libraries installed, e.g. on Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`. Each format works on its own: a missing library only turns its format off. `oxipng`, faster, replaces `optipng` when installed, and `pngquant` adds an optional lossy compression of the PNG images.
 
 1. Upload the plugin in `Plugins > Add New > Upload Plugin`, and activate it.
 2. Open `Settings > Takopic`: the Overview tab checks the libraries and shows how to install the missing ones.

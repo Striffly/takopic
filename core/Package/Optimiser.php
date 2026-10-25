@@ -96,7 +96,11 @@ class Optimiser
 			'webp' => ['quality' => Fields::get('takopic_webp_quality')],
 			'avif' => ['quality' => Fields::get('takopic_avif_quality')],
 			'jpg' => ['quality' => Fields::get('takopic_jpg_quality')],
-			'png' => ['optimization' => Fields::get('takopic_png_quality')],
+			'png' => [
+				'optimization' => Fields::get('takopic_png_quality'),
+				'lossy' => Fields::get('takopic_png_lossy'),
+				'lossy_quality' => Fields::get('takopic_png_lossy_quality'),
+			],
 		];
 		foreach (array_keys($settings) as $format) {
 			if ($enabled_only && !Fields::get('takopic_' . $format . '_enable')) {

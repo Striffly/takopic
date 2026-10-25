@@ -43,11 +43,14 @@ $settings = [
 	'takopic_jpg_quality',
 	'takopic_png_enable',
 	'takopic_png_quality',
+	'takopic_png_lossy',
+	'takopic_png_lossy_quality',
 	'takopic_webp_enable',
 	'takopic_webp_quality',
 	'takopic_avif_enable',
 	'takopic_avif_quality',
 	'takopic_display_formats',
+	'takopic_max_size',
 ];
 foreach ($settings as $setting) {
 	$options[] = '_' . $setting;

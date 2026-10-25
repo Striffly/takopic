@@ -503,8 +503,9 @@
 	margin-left: 46px;
 }
 
-/* Fade the options of a disabled format. */
-.takopic-card:has(.takopic-toggle input:not(:checked)) .takopic-field--option {
+/* Fade the options of a disabled format, and the pngquant quality when the lossy compression is off. */
+.takopic-card:has(input[id$="_enable"]:not(:checked)) .takopic-field--option,
+.takopic-card:has(#_takopic_png_lossy:not(:checked)) .takopic-field--option:has(#_takopic_png_lossy_quality) {
 	opacity: .5;
 }
 
