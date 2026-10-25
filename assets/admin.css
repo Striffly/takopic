@@ -1,446 +1,527 @@
 /**
  * admin.css
  *
- * Admin style for the Takopic options page.
+ * Style of the Takopic options page, in BEM: one block per
+ * component (takopic-header, takopic-card, takopic-job...), its
+ * elements (takopic-card__title) and modifiers
+ * (takopic-card--danger). Every colour, size and shadow
+ * comes from the tokens below.
+ *
+ * Sections:
+ * 1. Tokens
+ * 2. Font
+ * 3. Page
+ * 4. Header
+ * 5. Tabs
+ * 6. Cards
+ * 7. Overview: savings, counts, formats
+ * 8. Badges, dots, engines
+ * 9. Actions and confirmations
+ * 10. Background job and its result
+ * 11. Fields and toggles
+ * 12. Install instructions, code
+ * 13. WordPress components
+ * 14. Small screens
  *
  * @author Clément Gayot
  * @author Ainsley Clark (Squidge, original author)
  */
 
-.takopic-page {
-	--takopic-accent: var(--wp-admin-theme-color, #2271b1);
-	--takopic-border: #dcdcde;
-	--takopic-muted: #646970;
-	--takopic-on: #00a32a;
-	--takopic-on-bg: #edfaef;
-	--takopic-off: #d63638;
-	--takopic-off-bg: #fcf0f1;
-	max-width: 880px;
-}
-
-.takopic-title__name {
-	font-weight: 400;
-	color: var(--takopic-muted);
-}
-
-.takopic-tagline {
-	margin: 4px 0 16px;
-	font-size: 14px;
-	font-style: italic;
-	color: var(--takopic-muted);
-}
-
-/* Tabs
+/* 1. Tokens
    ========================================================================== */
 
-.takopic-page:not(.takopic-js) .takopic-tabs {
+.takopic-page {
+	/* Palette of the logo. */
+	--takopic-night: #1b0b3b;
+	--takopic-night-2: #2a0e4f;
+	--takopic-night-3: #3d1170;
+	--takopic-pink: #ff3cac;
+	--takopic-violet: #7b2ff7;
+	--takopic-violet-dark: #6420d6;
+	--takopic-violet-soft: #f3edff;
+	--takopic-cyan: #00e5ff;
+	--takopic-gradient: linear-gradient(120deg, var(--takopic-pink) 0%, var(--takopic-violet) 100%);
+	--takopic-gradient-night: linear-gradient(120deg, var(--takopic-night) 0%, var(--takopic-night-2) 55%, var(--takopic-night-3) 100%);
+
+	/* Text and surfaces. The pink and cyan are too light for text on white. */
+	--takopic-text: #1d2327;
+	--takopic-text-soft: #50575e;
+	--takopic-muted: #646970;
+	--takopic-surface: #fff;
+	--takopic-surface-soft: #f8f7fc;
+	--takopic-border: #e4e2ee;
+
+	/* States. */
+	--takopic-on: #00a32a;
+	--takopic-on-bg: #edfaef;
+	--takopic-warning: #b8860b;
+	--takopic-warning-strong: #dba617;
+	--takopic-warning-bg: #fcf9e8;
+	--takopic-off: #d63638;
+	--takopic-off-bg: #fcf0f1;
+	--takopic-neutral: #8c8f94;
+	--takopic-neutral-bg: #f0f0f1;
+
+	/* Type. Unbounded is wide: titles and figures only. */
+	--takopic-font-display: "Unbounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--takopic-font-code: Consolas, Monaco, monospace;
+	--takopic-size-small: 12px;
+	--takopic-size-body: 13px;
+	--takopic-size-lead: 14px;
+	--takopic-size-title: 15px;
+	--takopic-size-heading: 20px;
+	--takopic-size-figure: 34px;
+
+	/* Space, shapes, motion. */
+	--takopic-space-1: 4px;
+	--takopic-space-2: 8px;
+	--takopic-space-3: 12px;
+	--takopic-space-4: 16px;
+	--takopic-space-5: 24px;
+	--takopic-space-6: 32px;
+	--takopic-radius-small: 6px;
+	--takopic-radius: 12px;
+	--takopic-radius-large: 16px;
+	--takopic-shadow: 0 1px 2px rgba(27, 11, 59, .06), 0 6px 20px rgba(27, 11, 59, .06);
+	--takopic-shadow-hover: 0 2px 4px rgba(27, 11, 59, .08), 0 12px 32px rgba(123, 47, 247, .14);
+	--takopic-glow: 0 0 24px rgba(255, 60, 172, .45);
+	--takopic-transition: 150ms ease;
+}
+
+/* 2. Font
+   ========================================================================== */
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("fonts/unbounded-500.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("fonts/unbounded-600.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("fonts/unbounded-700.woff2") format("woff2");
+}
+
+/* 3. Page
+   ========================================================================== */
+
+.takopic-page {
+	max-width: 1040px;
+	color: var(--takopic-text);
+}
+
+.takopic-page .wp-header-end {
+	margin: 0;
+	border: 0;
+}
+
+.takopic-page code {
+	padding: 1px 6px;
+	border-radius: var(--takopic-radius-small);
+	background: var(--takopic-violet-soft);
+	font-family: var(--takopic-font-code);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-page a {
+	color: var(--takopic-violet-dark);
+}
+
+.takopic-page a:hover,
+.takopic-page a:focus {
+	color: var(--takopic-violet);
+}
+
+.takopic-page__save {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: var(--takopic-space-4);
+}
+
+.takopic-panel {
+	margin-top: var(--takopic-space-5);
+}
+
+.takopic-heading {
+	margin: var(--takopic-space-6) 0 var(--takopic-space-3);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 500;
+}
+
+/* 4. Header
+   ========================================================================== */
+
+.takopic-header {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-5);
+	margin-top: var(--takopic-space-4);
+	padding: var(--takopic-space-5) var(--takopic-space-6);
+	border-radius: var(--takopic-radius-large);
+	background: var(--takopic-gradient-night);
+	box-shadow: var(--takopic-shadow);
+	color: #fff;
+}
+
+.takopic-header__logo {
+	flex: none;
+	width: 64px;
+	height: 64px;
+	border-radius: var(--takopic-radius);
+	box-shadow: var(--takopic-glow);
+}
+
+.takopic-header__text {
+	flex: 1;
+	min-width: 0;
+}
+
+.takopic-page .takopic-header__title {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font-family: var(--takopic-font-display);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: -.01em;
+}
+
+.takopic-header__tagline {
+	margin: var(--takopic-space-1) 0 0;
+	color: var(--takopic-cyan);
+	font-size: var(--takopic-size-lead);
+}
+
+.takopic-header__version {
+	flex: none;
+	align-self: flex-start;
+	padding: 2px 10px;
+	border: 1px solid rgba(255, 255, 255, .25);
+	border-radius: 999px;
+	color: rgba(255, 255, 255, .8);
+	font-size: var(--takopic-size-small);
+}
+
+/* 5. Tabs
+   ========================================================================== */
+
+.takopic-page:not(.takopic-page--js) .takopic-tabs {
 	display: none;
 }
 
 .takopic-tabs {
-	margin-bottom: 20px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--takopic-space-1);
+	margin-top: var(--takopic-space-5);
+	padding: var(--takopic-space-1);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
 }
 
-.takopic-tabs .nav-tab {
+.takopic-page .takopic-tabs__tab {
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
+	gap: var(--takopic-space-2);
+	padding: var(--takopic-space-2) var(--takopic-space-4);
+	border-radius: var(--takopic-radius-small);
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color var(--takopic-transition), color var(--takopic-transition);
 }
 
-.takopic-dot {
-	width: 8px;
-	height: 8px;
-	border-radius: 50%;
-	background: var(--takopic-off);
+.takopic-page .takopic-tabs__tab:hover,
+.takopic-page .takopic-tabs__tab:focus {
+	background: var(--takopic-violet-soft);
+	color: var(--takopic-violet-dark);
+	box-shadow: none;
 }
 
-.takopic-dot--on {
-	background: var(--takopic-on);
+.takopic-page .takopic-tabs__tab--active,
+.takopic-page .takopic-tabs__tab--active:hover,
+.takopic-page .takopic-tabs__tab--active:focus {
+	background: var(--takopic-gradient);
+	color: #fff;
 }
 
-.takopic-dot--muted {
-	background: #a7aaad;
+/* 6. Cards
+   ========================================================================== */
+
+.takopic-card {
+	margin-bottom: var(--takopic-space-4);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
 }
 
-.takopic-panel {
-	margin-bottom: 20px;
-}
-
-.takopic-panel[hidden] {
-	display: none;
-}
-
-/* Background job of the media library card. */
-.takopic-job {
-	padding: 16px 20px;
-	border-top: 1px solid #f0f0f1;
-}
-
-.takopic-job__group {
-	margin: 0 0 4px;
-	font-size: 13px;
-	text-transform: uppercase;
-	letter-spacing: .04em;
-	color: var(--takopic-muted);
-}
-
-.takopic-job__group ~ .takopic-job__group {
-	margin-top: 16px;
-}
-
-.takopic-action {
-	display: grid;
-	grid-template-columns: 210px 1fr;
-	align-items: center;
-	gap: 6px 16px;
-	padding: 8px 0;
-}
-
-.takopic-action .button {
-	justify-content: center;
-}
-
-.takopic-action .description {
-	margin: 0;
-}
-
-.takopic-button-danger.button {
-	color: var(--takopic-off);
-	border-color: var(--takopic-off);
-}
-
-@media (max-width: 782px) {
-	.takopic-action {
-		grid-template-columns: 1fr;
-	}
-}
-
-.takopic-job__progress,
-.takopic-job__result {
-	display: none;
-	margin: 0;
-}
-
-.takopic-job[data-state="running"] .takopic-job__progress,
-.takopic-job[data-state="paused"] .takopic-job__progress {
-	display: block;
-}
-
-.takopic-job[data-state="running"] .takopic-job__actions,
-.takopic-job[data-state="paused"] .takopic-job__actions,
-.takopic-job[data-state="running"] [data-control="resume"],
-.takopic-job[data-state="paused"] [data-control="pause"] {
-	display: none;
-}
-
-/* Sum up of the last job: success, with errors, or cancelled. */
-.takopic-job[data-result] .takopic-job__result {
+.takopic-card__header {
 	display: flex;
 	align-items: flex-start;
-	gap: 12px;
-	margin-bottom: 20px;
-	padding: 12px 12px 12px 16px;
-	border-left: 4px solid var(--takopic-on);
-	border-radius: 4px;
-	background: var(--takopic-on-bg);
+	gap: var(--takopic-space-3);
+	padding: var(--takopic-space-5) var(--takopic-space-5) 0;
 }
 
-.takopic-job[data-result="warning"] .takopic-job__result {
-	border-left-color: #dba617;
-	background: #fcf9e8;
-}
-
-.takopic-job[data-result="cancelled"] .takopic-job__result {
-	border-left-color: var(--takopic-muted);
-	background: #f6f7f7;
-}
-
-.takopic-job__result-icon {
-	flex: none;
-	width: 24px;
-	height: 24px;
-	font-size: 24px;
-	color: var(--takopic-on);
-}
-
-.takopic-job__result-icon::before {
-	content: "\f12a"; /* yes-alt */
-}
-
-.takopic-job[data-result="warning"] .takopic-job__result-icon {
-	color: #dba617;
-}
-
-.takopic-job[data-result="warning"] .takopic-job__result-icon::before {
-	content: "\f534"; /* warning */
-}
-
-.takopic-job[data-result="cancelled"] .takopic-job__result-icon {
-	color: var(--takopic-muted);
-}
-
-.takopic-job[data-result="cancelled"] .takopic-job__result-icon::before {
-	content: "\f14c"; /* info-outline */
-}
-
-.takopic-job__result > div {
+.takopic-card__header > div {
 	flex: 1;
+	min-width: 0;
 }
 
-.takopic-job__result-title {
-	margin: 1px 0 2px;
-	font-size: 14px;
-	font-weight: 600;
-}
-
-.takopic-job__result-detail {
-	margin: 0;
-	color: #3c434a;
-}
-
-.takopic-job__result-close {
+.takopic-card__icon {
 	flex: none;
-	padding: 2px;
-	border: 0;
-	background: none;
-	color: var(--takopic-muted);
-	cursor: pointer;
+	width: 36px;
+	height: 36px;
+	border-radius: 10px;
+	background: var(--takopic-violet-soft);
+	color: var(--takopic-violet);
+	font-size: 20px;
+	line-height: 36px;
+	text-align: center;
 }
 
-.takopic-job__result-close:hover,
-.takopic-job__result-close:focus {
-	color: #1d2327;
+.takopic-card__header > .takopic-dot {
+	margin-top: 9px;
 }
 
-.takopic-job__label {
-	margin: 0 0 8px;
-}
-
-.takopic-job__bar {
-	width: 100%;
-	height: 8px;
-	margin-bottom: 12px;
-	accent-color: var(--takopic-accent);
-}
-
-.takopic-job__controls {
-	display: flex;
-	align-items: center;
-	gap: 12px;
-}
-
-/* How to use takopic_image(), in the display settings. */
-.takopic-theme-help {
-	margin: 0 20px 16px;
-	padding: 12px 16px;
-	background: #f6f7f7;
-	border-left: 4px solid var(--takopic-accent);
-}
-
-.takopic-theme-help p {
-	margin: 0 0 8px;
-}
-
-.takopic-theme-help p:last-child {
-	margin-bottom: 0;
-}
-
-.takopic-theme-help pre {
-	margin: 0 0 8px;
-	padding: 10px 12px;
-	overflow-x: auto;
-	background: #fff;
-	border: 1px solid var(--takopic-border);
-	border-radius: 4px;
-}
-
-.takopic-theme-help pre code {
-	tab-size: 4;
+.takopic-page .takopic-card__title {
+	margin: 0 0 var(--takopic-space-1);
 	padding: 0;
-	background: none;
-	font-size: 12px;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 500;
+	line-height: 1.4;
 }
 
-/* Media library, upload and display settings, below the status cards of the overview. */
-.takopic-library,
-.takopic-general,
-.takopic-display {
-	margin-top: 20px;
+.takopic-card__description {
+	margin: 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-body);
+}
+
+.takopic-card__body {
+	padding: var(--takopic-space-2) var(--takopic-space-5) var(--takopic-space-5);
+}
+
+.takopic-card__actions {
+	display: flex;
+	justify-content: flex-end;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 var(--takopic-radius) var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+}
+
+.takopic-card__footer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: var(--takopic-space-2);
+	margin: 0;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	color: var(--takopic-muted);
+}
+
+.takopic-card__footer a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.takopic-card__notice {
+	margin: var(--takopic-space-4) var(--takopic-space-5) var(--takopic-space-5);
+	color: var(--takopic-text-soft);
+}
+
+.takopic-card--danger {
+	border-color: #f2c8c9;
+}
+
+.takopic-card--danger .takopic-card__icon {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
+}
+
+/* 7. Overview: savings, counts, formats
+   ========================================================================== */
+
+.takopic-card--hero {
+	overflow: hidden;
+}
+
+.takopic-savings {
+	position: relative;
+	padding: var(--takopic-space-6);
+	background: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .12) 0%, rgba(123, 47, 247, .08) 35%, transparent 70%);
+}
+
+.takopic-savings__value {
+	margin: 0;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-figure);
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -.02em;
+	color: var(--takopic-night);
+}
+
+.takopic-savings__value span {
+	background: var(--takopic-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.takopic-savings__detail {
+	margin: var(--takopic-space-2) 0 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+}
+
+.takopic-savings__reduction {
+	color: var(--takopic-violet-dark);
+	font-weight: 700;
+}
+
+.takopic-savings__hint a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.takopic-savings__disk {
+	margin: var(--takopic-space-4) 0 0;
+	color: var(--takopic-muted);
 }
 
 .takopic-counts {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-	gap: 12px;
+	grid-template-columns: repeat(4, 1fr);
 	margin: 0;
-	padding: 16px 20px;
+	border-top: 1px solid var(--takopic-border);
 }
 
 .takopic-counts__item {
 	margin: 0;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+}
+
+.takopic-counts__item + .takopic-counts__item {
+	border-left: 1px solid var(--takopic-border);
+}
+
+.takopic-counts__value {
+	display: block;
+	font-family: var(--takopic-font-display);
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.takopic-counts__label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
 	color: var(--takopic-muted);
 }
 
-.takopic-counts__item strong {
-	display: block;
-	font-size: 22px;
-	line-height: 1.3;
-	color: #1d2327;
-}
-
-.takopic-savings {
-	padding: 16px 20px 0;
-}
-
-.takopic-savings p {
-	margin: 0;
-}
-
-.takopic-savings__saved {
-	font-size: 15px;
-}
-
-.takopic-savings .description {
-	margin-top: 4px;
-}
-
-.takopic-status-label::before {
+.takopic-counts__label::before {
 	content: "";
-	display: inline-block;
 	width: 8px;
 	height: 8px;
-	margin-right: 6px;
 	border-radius: 50%;
-	background: #a7aaad;
+	background: var(--takopic-neutral);
 }
 
-.takopic-status-label--optimised::before {
+.takopic-counts__item--optimised .takopic-counts__label::before {
 	background: var(--takopic-on);
 }
 
-.takopic-status-label--outdated::before {
-	background: #dba617;
+.takopic-counts__item--outdated .takopic-counts__label::before {
+	background: var(--takopic-warning-strong);
 }
 
-.takopic-status-label--error::before {
+.takopic-counts__item--error .takopic-counts__label::before {
 	background: var(--takopic-off);
 }
 
-/* Overview
-   ========================================================================== */
-
-.takopic-intro {
-	max-width: 640px;
-	margin: 0 0 20px;
-	font-size: 14px;
-	color: var(--takopic-muted);
-}
-
-.takopic-status-grid {
+.takopic-libraries {
 	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-	gap: 12px;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: var(--takopic-space-3);
 }
 
-.takopic-status {
+.takopic-page .takopic-library {
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
-	padding: 16px;
-	background: #fff;
+	gap: var(--takopic-space-2);
+	padding: var(--takopic-space-4);
 	border: 1px solid var(--takopic-border);
-	border-radius: 8px;
-	color: inherit;
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+	color: var(--takopic-text);
 	text-decoration: none;
-	transition: border-color .15s, box-shadow .15s;
+	transition: transform var(--takopic-transition), box-shadow var(--takopic-transition), border-color var(--takopic-transition);
 }
 
-.takopic-status:hover,
-.takopic-status:focus {
-	color: inherit;
-	border-color: var(--takopic-accent);
-	box-shadow: 0 0 0 1px var(--takopic-accent);
+.takopic-page .takopic-library:hover,
+.takopic-page .takopic-library:focus {
+	border-color: rgba(123, 47, 247, .4);
+	box-shadow: var(--takopic-shadow-hover);
+	color: var(--takopic-text);
+	transform: translateY(-2px);
 }
 
-.takopic-status__format {
-	font-size: 18px;
-	font-weight: 600;
+.takopic-library--off {
+	border-color: #f2c8c9;
 }
 
-.takopic-status__head {
+.takopic-library__head {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 8px;
+	gap: var(--takopic-space-2);
+	padding-bottom: var(--takopic-space-2);
+	border-bottom: 1px solid var(--takopic-border);
 }
 
-.takopic-status__library {
-	display: inline-flex;
-	flex-wrap: wrap;
-	align-items: baseline;
-	gap: 2px;
-	font-size: 12px;
-	line-height: 18px;
-	white-space: nowrap;
-	color: var(--takopic-muted);
-	padding-top: 10px;
-	border-top: 1px solid #f0f0f1;
+.takopic-library__format {
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 600;
 }
 
-/* Plain text here, so the library name lines up with the format title. */
-.takopic-status__library code {
-	margin: 0 6px 0 0;
-	padding: 0;
-	background: none;
-	font-size: 12px;
-	line-height: 18px;
-	color: #1d2327;
-}
-
-.takopic-status__library .dashicons {
-	align-self: center;
-	width: 16px;
-	height: 16px;
-	font-size: 16px;
-}
-
-.takopic-status__library--on .dashicons {
-	color: var(--takopic-on);
-}
-
-.takopic-status__library--off .dashicons {
-	color: var(--takopic-off);
-}
-
-/* At the end of the line, or of the next one in a narrow card. */
-.takopic-status__version {
-	margin-left: auto;
-	padding-left: 8px;
-	font-variant-numeric: tabular-nums;
-}
-
-.takopic-page code {
-	padding: 2px 6px;
-	border-radius: 4px;
-	font-size: 12px;
-}
-
-/* Badge
+/* 8. Badges, dots, engines
    ========================================================================== */
 
 .takopic-badge {
 	display: inline-flex;
 	align-items: center;
-	gap: 6px;
+	gap: 5px;
+	flex: none;
 	padding: 2px 10px;
 	border-radius: 999px;
-	font-size: 12px;
-	font-weight: 500;
-	line-height: 20px;
+	font-size: var(--takopic-size-small);
+	font-weight: 600;
 	white-space: nowrap;
-	flex-shrink: 0;
-	color: var(--takopic-off);
-	background: var(--takopic-off-bg);
 }
 
 .takopic-badge::before {
@@ -452,108 +533,365 @@
 }
 
 .takopic-badge--on {
-	color: #007017;
 	background: var(--takopic-on-bg);
+	color: var(--takopic-on);
+}
+
+.takopic-badge--off {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
 }
 
 .takopic-badge--muted {
+	background: var(--takopic-neutral-bg);
 	color: var(--takopic-muted);
-	background: #f0f0f1;
 }
 
-/* Card
+.takopic-dot {
+	display: inline-block;
+	flex: none;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: var(--takopic-neutral);
+}
+
+.takopic-dot--on {
+	background: var(--takopic-on);
+	box-shadow: 0 0 0 3px var(--takopic-on-bg);
+}
+
+.takopic-dot--off {
+	background: var(--takopic-off);
+	box-shadow: 0 0 0 3px var(--takopic-off-bg);
+}
+
+.takopic-engine {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-engine::before {
+	content: "\f147"; /* Dashicon yes. */
+	font-family: dashicons;
+	font-size: 16px;
+	line-height: 1;
+	color: var(--takopic-on);
+}
+
+.takopic-engine--off::before {
+	content: "\f335"; /* Dashicon no-alt. */
+	color: var(--takopic-off);
+}
+
+.takopic-page .takopic-engine__name {
+	padding: 0;
+	background: none;
+	color: var(--takopic-text);
+	font-weight: 600;
+}
+
+.takopic-engine__version {
+	margin-left: auto;
+	padding: 0 8px;
+	border-radius: 999px;
+	background: var(--takopic-surface-soft);
+	color: var(--takopic-muted);
+}
+
+/* 9. Actions and confirmations
    ========================================================================== */
 
-.takopic-card {
-	background: #fff;
-	border: 1px solid var(--takopic-border);
-	border-radius: 8px;
-	overflow: hidden;
+.takopic-actions {
+	padding: var(--takopic-space-3) var(--takopic-space-5) var(--takopic-space-5);
 }
 
-.takopic-card__header {
+.takopic-action {
+	display: grid;
+	grid-template-columns: 230px 1fr;
+	align-items: center;
+	gap: var(--takopic-space-4);
+	padding: var(--takopic-space-3) 0;
+}
+
+.takopic-action + .takopic-action {
+	border-top: 1px solid var(--takopic-border);
+}
+
+.takopic-page .takopic-action__button {
+	justify-content: center;
+	width: 100%;
+	text-align: center;
+}
+
+.takopic-action__text {
+	margin: 0;
+	color: var(--takopic-text-soft);
+}
+
+.takopic-confirm {
 	display: flex;
+	flex-wrap: wrap;
 	align-items: center;
 	justify-content: space-between;
-	gap: 12px;
-	padding: 16px 20px;
-	border-bottom: 1px solid var(--takopic-border);
+	gap: var(--takopic-space-3) var(--takopic-space-5);
+	margin-top: var(--takopic-space-4);
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 var(--takopic-radius) var(--takopic-radius);
+	background: var(--takopic-surface-soft);
 }
 
-.takopic-card__header--text {
+.takopic-confirm__label {
+	display: inline-flex;
+	align-items: flex-start;
+	gap: var(--takopic-space-2);
+	max-width: 620px;
+	color: var(--takopic-text-soft);
+}
+
+.takopic-page .takopic-confirm__input {
+	margin-top: 2px;
+}
+
+/* 10. Background job and its result
+   ========================================================================== */
+
+.takopic-job {
+	margin-top: var(--takopic-space-4);
+}
+
+.takopic-job__progress,
+.takopic-result {
+	display: none;
+}
+
+.takopic-job[data-state="running"] .takopic-job__progress,
+.takopic-job[data-state="paused"] .takopic-job__progress {
 	display: block;
 }
 
-.takopic-card__header--text .description {
-	margin: 6px 0 0;
+.takopic-job__progress {
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
 }
 
-.takopic-card__header h2 {
+.takopic-job__head {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--takopic-space-3);
+	margin-bottom: var(--takopic-space-3);
+}
+
+.takopic-job__label {
+	margin: 0;
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+}
+
+.takopic-job__controls {
 	display: flex;
 	align-items: center;
-	gap: 10px;
-	margin: 0;
-	font-size: 18px;
+	gap: var(--takopic-space-3);
 }
+
+.takopic-job[data-state="running"] [data-control="resume"],
+.takopic-job[data-state="paused"] [data-control="pause"] {
+	display: none;
+}
+
+.takopic-job__bar {
+	display: block;
+	width: 100%;
+	height: 10px;
+	overflow: hidden;
+	border: 0;
+	border-radius: 999px;
+	background: var(--takopic-violet-soft);
+	-webkit-appearance: none;
+	appearance: none;
+}
+
+.takopic-job__bar::-webkit-progress-bar {
+	border-radius: 999px;
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-job__bar::-webkit-progress-value {
+	border-radius: 999px;
+	background: var(--takopic-gradient);
+	transition: width 400ms ease;
+}
+
+.takopic-job__bar::-moz-progress-bar {
+	border-radius: 999px;
+	background: var(--takopic-gradient);
+}
+
+.takopic-job[data-state="paused"] .takopic-job__bar {
+	filter: grayscale(.8);
+}
+
+/* Sum up of the last job: success, with errors, or cancelled. */
+.takopic-job[data-result] .takopic-result {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--takopic-space-3);
+	padding: var(--takopic-space-4) var(--takopic-space-4) var(--takopic-space-4) var(--takopic-space-5);
+	border: 1px solid transparent;
+	border-left: 4px solid var(--takopic-on);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-on-bg);
+}
+
+.takopic-job[data-result="warning"] .takopic-result {
+	border-left-color: var(--takopic-warning-strong);
+	background: var(--takopic-warning-bg);
+}
+
+.takopic-job[data-result="cancelled"] .takopic-result {
+	border-left-color: var(--takopic-neutral);
+	background: var(--takopic-neutral-bg);
+}
+
+.takopic-result__icon {
+	flex: none;
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
+	color: var(--takopic-on);
+}
+
+.takopic-result__icon::before {
+	content: "\f12a"; /* Dashicon yes-alt. */
+}
+
+.takopic-job[data-result="warning"] .takopic-result__icon {
+	color: var(--takopic-warning-strong);
+}
+
+.takopic-job[data-result="warning"] .takopic-result__icon::before {
+	content: "\f534"; /* Dashicon warning. */
+}
+
+.takopic-job[data-result="cancelled"] .takopic-result__icon {
+	color: var(--takopic-muted);
+}
+
+.takopic-job[data-result="cancelled"] .takopic-result__icon::before {
+	content: "\f14c"; /* Dashicon info-outline. */
+}
+
+.takopic-result__body {
+	flex: 1;
+}
+
+.takopic-result__title {
+	margin: 1px 0 2px;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-lead);
+	font-weight: 500;
+}
+
+.takopic-result__detail {
+	margin: 0;
+	color: var(--takopic-text-soft);
+}
+
+.takopic-result__close {
+	flex: none;
+	padding: 2px;
+	border: 0;
+	background: none;
+	color: var(--takopic-muted);
+	cursor: pointer;
+}
+
+.takopic-result__close:hover,
+.takopic-result__close:focus {
+	color: var(--takopic-text);
+}
+
+/* 11. Fields and toggles
+   ========================================================================== */
 
 .takopic-field {
-	padding: 16px 20px;
-	border-bottom: 1px solid #f0f0f1;
+	padding: var(--takopic-space-4) 0;
 }
 
-.takopic-field:last-child {
-	border-bottom: 0;
+.takopic-field + .takopic-field {
+	border-top: 1px solid var(--takopic-border);
 }
 
 .takopic-field__label {
 	display: block;
-	margin-bottom: 6px;
+	margin-bottom: var(--takopic-space-2);
 	font-weight: 600;
 }
 
-.takopic-field .description {
-	margin: 6px 0 0;
+.takopic-field__control {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
 }
 
-.takopic-field--toggle .description {
-	margin-left: 46px;
+.takopic-page .takopic-field__input {
+	min-width: 96px;
+	border-color: var(--takopic-border);
+	border-radius: var(--takopic-radius-small);
 }
 
-/* Fade the options of a disabled format, and the pngquant quality when the lossy compression is off. */
-.takopic-card:has(input[id$="_enable"]:not(:checked)) .takopic-field--option,
-.takopic-card:has(#_takopic_png_lossy:not(:checked)) .takopic-field--option:has(#_takopic_png_lossy_quality) {
-	opacity: .5;
+.takopic-page .takopic-field__input:focus {
+	border-color: var(--takopic-violet);
+	box-shadow: 0 0 0 1px var(--takopic-violet);
 }
 
-/* Toggle
-   ========================================================================== */
+.takopic-field__unit {
+	color: var(--takopic-muted);
+}
+
+.takopic-field__help {
+	margin: var(--takopic-space-2) 0 0;
+	max-width: 680px;
+	color: var(--takopic-muted);
+}
+
+.takopic-field--toggle .takopic-field__help {
+	padding-left: 52px;
+}
 
 .takopic-toggle {
 	display: inline-flex;
 	align-items: center;
-	gap: 10px;
+	gap: var(--takopic-space-3);
 	cursor: pointer;
 }
 
-.takopic-toggle .takopic-field__label {
-	margin: 0;
-}
-
-.takopic-toggle input {
+.takopic-page .takopic-toggle__input {
 	position: absolute;
-	opacity: 0;
 	width: 1px;
 	height: 1px;
+	margin: 0;
+	opacity: 0;
 }
 
 .takopic-toggle__track {
 	position: relative;
 	flex: none;
-	width: 36px;
-	height: 20px;
+	width: 40px;
+	height: 22px;
 	border-radius: 999px;
 	background: #c3c4c7;
-	transition: background .15s;
+	transition: background var(--takopic-transition);
 }
 
 .takopic-toggle__track::after {
@@ -561,68 +899,179 @@
 	position: absolute;
 	top: 3px;
 	left: 3px;
-	width: 14px;
-	height: 14px;
+	width: 16px;
+	height: 16px;
 	border-radius: 50%;
 	background: #fff;
-	transition: transform .15s;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, .2);
+	transition: transform var(--takopic-transition);
 }
 
-.takopic-toggle input:checked + .takopic-toggle__track {
-	background: var(--takopic-accent);
+.takopic-toggle__input:checked + .takopic-toggle__track {
+	background: var(--takopic-gradient);
 }
 
-.takopic-toggle input:checked + .takopic-toggle__track::after {
-	transform: translateX(16px);
+.takopic-toggle__input:checked + .takopic-toggle__track::after {
+	transform: translateX(18px);
 }
 
-.takopic-toggle input:focus-visible + .takopic-toggle__track {
-	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-accent);
+.takopic-toggle__input:focus-visible + .takopic-toggle__track {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-violet);
 }
 
-/* Install instructions
+.takopic-toggle__label {
+	font-weight: 600;
+}
+
+/* 12. Install instructions, code
    ========================================================================== */
 
 .takopic-install {
-	padding: 14px 20px;
+	margin: var(--takopic-space-4) var(--takopic-space-5) 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+	border: 1px solid #f2c8c9;
+	border-radius: var(--takopic-radius-small);
 	background: var(--takopic-off-bg);
-	border-bottom: 1px solid var(--takopic-border);
 }
 
-.takopic-install summary {
+.takopic-install--advice {
+	border-color: var(--takopic-border);
+	background: var(--takopic-surface-soft);
+}
+
+.takopic-install__summary {
 	font-weight: 600;
 	cursor: pointer;
 }
 
+.takopic-install__text {
+	margin: var(--takopic-space-2) 0 0;
+	color: var(--takopic-text-soft);
+}
+
 .takopic-install__list {
-	margin: 12px 0 0;
+	margin: var(--takopic-space-3) 0 0;
 }
 
 .takopic-install__list li {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 8px 12px;
-	margin: 0;
-	padding: 8px 0;
-	border-top: 1px solid rgba(0, 0, 0, .06);
+	gap: var(--takopic-space-2);
+	margin-bottom: var(--takopic-space-2);
 }
 
 .takopic-install__os {
-	width: 70px;
+	display: inline-block;
+	min-width: 70px;
 	font-weight: 600;
 }
 
-.takopic-install__list code {
-	background: #fff;
+.takopic-code {
+	margin: 0;
+	padding: var(--takopic-space-4);
+	overflow-x: auto;
+	border-radius: var(--takopic-radius-small);
+	background: var(--takopic-night);
+	color: #e9e5f5;
+	font-family: var(--takopic-font-code);
+	font-size: var(--takopic-size-small);
+	line-height: 1.6;
 }
 
-@media (max-width: 600px) {
-	.takopic-card__header {
+.takopic-page .takopic-code code {
+	padding: 0;
+	background: none;
+	color: inherit;
+}
+
+/* 13. WordPress components
+   ========================================================================== */
+
+/* The buttons keep their WordPress classes, in the colours of the logo. */
+.takopic-page .button-primary {
+	border-color: var(--takopic-violet-dark);
+	background: var(--takopic-violet);
+	color: #fff;
+	transition: background-color var(--takopic-transition), box-shadow var(--takopic-transition);
+}
+
+.takopic-page .button-primary:hover,
+.takopic-page .button-primary:focus {
+	border-color: var(--takopic-violet-dark);
+	background: var(--takopic-violet-dark);
+	color: #fff;
+}
+
+.takopic-page .button-primary:focus {
+	box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--takopic-violet);
+}
+
+.takopic-page .button:not(.button-primary) {
+	border-color: var(--takopic-violet);
+	color: var(--takopic-violet-dark);
+}
+
+.takopic-page .button:not(.button-primary):hover,
+.takopic-page .button:not(.button-primary):focus {
+	background: var(--takopic-violet-soft);
+	color: var(--takopic-violet-dark);
+}
+
+.takopic-page .button.takopic-button--danger {
+	border-color: var(--takopic-off);
+	color: var(--takopic-off);
+}
+
+.takopic-page .button.takopic-button--danger:hover,
+.takopic-page .button.takopic-button--danger:focus {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
+}
+
+.takopic-page .button[disabled] {
+	opacity: .55;
+}
+
+/* 14. Small screens
+   ========================================================================== */
+
+@media (max-width: 782px) {
+	.takopic-header {
 		flex-wrap: wrap;
+		padding: var(--takopic-space-5);
 	}
 
-	.takopic-install__os {
-		width: 100%;
+	.takopic-page .takopic-header__title {
+		font-size: 20px;
+	}
+
+	.takopic-savings {
+		padding: var(--takopic-space-5);
+	}
+
+	.takopic-savings__value {
+		font-size: 26px;
+	}
+
+	.takopic-counts {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.takopic-counts__item:nth-child(3) {
+		border-left: 0;
+	}
+
+	.takopic-counts__item:nth-child(n+3) {
+		border-top: 1px solid var(--takopic-border);
+	}
+
+	.takopic-action {
+		grid-template-columns: 1fr;
+		gap: var(--takopic-space-2);
+	}
+
+	.takopic-field--toggle .takopic-field__help {
+		padding-left: 0;
 	}
 }
