@@ -26,18 +26,54 @@ if (!defined('WP_UNINSTALL_PLUGIN')) {
 
 global $wpdb;
 
-// Settings (_takopic_*), recent errors and background job (takopic_*), cached theme scan.
-$patterns = ['_takopic_%', 'takopic_%', '_transient_takopic_%', '_transient_timeout_takopic_%'];
-foreach ($patterns as $pattern) {
-	$like = str_replace('%', '', $pattern);
-	$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like($like) . '%'));
-	if (is_multisite()) {
-		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->sitemeta} WHERE meta_key LIKE %s", $wpdb->esc_like($like) . '%'));
+/*
+ * The names of Takopic only: a pattern as wide as takopic_% would also delete the
+ * options of another plugin using this prefix.
+ */
+
+// Settings, recent errors, progress of the background job, cached theme scan.
+$options = ['takopic_errors', 'takopic_job', 'takopic_theme_calls'];
+$option_prefixes = ['_takopic_'];
+// The background job library keeps its queue, status and lock in the site options.
+$site_options = ['takopic_job_status', '_site_transient_takopic_job_process_lock', '_site_transient_timeout_takopic_job_process_lock'];
+$site_option_prefixes = ['takopic_job_batch_'];
+
+/**
+ * Deletes the options of Takopic and the meta of the
+ * attachments of the current site.
+ */
+$clean_site = function () use ($wpdb, $options, $option_prefixes) {
+	foreach ($options as $option) {
+		delete_option($option);
+		delete_transient($option);
 	}
+	foreach ($option_prefixes as $prefix) {
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like($prefix) . '%'));
+	}
+	// Meta of the attachments: settings used, files made, errors, sizes.
+	$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like('_takopic_') . '%'));
+	wp_clear_scheduled_hook('takopic_job_cron');
+};
+
+if (is_multisite()) {
+	foreach (get_sites(['fields' => 'ids', 'number' => 0]) as $site_id) {
+		switch_to_blog($site_id);
+		$clean_site();
+		restore_current_blog();
+	}
+	$table = $wpdb->sitemeta;
+	$column = 'meta_key';
+} else {
+	$clean_site();
+	$table = $wpdb->options;
+	$column = 'option_name';
 }
 
-// Meta of the attachments: settings used, files made, errors, sizes.
-$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like('_takopic_') . '%'));
+foreach ($site_options as $option) {
+	$wpdb->query($wpdb->prepare("DELETE FROM {$table} WHERE {$column} = %s", $option));
+}
+foreach ($site_option_prefixes as $prefix) {
+	$wpdb->query($wpdb->prepare("DELETE FROM {$table} WHERE {$column} LIKE %s", $wpdb->esc_like($prefix) . '%'));
+}
 
-wp_clear_scheduled_hook('takopic_job_cron');
 wp_cache_flush();
