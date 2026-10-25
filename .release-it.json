@@ -17,5 +17,16 @@
   },
   "npm": {
     "publish": false
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "out": [
+        "takopic.php",
+        "core/Takopic.php"
+      ]
+    }
+  },
+  "hooks": {
+    "after:bump": "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/' readme.txt"
   }
 }
