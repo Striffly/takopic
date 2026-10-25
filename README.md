@@ -229,8 +229,8 @@ wp takopic clean
 ### Restore
 
 Restores the original images and removes every file made by Takopic (WebP, AVIF, backups). Do it before deleting
-Takopic to get your original images back. Images optimised by a version of Takopic older than 0.1.5 have no original
-kept, they stay compressed.
+Takopic to get your original images back. An image whose original was deleted from
+`uploads/takopic-originals/` stays compressed.
 
 ```bash
 wp takopic restore
