@@ -79,6 +79,7 @@ final class Takopic
 		new Admin\Notices();
 		new Admin\Media();
 		new Admin\Plugins();
+		new Admin\Delivery();
 		// The background jobs need the dependencies of composer install.
 		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
 			Package\Job::instance();

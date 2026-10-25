@@ -442,8 +442,9 @@ class Fields
 	}
 
 	/**
-	 * Renders the delivery of the WebP and AVIF files
-	 * on the site.
+	 * Renders the delivery of the WebP and AVIF files:
+	 * in the HTML or from the server, its rules, and a
+	 * test of what the server sends.
 	 *
 	 * @param array $display
 	 * @since 1.0.0
@@ -451,6 +452,8 @@ class Fields
 	 */
 	private function render_delivery($display)
 	{
+		$server = Delivery::server();
+		$names = ['apache' => 'Apache', 'nginx' => 'nginx', 'other' => 'Your server'];
 		?>
 		<div class="takopic-card">
 			<header class="takopic-card__header">
@@ -461,13 +464,45 @@ class Fields
 				</div>
 			</header>
 			<div class="takopic-card__body">
-				<?php foreach ($display['fields'] as $name => $field) : ?>
-					<?php $this->render_field($name, $field); ?>
-				<?php endforeach; ?>
+				<?php $this->render_field('takopic_display_formats', $display['fields']['takopic_display_formats']); ?>
+				<?php
+				$rewrite = $display['fields'][Delivery::OPTION];
+				if ($server !== 'apache') {
+					// Takopic cannot write the rules: the option tells they are in place.
+					$rewrite['help'] = sprintf('%s does not read <code>.htaccess</code> files: add the rules below to its configuration, then tick this box so that Takopic counts the bytes saved with the WebP and AVIF served. The HTML does not change, and every image is served, CSS backgrounds and custom themes included.', esc_html($names[$server]));
+				}
+				$this->render_field(Delivery::OPTION, $rewrite);
+				?>
+				<details class="takopic-rules"<?php echo $server === 'apache' ? '' : ' open'; ?>>
+					<summary class="takopic-rules__summary">The rewrite rules</summary>
+					<?php if ($server !== 'nginx') : ?>
+						<p class="takopic-rules__title">Apache, LiteSpeed: <code>uploads/.htaccess</code></p>
+						<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Delivery::apache_rules())); ?></code></pre>
+					<?php endif; ?>
+					<?php if ($server !== 'apache') : ?>
+						<p class="takopic-rules__title">nginx: the configuration of the site</p>
+						<pre class="takopic-code"><code><?php echo esc_html(Delivery::nginx_rules()); ?></code></pre>
+					<?php endif; ?>
+				</details>
 			</div>
 			<footer class="takopic-card__actions">
 				<?php submit_button('Save changes', 'primary', 'submit', false, ['id' => 'takopic-save-delivery']); ?>
 			</footer>
+		</div>
+
+		<div class="takopic-card takopic-test">
+			<header class="takopic-card__header">
+				<span class="takopic-card__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
+				<div>
+					<h2 class="takopic-card__title">Test the delivery</h2>
+					<p class="takopic-card__description">Requests an optimised image from the site, as a browser: are the WebP and AVIF files served with their type, does the server answer with them, are the originals kept private?</p>
+				</div>
+				<button type="button" class="button takopic-test__button" data-delivery-test>Run the test</button>
+			</header>
+			<div class="takopic-test__result" aria-live="polite" hidden>
+				<p class="takopic-test__sample"></p>
+				<ul class="takopic-checks"></ul>
+			</div>
 		</div>
 		<?php $this->render_theme_help(); ?>
 		<?php
@@ -664,7 +699,7 @@ class Fields
 				<span class="takopic-card__icon dashicons dashicons-editor-code" aria-hidden="true"></span>
 				<div>
 					<h2 class="takopic-card__title">Custom themes</h2>
-					<p class="takopic-card__description">Images output with your own markup (e.g. from an ACF field) are not changed by the option above. Use the <code>takopic_image()</code> helper: it returns a <code>&lt;picture&gt;</code> with the AVIF and WebP versions, whatever the option.</p>
+					<p class="takopic-card__description">Images output with your own markup (e.g. from an ACF field) are not wrapped in a <code>&lt;picture&gt;</code> by the option above: serve them from the server, or use the <code>takopic_image()</code> helper, which returns their <code>&lt;picture&gt;</code> whatever the options.</p>
 				</div>
 			</header>
 			<div class="takopic-card__body">
@@ -939,14 +974,20 @@ class Fields
 				],
 			],
 			'display' => [
-				'title' => 'Display on the site',
-				'description' => 'Your site already displays the compressed JPG and PNG images. Choose if the AVIF and WebP versions are used too.',
+				'title' => 'Serve WebP and AVIF',
+				'description' => 'Your site already serves the compressed JPG and PNG images. Two ways to serve their AVIF and WebP versions too, lighter: each browser gets the best one it reads, older ones the JPG or PNG.',
 				'fields' => [
 					'takopic_display_formats' => [
 						'type' => 'checkbox',
-						'label' => 'Use modern formats (WebP, AVIF)',
+						'label' => 'In the HTML, with <picture>',
 						'default' => false,
-						'help' => 'Images of the post content, featured images and galleries are offered in AVIF and WebP, lighter modern formats. Each browser picks the best one it supports, and older browsers get the JPG or PNG. Technically, images are wrapped in a <code>&lt;picture&gt;</code> tag: <strong>untick this if your theme layout breaks around images.</strong>',
+						'help' => 'Images of the post content, featured images and galleries are wrapped in a <code>&lt;picture&gt;</code> tag offering the AVIF and WebP versions. Works on every server. <strong>Untick this if your theme layout breaks around images.</strong>',
+					],
+					Delivery::OPTION => [
+						'type' => 'checkbox',
+						'label' => 'From the server, with rewrite rules',
+						'default' => false,
+						'help' => 'The server answers <code>photo.jpg</code> with <code>photo.jpg.avif</code> or <code>.webp</code> when the browser reads them: the HTML does not change, and every image is served, CSS backgrounds and custom themes included. Takopic writes the rules in <code>uploads/.htaccess</code> (Apache, LiteSpeed). Check the result with the test below; a CDN must vary its cache on the <code>Accept</code> header.',
 					],
 				],
 			],

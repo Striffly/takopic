@@ -31,8 +31,9 @@ Takopic optimises the images of your media library with the libraries of your ow
 
 = On the site =
 
-* Serves AVIF and WebP in a `<picture>` element, with the JPG or PNG as fallback (optional).
-* `takopic_image( $image_id, $class, $lazy )` returns the same `<picture>` in your own templates.
+* Serves AVIF and WebP, with the JPG or PNG as fallback (optional): in a `<picture>` element, or from the server with rewrite rules (written for Apache, given for nginx), which leaves the HTML as it is.
+* Tests the delivery: types sent by the server, rewrite, originals kept private.
+* `takopic_image( $image_id, $class, $lazy )` returns a `<picture>` in your own templates.
 
 = For developers =
 
@@ -57,7 +58,7 @@ Yes, the JPG and PNG files are replaced by their compressed version, and their o
 
 = Does it serve WebP and AVIF automatically? =
 
-Once `Use modern formats (WebP, AVIF)` is turned on, on the Overview tab. The images of the content and the ones output by `wp_get_attachment_image()` are then wrapped in a `<picture>` element. In a custom theme, use `takopic_image()`.
+Once turned on, on the Delivery tab: in the HTML, where the images are wrapped in a `<picture>` element, or from the server, with rewrite rules answering `photo.jpg` with its AVIF or WebP version (Takopic writes them on Apache and LiteSpeed, and gives them for nginx). The test on the same tab checks what the server sends.
 
 = What happens when the theme changes its image sizes? =
 
@@ -81,7 +82,7 @@ Its settings and data are removed from the database, and the files stay: the com
 
 == Privacy ==
 
-Takopic sends nothing out of your server: no API, no tracking, no external request. The optimised images lose their metadata, the originals keep them and are protected from the web access.
+Takopic sends nothing out of your server: no API, no tracking, no external request. The delivery test only requests the site itself. The optimised images lose their metadata, the originals keep them and are protected from the web access.
 
 == Changelog ==
 

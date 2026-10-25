@@ -50,6 +50,7 @@ $settings = [
 	'takopic_avif_enable',
 	'takopic_avif_quality',
 	'takopic_display_formats',
+	'takopic_rewrite_rules',
 	'takopic_max_size',
 ];
 foreach ($settings as $setting) {
@@ -79,6 +80,17 @@ $clean_site = function () use ($wpdb, $options, $option_prefixes) {
 	}
 	// Meta of the attachments: settings used, files made, errors, sizes.
 	$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like('_takopic_') . '%'));
+	// The rewrite rules of the delivery, in uploads/.htaccess, go with Takopic.
+	$htaccess = wp_get_upload_dir()['basedir'] . DIRECTORY_SEPARATOR . '.htaccess';
+	if (is_file($htaccess) && is_writable($htaccess)) {
+		// As Delivery::remove_rules(): the block and its markers, the file if it held only them.
+		$cleaned = preg_replace('/\n?# BEGIN Takopic\n.*?# END Takopic\n?/s', "\n", (string)file_get_contents($htaccess), -1, $count);
+		if ($count && trim($cleaned) === '') {
+			unlink($htaccess);
+		} elseif ($count) {
+			file_put_contents($htaccess, ltrim($cleaned, "\n"));
+		}
+	}
 };
 
 if (is_multisite()) {

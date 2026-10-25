@@ -264,3 +264,52 @@
 
 	refresh();
 })();
+
+/**
+ * Test of the delivery: asks the server to request an
+ * optimised image as a browser, and lists the checks.
+ * Their advice comes from the server, as HTML.
+ */
+(function () {
+	var button = document.querySelector('[data-delivery-test]');
+	var settings = window.takopicJob;
+	if (!button || !settings) {
+		return;
+	}
+	var result = document.querySelector('.takopic-test__result');
+	var sample = result.querySelector('.takopic-test__sample');
+	var list = result.querySelector('.takopic-checks');
+
+	button.addEventListener('click', function () {
+		button.disabled = true;
+		button.textContent = 'Testing…';
+		var body = new URLSearchParams({action: 'takopic_delivery_test', _ajax_nonce: settings.nonce});
+		fetch(settings.ajaxurl, {method: 'POST', credentials: 'same-origin', body: body})
+			.then(function (response) {
+				return response.json();
+			})
+			.then(function (response) {
+				list.textContent = '';
+				result.hidden = false;
+				if (!response.success) {
+					sample.textContent = response.data && response.data.message ? response.data.message : 'The test failed.';
+					return;
+				}
+				sample.textContent = 'Tested on ' + response.data.sample + '.';
+				response.data.checks.forEach(function (check) {
+					var item = document.createElement('li');
+					item.className = 'takopic-checks__item takopic-checks__item--' + check.state;
+					item.innerHTML = '<span class="takopic-checks__icon dashicons" aria-hidden="true"></span>'
+						+ '<span class="takopic-checks__label"></span><span class="takopic-checks__detail"></span><span class="takopic-checks__advice"></span>';
+					item.querySelector('.takopic-checks__label').textContent = check.label;
+					item.querySelector('.takopic-checks__detail').textContent = check.detail;
+					item.querySelector('.takopic-checks__advice').innerHTML = check.advice;
+					list.appendChild(item);
+				});
+			})
+			.finally(function () {
+				button.disabled = false;
+				button.textContent = 'Run the test again';
+			});
+	});
+})();

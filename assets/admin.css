@@ -20,8 +20,9 @@
  * 10. Background job and its result
  * 11. Fields and toggles
  * 12. Install instructions, code
- * 13. WordPress components
- * 14. Small screens
+ * 13. Delivery: rules and test
+ * 14. WordPress components
+ * 15. Small screens
  *
  * @author Clément Gayot
  * @author Ainsley Clark (Squidge, original author)
@@ -985,7 +986,103 @@
 	color: inherit;
 }
 
-/* 13. WordPress components
+/* 13. Delivery: rules and test
+   ========================================================================== */
+
+.takopic-rules {
+	margin-top: var(--takopic-space-2);
+	padding-top: var(--takopic-space-4);
+	border-top: 1px solid var(--takopic-border);
+}
+
+.takopic-rules__summary {
+	color: var(--takopic-violet-dark);
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.takopic-rules__title {
+	margin: var(--takopic-space-4) 0 var(--takopic-space-2);
+	color: var(--takopic-text-soft);
+	font-weight: 600;
+}
+
+.takopic-page .takopic-test__button {
+	flex: none;
+	align-self: center;
+}
+
+.takopic-test__result {
+	padding: var(--takopic-space-4) var(--takopic-space-5) var(--takopic-space-5);
+}
+
+.takopic-test__sample {
+	margin: 0 0 var(--takopic-space-3);
+	color: var(--takopic-muted);
+}
+
+.takopic-checks {
+	margin: 0;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius-small);
+}
+
+.takopic-checks__item {
+	display: grid;
+	grid-template-columns: 24px 1fr;
+	gap: 2px var(--takopic-space-3);
+	margin: 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+}
+
+.takopic-checks__item + .takopic-checks__item {
+	border-top: 1px solid var(--takopic-border);
+}
+
+.takopic-checks__icon {
+	grid-row: span 3;
+	font-size: 20px;
+	color: var(--takopic-on);
+}
+
+.takopic-checks__icon::before {
+	content: "\f12a"; /* Dashicon yes-alt. */
+}
+
+.takopic-checks__item--fail .takopic-checks__icon {
+	color: var(--takopic-off);
+}
+
+.takopic-checks__item--fail .takopic-checks__icon::before {
+	content: "\f153"; /* Dashicon dismiss. */
+}
+
+.takopic-checks__item--info .takopic-checks__icon {
+	color: var(--takopic-neutral);
+}
+
+.takopic-checks__item--info .takopic-checks__icon::before {
+	content: "\f14c"; /* Dashicon info-outline. */
+}
+
+.takopic-checks__label {
+	font-weight: 600;
+}
+
+.takopic-checks__detail {
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-checks__advice {
+	color: var(--takopic-text-soft);
+}
+
+.takopic-checks__advice:empty {
+	display: none;
+}
+
+/* 14. WordPress components
    ========================================================================== */
 
 /* The buttons keep their WordPress classes, in the colours of the logo. */
@@ -1033,7 +1130,7 @@
 	opacity: .55;
 }
 
-/* 14. Small screens
+/* 15. Small screens
    ========================================================================== */
 
 @media (max-width: 782px) {
