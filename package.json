@@ -2,7 +2,7 @@
   "name": "takopic",
   "version": "0.1.4",
   "main": "index.js",
-  "author": "Ainsley Clark",
+  "author": "Clément Gayot",
   "scripts": {
     "release": "release-it",
     "release:dry": "release-it --dry-run",
