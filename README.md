@@ -1,5 +1,5 @@
 <p align="left">
-    <img alt="logo" src="assets/icon.svg" width="40%">
+    <img alt="Takopic – Local Image Optimizer | Convert WebP & AVIF" src="assets/icon-256x256.png" width="200">
 </p>
 
 # Takopic – Local Image Optimizer | Convert WebP & AVIF
