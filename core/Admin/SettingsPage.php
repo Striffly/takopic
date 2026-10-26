@@ -314,21 +314,34 @@ class SettingsPage
 							</a>
 						</span>
 					</p>
-					<p class="takopic-savings__disk">
-						<?php
-						$this->printf_html(
-							/* translators: 1: the size of the originals, 2: the size of the WebP and AVIF files. */
-							__('Disk used by Takopic: originals %1$s, WebP and AVIF %2$s', 'takopic'),
-							'<span data-savings="originals">' . esc_html($savings['originals']) . '</span>',
-							'<span data-savings="formats">' . esc_html($savings['formats']) . '</span>'
-						);
-						?>
+					<p class="takopic-disk">
+						<span class="takopic-disk__label">
+							<span class="dashicons dashicons-database" aria-hidden="true"></span>
+							<?php esc_html_e('On the disk', 'takopic'); ?>
+						</span>
+						<span class="takopic-disk__item">
+							<?php
+							/* translators: %s: the size of the original images, e.g. 4.2 MB. */
+							$this->printf_html(__('%s of originals kept', 'takopic'), '<strong data-savings="originals">' . esc_html($savings['originals']) . '</strong>');
+							?>
+						</span>
+						<span class="takopic-disk__item">
+							<?php
+							/* translators: %s: the size of the WebP and AVIF files, e.g. 916.6 KB. */
+							$this->printf_html(__('%s of WebP and AVIF', 'takopic'), '<strong data-savings="formats">' . esc_html($savings['formats']) . '</strong>');
+							?>
+						</span>
 					</p>
 				</div>
 				<div class="takopic-savings__empty"<?php echo $savings['images'] ? ' hidden' : ''; ?>>
 					<p class="takopic-savings__value"><?php esc_html_e('Ready to squeeze', 'takopic'); ?></p>
 					<p class="takopic-savings__detail"><?php esc_html_e('Takopic optimises your images on your own server: free, unlimited, and they never leave it.', 'takopic'); ?></p>
 				</div>
+				<?php // Filled while images wait for an optimisation. ?>
+				<a class="takopic-cta<?php echo $counts[Status::TO_OPTIMISE] + $counts[Status::ERROR] + $counts[Status::OUTDATED] ? ' takopic-cta--filled' : ''; ?>" href="#optimise" data-tab="optimise">
+					<?php esc_html_e('Optimise the media library', 'takopic'); ?>
+					<span class="takopic-cta__arrow dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
+				</a>
 			</div>
 			<ul class="takopic-counts">
 				<?php foreach (self::count_labels() as $status => $label) : ?>
@@ -338,13 +351,6 @@ class SettingsPage
 					</li>
 				<?php endforeach; ?>
 			</ul>
-			<p class="takopic-card__footer">
-				<?php
-				/* translators: %s: the number of images. */
-				echo esc_html(sprintf(_n('%s JPG or PNG image in the media library.', '%s JPG and PNG images in the media library.', $counts['total'], 'takopic'), number_format_i18n($counts['total'])));
-				?>
-				<a href="#optimise" data-tab="optimise"><?php esc_html_e('Optimise the media library', 'takopic'); ?></a>
-			</p>
 		</div>
 
 		<h2 class="takopic-heading"><?php esc_html_e('Formats', 'takopic'); ?></h2>

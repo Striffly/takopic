@@ -367,8 +367,14 @@
 	overflow: hidden;
 }
 
+/* The bytes saved, the button to optimise on their right, centred. */
 .takopic-savings {
 	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--takopic-space-4);
 	padding: var(--takopic-space-6);
 	background: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .12) 0%, rgba(123, 47, 247, .08) 35%, transparent 70%);
 }
@@ -406,9 +412,194 @@
 	text-decoration: none;
 }
 
-.takopic-savings__disk {
-	margin: var(--takopic-space-4) 0 0;
+/* The button to optimise, in the colours of the logo: filled with the
+   gradient while images wait, its text in the gradient once all are done. */
+.takopic-page .takopic-cta {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	padding: 10px 18px 10px 22px;
+	border: 1px solid rgba(123, 47, 247, .25);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, .75);
+	color: var(--takopic-violet-dark);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-body);
+	font-weight: 600;
+	word-spacing: .12em;
+	text-decoration: none;
+	box-shadow: var(--takopic-shadow);
+	transition: box-shadow var(--takopic-transition), transform var(--takopic-transition), background-color var(--takopic-transition);
+}
+
+.takopic-page .takopic-cta:hover,
+.takopic-page .takopic-cta:focus {
+	background: #fff;
+	color: var(--takopic-violet-dark);
+	box-shadow: var(--takopic-shadow-hover);
+	transform: translateY(-1px);
+}
+
+.takopic-page .takopic-cta:focus-visible {
+	outline: 2px solid var(--takopic-violet);
+	outline-offset: 2px;
+}
+
+.takopic-page .takopic-cta__arrow {
+	width: 18px;
+	height: 18px;
+	font-size: 18px;
+	transition: transform var(--takopic-transition);
+}
+
+.takopic-page .takopic-cta:hover .takopic-cta__arrow {
+	transform: translateX(3px);
+}
+
+/* No border: the gradient would repeat under it, a seam on the edges. */
+.takopic-page .takopic-cta--filled,
+.takopic-page .takopic-cta--filled:hover,
+.takopic-page .takopic-cta--filled:focus {
+	padding: 11px 19px 11px 23px;
+	border: 0;
+	background: var(--takopic-gradient);
+	color: #fff;
+}
+
+.takopic-page .takopic-cta--filled {
+	position: relative;
+	isolation: isolate;
+	box-shadow: 0 2px 8px rgba(255, 60, 172, .25);
+}
+
+/* Images wait: an echo of the button grows from behind it, its edges
+   showing gradually, and spreads blurring until it fades. Not while it is
+   hovered. */
+.takopic-page .takopic-cta--filled::before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	inset: 0;
+	border-radius: inherit;
+	background: var(--takopic-gradient);
+	opacity: 0;
+	animation: takopic-cta-pulse 2.4s cubic-bezier(.25, .6, .4, 1) infinite, takopic-cta-fade 2.4s linear infinite;
+	pointer-events: none;
+}
+
+/* Two tracks of the same length: the echo grows in one gliding move, its
+   opacity rises and falls in a smooth bell, so the pulse has no seam. */
+@keyframes takopic-cta-pulse {
+	from {
+		filter: blur(2px);
+		transform: scale(.9, .7);
+	}
+
+	to {
+		filter: blur(10px);
+		transform: translateY(2px) scale(1.12, 1.45);
+	}
+}
+
+@keyframes takopic-cta-fade {
+	0% {
+		opacity: 0;
+	}
+
+	10% {
+		opacity: .3;
+	}
+
+	20% {
+		opacity: .55;
+	}
+
+	30% {
+		opacity: .65;
+	}
+
+	45% {
+		opacity: .55;
+	}
+
+	60% {
+		opacity: .38;
+	}
+
+	75% {
+		opacity: .2;
+	}
+
+	90% {
+		opacity: .06;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+.takopic-page .takopic-cta--filled:hover,
+.takopic-page .takopic-cta--filled:focus {
+	box-shadow: var(--takopic-glow);
+}
+
+.takopic-page .takopic-cta--filled:hover::before,
+.takopic-page .takopic-cta--filled:focus::before {
+	animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.takopic-page .takopic-cta,
+	.takopic-page .takopic-cta__arrow {
+		transition: none;
+	}
+
+	.takopic-page .takopic-cta--filled::before {
+		animation: none;
+	}
+
+	.takopic-page .takopic-cta:hover,
+	.takopic-page .takopic-cta:hover .takopic-cta__arrow {
+		transform: none;
+	}
+}
+
+/* The disk used by Takopic: two pills, after a quiet label. */
+.takopic-disk {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	margin: var(--takopic-space-5) 0 0;
 	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-disk__label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-1);
+	margin-right: var(--takopic-space-1);
+}
+
+.takopic-disk__label .dashicons {
+	width: 16px;
+	height: 16px;
+	font-size: 16px;
+}
+
+.takopic-disk__item {
+	padding: 3px var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, .7);
+	color: var(--takopic-text-soft);
+}
+
+.takopic-disk__item strong {
+	color: var(--takopic-night);
 }
 
 .takopic-counts {

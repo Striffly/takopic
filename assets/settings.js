@@ -237,6 +237,11 @@
 		});
 		updateButtons();
 		showDone(counts.total > 0 && counts.optimised === counts.total);
+		// The button of the overview, filled while images wait for an optimisation.
+		var cta = document.querySelector('.takopic-cta');
+		if (cta) {
+			cta.classList.toggle('takopic-cta--filled', counts['new'] + counts.outdated > 0);
+		}
 	}
 
 	// All the images optimised: the message, with confetti the first time it
