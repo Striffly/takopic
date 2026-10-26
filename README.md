@@ -154,8 +154,7 @@ avifenc -q {quality} --speed 6 --ignore-exif --ignore-xmp photo.jpg photo.jpg.av
 ```
 
 `avifenc` older than 1.0 gets the quality as `cq-level` instead of `-q`. `oxipng` runs instead of `optipng` when
-installed, after `pngquant` when the PNG compression is lossy (it then compresses `tmp.png`). The PNG level is 2 and
-the `pngquant` quality 80, set by the `takopic_png_level` and `takopic_pngquant_quality` filters. In background jobs, `cwebp`
+installed, after `pngquant` when the PNG compression is lossy (it then compresses `tmp.png`). In background jobs, `cwebp`
 runs without `-mt`, `avifenc` with `--jobs 2` and `oxipng` with `--threads 2`. A PNG is also encoded with `cwebp -near_lossless 60`, kept if lighter: graphics
 and screenshots get much lighter and sharper, photos are left lossy.
 
@@ -250,8 +249,6 @@ nothing is encoded again.
 | `takopic_job_seconds_between_batches` | `0`                                            | A pause after each image of a background job, seconds. |
 | `takopic_job_default_time_limit`      | `20`                                           | The duration of a batch of a background job, seconds.  |
 | `takopic_binary_path`                 | Found in the `PATH`, then `/usr/bin`...        | The path of a library, or `false` to turn it off.      |
-| `takopic_png_level`                   | `2`                                            | The level of `oxipng` or `optipng`, `0` to `7`.        |
-| `takopic_pngquant_quality`            | `80`                                           | The quality `pngquant` aims at, `0` to `100`.          |
 
 `takopic_nice`, `takopic_avif_jobs`, `takopic_webp_mt` and `takopic_oxipng_threads` receive the context as second argument: `upload`,
 `background` or `cli`. On multisite, the two job filters carry the ID of the site: `takopic_2_job_default_time_limit` on
