@@ -37,7 +37,7 @@ use Takopic\Services\AVIF;
  * their WebP and AVIF files or restores their
  * originals.
  */
-class TAKOPIC_CLI extends WP_CLI_Command
+class Takopic_CLI extends WP_CLI_Command
 {
 
 	/**
@@ -373,4 +373,4 @@ class TAKOPIC_CLI extends WP_CLI_Command
 /**
  * Add the main Takopic command to the WP CLI.
  */
-WP_CLI::add_command('takopic', 'TAKOPIC_CLI');
+WP_CLI::add_command('takopic', 'Takopic_CLI');

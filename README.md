@@ -215,8 +215,8 @@ Keep the `function_exists()` check: without it, the pages break while Takopic is
 
 ### WP-CLI
 
-| Command          | What it does                                                                         |
-|------------------|--------------------------------------------------------------------------------------|
+| Command              | What it does                                                                         |
+|----------------------|--------------------------------------------------------------------------------------|
 | `wp takopic health`  | Checks that the libraries are installed.                                             |
 | `wp takopic run`     | Optimises the whole media library, with the settings of the settings page.           |
 | `wp takopic clean`   | Removes the WebP and AVIF files. The JPG and PNG files stay compressed.              |
@@ -239,16 +239,16 @@ nothing is encoded again.
 
 ### Filters
 
-| Filter                            | Default                                       | Sets                                                     |
-|-----------------------------------|-----------------------------------------------|----------------------------------------------------------|
-| `takopic_backup_dir`                  | `uploads/takopic-originals`                       | The folder of the original images.                       |
-| `takopic_nice`                        | `19` in background jobs, `0` otherwise        | The priority of the libraries, `0` (normal) to `19`.     |
-| `takopic_avif_jobs`                   | `4` on upload, `2` in background, `all` in CLI | The threads of `avifenc`.                                |
-| `takopic_webp_mt`                     | `false` in background jobs, `true` otherwise  | A second thread for `cwebp` (`-mt`).                     |
-| `takopic_oxipng_threads`              | `4` on upload, `2` in background, `all` in CLI | The threads of `oxipng`.                                 |
-| `takopic_job_seconds_between_batches` | `0`                                           | A pause after each image of a background job, seconds.   |
-| `takopic_job_default_time_limit`      | `20`                                          | The duration of a batch of a background job, seconds.    |
-| `takopic_binary_path`                 | Found in the `PATH`, then `/usr/bin`...       | The path of a library, or `false` to turn it off.        |
+| Filter                                | Default                                        | Sets                                                   |
+|---------------------------------------|------------------------------------------------|--------------------------------------------------------|
+| `takopic_backup_dir`                  | `uploads/takopic-originals`                    | The folder of the original images.                     |
+| `takopic_nice`                        | `19` in background jobs, `0` otherwise         | The priority of the libraries, `0` (normal) to `19`.   |
+| `takopic_avif_jobs`                   | `4` on upload, `2` in background, `all` in CLI | The threads of `avifenc`.                              |
+| `takopic_webp_mt`                     | `false` in background jobs, `true` otherwise   | A second thread for `cwebp` (`-mt`).                   |
+| `takopic_oxipng_threads`              | `4` on upload, `2` in background, `all` in CLI | The threads of `oxipng`.                               |
+| `takopic_job_seconds_between_batches` | `0`                                            | A pause after each image of a background job, seconds. |
+| `takopic_job_default_time_limit`      | `20`                                           | The duration of a batch of a background job, seconds.  |
+| `takopic_binary_path`                 | Found in the `PATH`, then `/usr/bin`...        | The path of a library, or `false` to turn it off.      |
 
 `takopic_nice`, `takopic_avif_jobs`, `takopic_webp_mt` and `takopic_oxipng_threads` receive the context as second argument: `upload`,
 `background` or `cli`. On multisite, the two job filters carry the ID of the site: `takopic_2_job_default_time_limit` on

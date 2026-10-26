@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Takopic
+ * Plugin
  *
- * Main Takopic class.
+ * Main class of Takopic: boots it once.
  *
  * @package     Takopic
  * @author      Clément Gayot
@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-final class Takopic
+final class Plugin
 {
 	/**
 	 * The instance of Takopic.
@@ -41,9 +41,9 @@ final class Takopic
 	public static function boot()
 	{
 		if (self::$instance == null) {
-			$takopic = new Takopic();
-			$takopic->initialize();
-			self::$instance = $takopic;
+			$plugin = new Plugin();
+			$plugin->initialize();
+			self::$instance = $plugin;
 		}
 		return self::$instance;
 	}
