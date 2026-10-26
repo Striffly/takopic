@@ -62,7 +62,7 @@ if (!function_exists('takopic_add_settings_link')) {
 	function takopic_add_settings_link($links)
 	{
 		$links[] = '<a href="' .
-			Takopic\Admin\Fields::page_url() .
+			Takopic\Admin\SettingsPage::page_url() .
 			'">' . __('Settings') . '</a>';
 		return $links;
 	}

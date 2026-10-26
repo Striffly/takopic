@@ -6,7 +6,7 @@
  * The settings of Takopic, in one option: what each one
  * is (type, default, bounds), reading and saving
  * them. The settings page renders them, see
- * Admin\Fields.
+ * Admin\SettingsPage.
  *
  * @package     Takopic
  * @author      Clément Gayot

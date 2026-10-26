@@ -15,7 +15,7 @@
 
 namespace Takopic;
 
-use Takopic\Admin\Fields;
+use Takopic\Admin\SettingsPage;
 use Takopic\Admin\JobsAjax;
 use Takopic\Admin\MediaColumn;
 use Takopic\Admin\Notices;
@@ -72,7 +72,7 @@ final class Plugin
 		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
 		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
 		add_action('init', [Settings::class, 'register']);
-		new Fields();
+		new SettingsPage();
 		new UploadHooks();
 		new Notices();
 		new MediaColumn();
