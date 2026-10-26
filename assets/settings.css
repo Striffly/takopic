@@ -1426,7 +1426,9 @@
 	cursor: pointer;
 }
 
-.takopic-page .takopic-choice__input {
+/* Disabled too: WordPress shows the disabled radio buttons at .7. */
+.takopic-page .takopic-choice__input,
+.takopic-page .takopic-choice__input:disabled {
 	position: absolute;
 	width: 1px;
 	height: 1px;
@@ -1454,6 +1456,29 @@
 
 .takopic-choice__input:focus-visible + .takopic-choice__label {
 	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-violet);
+}
+
+/* A value or a setting nothing can use, e.g. without pngquant: greyed. */
+.takopic-choice__option--disabled,
+.takopic-field--disabled .takopic-choice__option {
+	cursor: not-allowed;
+}
+
+.takopic-choice__option--disabled .takopic-choice__label,
+.takopic-choice__option--disabled:hover .takopic-choice__label {
+	color: var(--takopic-neutral);
+	text-decoration: line-through;
+	text-decoration-color: rgba(140, 143, 148, .6);
+}
+
+.takopic-field--disabled .takopic-field__label,
+.takopic-field--disabled .takopic-field__control,
+.takopic-field--disabled .takopic-field__help {
+	opacity: .5;
+}
+
+.takopic-field--disabled .takopic-field__input {
+	cursor: not-allowed;
 }
 
 /* 12. Settings: format cards
