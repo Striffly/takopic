@@ -13,11 +13,13 @@ Squeezes images. Spills no ink, sends no bill. JPG, PNG, WebP and AVIF optimised
 
 == Description ==
 
+[GitHub](https://github.com/Striffly/takopic) | [Documentation](https://github.com/Striffly/takopic#readme) | [Changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md) | [Support](https://github.com/Striffly/takopic/issues)
+
 Takopic optimises the images of your media library with the libraries of your own server: `jpegoptim`, `optipng` or `oxipng`, `pngquant`, `cwebp` and `avifenc`, or GD and Imagick for the WebP and AVIF formats. Free and unlimited, no API key, no quota: your images never leave your server.
 
 = Optimisation =
 
-* Compresses JPG and PNG images in place, and creates their WebP and AVIF versions next to them (`photo.jpg.webp`, `photo.jpg.avif`), kept only when lighter than the compressed image.
+* Compresses JPG and PNG images in place, and creates their WebP and AVIF versions next to them (`photo.jpg.webp`), kept only when lighter.
 * Keeps the original images: every optimisation starts again from them, and they can be restored at any time.
 * Strips the metadata (camera, date, GPS position) from every optimised file.
 * Handles CMYK JPGs, which the WebP and AVIF encoders cannot read.
@@ -25,27 +27,32 @@ Takopic optimises the images of your media library with the libraries of your ow
 = Media library =
 
 * Optimises the images on upload, scaled down to a maximum size (2560 pixels by default, as WordPress does).
-* Optimises, re-optimises or cleans up the whole library in the background, with a progress bar, pause and cancel. The job goes on when the page is closed.
-* Spots the images optimised with older settings, or before the theme changed its image sizes, and makes their thumbnails again from the originals, scaled to the current maximum size.
-* Shows the status of each image in the media library, and its errors in plain words.
-* Shows the bytes saved, on each image of the media library and on the whole library, with what serving WebP and AVIF would save, and the disk used by the originals and the WebP and AVIF files.
+* Optimises, re-optimises or cleans up the whole library in the background, with a progress bar, pause and cancel, even once the page is closed.
+* Spots the images optimised with older settings, or before the theme changed its image sizes, and makes their thumbnails again from the originals.
+* Shows the status and the bytes saved of each image, with its errors in plain words, and the bytes saved on the whole library.
 
 = On the site =
 
 * Serves AVIF and WebP, with the JPG or PNG as fallback (optional): in a `<picture>` element, or from the server with rewrite rules (written for Apache, given for nginx), which leaves the HTML as it is.
 * Tests the delivery: types sent by the server, rewrite, originals kept private.
-* `takopic_image( $image_id, $class, $lazy )` returns a `<picture>` in your own templates, `takopic_image_sources( $srcset )` only its AVIF and WebP srcsets, keyed by MIME type.
 
 = For developers =
 
-* WP-CLI: `wp takopic run`, `clean`, `restore`, `stats` and `health`. `wp takopic run --regenerate` makes the thumbnails again from the originals first.
-* Filters: `takopic_backup_dir` (folder of the originals), `takopic_nice`, `takopic_avif_jobs`, `takopic_webp_mt` and `takopic_oxipng_threads` (priority and threads of the libraries), `takopic_job_seconds_between_batches` and `takopic_job_default_time_limit` (pace of the background jobs), `takopic_binary_path` (path of a library installed out of the usual folders).
+* `takopic_image( $image_id, $class, $lazy )` returns the `<picture>` of an image in your own templates, `takopic_image_sources( $srcset )` only its AVIF and WebP srcsets.
+* WP-CLI: `wp takopic run`, `clean`, `restore`, `stats` and `health`.
+* Filters for the folder of the originals, the priority and threads of the libraries, the pace of the background jobs and the path of a library.
 
-See the [README on GitHub](https://github.com/Striffly/takopic) for the details.
+All of them are documented in the [README on GitHub](https://github.com/Striffly/takopic#developers).
 
 == Installation ==
 
-The JPG and PNG compression needs a server where PHP can run programs (`proc_open()` or `exec()`), with `jpegoptim` and `optipng` or `oxipng` installed: Linux and macOS have them, Windows has no official build of them (the WebP and AVIF work there with the official `cwebp` and `avifenc`). The WebP and AVIF formats work without their libraries, with GD or Imagick when they support them (AVIF since WordPress 6.5), but `cwebp` and `avifenc` are better. E.g. on Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`. Each format works on its own: a missing library only turns its format off, or hands the WebP or AVIF to GD or Imagick. `oxipng`, faster, replaces `optipng` when installed, and `pngquant` adds an optional lossy compression of the PNG images.
+Takopic needs PHP allowed to run programs (`proc_open()` or `exec()`), and the libraries of the formats you want:
+
+* JPG: `jpegoptim`.
+* PNG: `optipng`, or `oxipng`, faster. `pngquant` adds an optional lossy compression.
+* WebP and AVIF: `cwebp` and `avifenc`, or else GD or Imagick when they support them (AVIF since WordPress 6.5).
+
+E.g. on Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`. Each format works on its own: a missing library only turns its format off. Windows has no official build of `jpegoptim` and `optipng`, the WebP and AVIF work there.
 
 1. Upload the plugin in `Plugins > Add New > Upload Plugin`, and activate it.
 2. Open `Settings > Takopic`: the Overview tab checks the libraries and shows how to install the missing ones.
@@ -83,6 +90,14 @@ Deactivated, Takopic stops its background job and removes its rewrite rules from
 
 Deleted, its settings and data are removed from the database, and the files stay: the compressed images, their WebP and AVIF versions and the originals. To get your original images back, run `Restore original images` before deleting Takopic, which reminds it when it is deactivated.
 
+== Screenshots ==
+
+1. The overview: the bytes saved, the status of the images and the libraries of each format.
+2. The optimisation of the media library in the background, with its progress.
+3. The delivery of WebP and AVIF on the site, and its test.
+4. The settings of each format: quality, compression, library.
+5. The status and the bytes saved of each image, in the media library.
+
 == Privacy ==
 
 Takopic sends nothing out of your server: no API, no tracking, no external request. The delivery test only requests the site itself. The optimised images lose their metadata, the originals keep them and are protected from the web access.
@@ -92,27 +107,14 @@ Takopic sends nothing out of your server: no API, no tracking, no external reque
 = 1.0.0 =
 * Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
 * The original images are kept in `uploads/takopic-originals/`, and every optimisation starts again from them.
-* WebP and AVIF files keep the extension of their source (`image.jpg.webp`), and can be served on the site with `<picture>`.
+* WebP and AVIF files keep the extension of their source (`image.jpg.webp`), and can be served on the site with `<picture>` or rewrite rules.
 * Background optimisation of the media library, with pause and cancel, and re-optimisation when the settings or the thumbnail sizes change.
 * Clean up: remove the WebP and AVIF files, or restore the original images.
 * Status column in the media library and readable error notices.
 * CMYK JPG images, AVIF quality settings, CPU limits adjustable by filters.
 * Requires WordPress 6.0 and PHP 8.2.
 
-= 0.1.4 =
-* Squidge: updated how the compressed images are marked in the post meta.
-
-= 0.1.3 =
-* Squidge: marks the compressed images in the post meta, deployment to WordPress.org.
-
-= 0.1.2 =
-* Squidge: escaped shell arguments, only the supported libraries can be run.
-
-= 0.1.1 =
-* Squidge: settings link on the plugins page, readme fixes.
-
-= 0.1.0 =
-* Squidge, initial release.
+The versions of Squidge, before Takopic, are in the [full changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md).
 
 == Credits ==
 
