@@ -43,6 +43,15 @@ class SettingsPage
 	const PAGE = 'takopic';
 
 	/**
+	 * Where to buy a coffee to the author: PayPal (5 €
+	 * suggested) or Bitcoin.
+	 *
+	 * @var string
+	 */
+	const PAYPAL = 'https://paypal.me/striffly/5EUR';
+	const BITCOIN = 'bc1q3j7gxxykpu9zp3sgxyallw0hq0sr659zl35wre';
+
+	/**
 	 * Registers the options page.
 	 *
 	 * @since 1.0.0
@@ -179,7 +188,43 @@ class SettingsPage
 					<?php $this->render_maintenance($jobs); ?>
 				</section>
 			</form>
+
+			<?php $this->render_support(); ?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * Renders how to buy a coffee to the author, at the
+	 * bottom of every tab: PayPal, or Bitcoin with its
+	 * address and QR code, behind its button (settings.js
+	 * hides them, shown without JS). No notice, nothing
+	 * elsewhere in the admin but a link on the plugins
+	 * page.
+	 *
+	 * @since 1.0.0
+	 */
+	private function render_support()
+	{
+		?>
+		<footer class="takopic-support" id="takopic-support">
+			<p class="takopic-support__links">
+				<span aria-hidden="true">☕</span>
+				<?php
+				/* translators: Followed by the links to PayPal and Bitcoin. */
+				esc_html_e('Buy me a coffee:', 'takopic');
+				?>
+				<a href="<?php echo esc_url(self::PAYPAL); ?>" target="_blank" rel="noopener">PayPal</a>
+				<span aria-hidden="true">&middot;</span>
+				<button type="button" class="button-link takopic-support__toggle" aria-expanded="true" aria-controls="takopic-support-wallet">Bitcoin</button>
+			</p>
+			<div class="takopic-support__wallet" id="takopic-support-wallet">
+				<a class="takopic-support__qr" href="<?php echo esc_url('bitcoin:' . self::BITCOIN, ['bitcoin']); ?>">
+					<img src="<?php echo esc_url(TAKOPIC_URL . 'assets/bitcoin.svg'); ?>" width="104" height="104" alt="<?php esc_attr_e('QR code of the Bitcoin address', 'takopic'); ?>">
+				</a>
+				<code class="takopic-support__address"><?php echo esc_html(self::BITCOIN); ?></code>
+			</div>
+		</footer>
 		<?php
 	}
 

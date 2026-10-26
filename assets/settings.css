@@ -23,8 +23,9 @@
  * 12. Settings: format cards
  * 13. Install instructions, code
  * 14. Delivery: steps, methods, folds and test
- * 15. WordPress components
- * 16. Small screens
+ * 15. Support
+ * 16. WordPress components
+ * 17. Small screens
  *
  * @author Clément Gayot
  * @author Ainsley Clark (Squidge, original author)
@@ -1885,7 +1886,58 @@
 	display: none;
 }
 
-/* 15. WordPress components
+/* 15. Support
+   ========================================================================== */
+
+/* At the bottom right of every tab, quiet: a line of small links under a
+   separator, the Bitcoin address under it once asked for. */
+.takopic-support {
+	margin-top: var(--takopic-space-6);
+	padding-top: var(--takopic-space-3);
+	border-top: 1px solid var(--takopic-border);
+	text-align: right;
+}
+
+.takopic-support__links {
+	margin: 0;
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-support__links a,
+.takopic-page .takopic-support__toggle {
+	color: var(--takopic-violet-dark);
+	font-size: inherit;
+}
+
+.takopic-support__wallet {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	max-width: 100%;
+	margin-top: var(--takopic-space-2);
+	padding: var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+}
+
+.takopic-support__wallet[hidden] {
+	display: none;
+}
+
+.takopic-support__qr img {
+	display: block;
+}
+
+.takopic-support__address {
+	max-width: 100%;
+	font-size: 11px;
+	word-break: break-all;
+}
+
+/* 16. WordPress components
    ========================================================================== */
 
 /* The buttons keep their WordPress classes, in the colours of the logo. */
@@ -1933,7 +1985,7 @@
 	opacity: .55;
 }
 
-/* 16. Small screens
+/* 17. Small screens
    ========================================================================== */
 
 @media (max-width: 782px) {
