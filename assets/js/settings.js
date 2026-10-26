@@ -30,8 +30,10 @@
 
 	const page = document.querySelector('.js-takopic-page');
 	if (page) {
-		// Without JS, the panels show one after another, without tabs.
+		// Without JS, the panels show one after another, without tabs. The page sets it before it paints, after its tabs.
 		page.classList.add('takopic-page--js');
 		new Screen(page, componentList, window.takopicSettings);
+		// What waits for its component shows from now on, e.g. the Bitcoin address.
+		page.classList.add('takopic-page--ready');
 	}
 })();

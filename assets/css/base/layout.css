@@ -48,6 +48,15 @@
 	container-type: inline-size;
 }
 
+/* While the scripts load, only the panel of the tab picked before the page paints (data-tab of the page) shows. */
+.takopic-page[data-tab="overview"] .takopic-panel:not([data-panel="overview"]),
+.takopic-page[data-tab="optimise"] .takopic-panel:not([data-panel="optimise"]),
+.takopic-page[data-tab="delivery"] .takopic-panel:not([data-panel="delivery"]),
+.takopic-page[data-tab="settings"] .takopic-panel:not([data-panel="settings"]),
+.takopic-page[data-tab="maintenance"] .takopic-panel:not([data-panel="maintenance"]) {
+	display: none;
+}
+
 .takopic-heading {
 	margin: var(--takopic-space-6) 0 var(--takopic-space-3);
 	font-family: var(--takopic-font-display);
@@ -360,7 +369,9 @@
 	border-radius: var(--takopic-radius);
 	background: var(--takopic-surface);
 
-	&[hidden] {
+	/* With JS, it waits behind its button (Wallet.js), rather than show while the scripts load. */
+	&[hidden],
+	.takopic-page--js:not(.takopic-page--ready) & {
 		display: none;
 	}
 }
