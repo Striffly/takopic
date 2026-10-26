@@ -787,7 +787,7 @@ class SettingsPage
 			</header>
 			<?php if ($jobs) : ?>
 				<div class="takopic-confirm">
-					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="remove_formats"> <?php esc_html_e('I understand the WebP and AVIF files are deleted, until the images are optimised again.', 'takopic'); ?></label>
+					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="remove_formats"> <?php esc_html_e('I understand the WebP and AVIF files will be deleted, until the images are optimised again.', 'takopic'); ?></label>
 					<button type="button" class="button takopic-confirm__button" data-job="remove_formats"><?php esc_html_e('Remove WebP and AVIF', 'takopic'); ?></button>
 				</div>
 			<?php else : ?>
@@ -805,7 +805,7 @@ class SettingsPage
 			</header>
 			<?php if ($jobs) : ?>
 				<div class="takopic-confirm">
-					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="restore"> <?php esc_html_e('I understand the images are no longer optimised, and their WebP and AVIF files are deleted.', 'takopic'); ?></label>
+					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="restore"> <?php esc_html_e('I understand the images will no longer be optimised, and their WebP and AVIF files will be deleted.', 'takopic'); ?></label>
 					<button type="button" class="button takopic-confirm__button takopic-button--danger" data-job="restore"><?php esc_html_e('Restore original images', 'takopic'); ?></button>
 				</div>
 			<?php else : ?>
