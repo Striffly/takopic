@@ -324,14 +324,13 @@
 		background: var(--takopic-warning-bg);
 	}
 
+	/* Cancelled on purpose: told in the colour of Takopic, not as a warning, and seen on the grey of the admin. */
 	[data-result="cancelled"] & {
-		--takopic-result-colour: var(--takopic-neutral);
+		--takopic-result-colour: var(--takopic-violet);
 		--takopic-result-icon: "\f14c"; /* Dashicon info-outline. */
-		background: var(--takopic-neutral-bg);
-
-		& .takopic-result__icon {
-			color: var(--takopic-muted);
-		}
+		border-color: var(--takopic-violet-line);
+		border-left-color: var(--takopic-result-colour);
+		background: var(--takopic-violet-soft);
 	}
 }
 
