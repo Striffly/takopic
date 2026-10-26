@@ -21,7 +21,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-// The version of Takopic, set by npm run release with the header above.
+// The version of Takopic, set by bun run release with the header above.
 define('TAKOPIC_VERSION', '0.1.4');
 define('TAKOPIC_FILE', __FILE__);
 

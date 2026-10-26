@@ -30,7 +30,7 @@
   "scripts": {
     "release": "release-it",
     "release:dry": "release-it --dry-run",
-    "release:zip": "composer install --no-interaction && npm run check-licenses && npm run plugin-zip",
+    "release:zip": "composer install --no-interaction && bun run check-licenses && bun run plugin-zip",
     "check-licenses": "wp-scripts check-licenses --prod",
     "plugin-zip": "wp-scripts plugin-zip && zip -dq takopic.zip takopic/README.md takopic/package.json"
   },
