@@ -5,7 +5,8 @@
  * component (takopic-header, takopic-card, takopic-job...), its
  * elements (takopic-card__title) and modifiers
  * (takopic-card--danger). Every colour, size and shadow
- * comes from the tokens below.
+ * comes from the tokens below. Only what can be clicked
+ * (buttons, links, tabs, folds) reacts on hover.
  *
  * Sections:
  * 1. Tokens
@@ -15,14 +16,15 @@
  * 5. Tabs
  * 6. Cards
  * 7. Overview: savings, counts, formats
- * 8. Badges, dots, engines
- * 9. Actions and confirmations
+ * 8. Badges, dots, chips, engines
+ * 9. Actions (the jobs) and confirmations
  * 10. Background job and its result
  * 11. Fields and toggles
- * 12. Install instructions, code
- * 13. Delivery: rules and test
- * 14. WordPress components
- * 15. Small screens
+ * 12. Settings: format cards
+ * 13. Install instructions, code
+ * 14. Delivery: steps, methods, folds and test
+ * 15. WordPress components
+ * 16. Small screens
  *
  * @author Clément Gayot
  * @author Ainsley Clark (Squidge, original author)
@@ -120,7 +122,7 @@
    ========================================================================== */
 
 .takopic-page {
-	max-width: 1040px;
+	max-width: 1160px;
 	color: var(--takopic-text);
 }
 
@@ -297,10 +299,6 @@
 	font-size: 20px;
 	line-height: 36px;
 	text-align: center;
-}
-
-.takopic-card__header > .takopic-dot {
-	margin-top: 9px;
 }
 
 .takopic-page .takopic-card__title {
@@ -510,7 +508,7 @@
 	font-weight: 600;
 }
 
-/* 8. Badges, dots, engines
+/* 8. Badges, dots, chips, engines
    ========================================================================== */
 
 .takopic-badge {
@@ -567,17 +565,55 @@
 	box-shadow: 0 0 0 3px var(--takopic-off-bg);
 }
 
+/* A format and its state, linking to its settings. */
+.takopic-page .takopic-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	padding: 5px var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: 999px;
+	background: var(--takopic-surface);
+	color: var(--takopic-text);
+	text-decoration: none;
+	transition: border-color var(--takopic-transition), box-shadow var(--takopic-transition);
+}
+
+.takopic-page .takopic-chip:hover,
+.takopic-page .takopic-chip:focus {
+	border-color: rgba(123, 47, 247, .4);
+	box-shadow: var(--takopic-shadow-hover);
+	color: var(--takopic-text);
+}
+
+.takopic-chip .takopic-dot {
+	width: 8px;
+	height: 8px;
+}
+
+.takopic-chip__name {
+	font-weight: 600;
+}
+
+.takopic-chip__state {
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+/* The name of the library, its state and version share the body font, on one baseline. */
 .takopic-engine {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--takopic-space-2);
+	align-items: baseline;
+	gap: var(--takopic-space-1) var(--takopic-space-2);
 	color: var(--takopic-text-soft);
 	font-size: var(--takopic-size-small);
+	line-height: 20px;
 }
 
 .takopic-engine::before {
 	content: "\f147"; /* Dashicon yes. */
+	align-self: center;
 	font-family: dashicons;
 	font-size: 16px;
 	line-height: 1;
@@ -589,10 +625,9 @@
 	color: var(--takopic-off);
 }
 
-.takopic-page .takopic-engine__name {
-	padding: 0;
-	background: none;
+.takopic-engine__name {
 	color: var(--takopic-text);
+	font-size: var(--takopic-size-body);
 	font-weight: 600;
 }
 
@@ -602,36 +637,94 @@
 	border-radius: 999px;
 	background: var(--takopic-surface-soft);
 	color: var(--takopic-muted);
+	font-variant-numeric: tabular-nums;
+	line-height: 18px;
 }
 
-/* 9. Actions and confirmations
+/* 9. Actions (the jobs) and confirmations
    ========================================================================== */
 
+/* The jobs of the Optimise tab: one card each, its count first. */
 .takopic-actions {
-	padding: var(--takopic-space-3) var(--takopic-space-5) var(--takopic-space-5);
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+	gap: var(--takopic-space-3);
+	padding: var(--takopic-space-4) var(--takopic-space-5) var(--takopic-space-5);
 }
 
 .takopic-action {
-	display: grid;
-	grid-template-columns: 230px 1fr;
-	align-items: center;
-	gap: var(--takopic-space-4);
-	padding: var(--takopic-space-3) 0;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	padding: var(--takopic-space-5) var(--takopic-space-4) var(--takopic-space-4);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface-soft);
 }
 
-.takopic-action + .takopic-action {
-	border-top: 1px solid var(--takopic-border);
+/* The everyday job: on a light glow, under the gradient of the logo. */
+.takopic-action--primary {
+	border-color: rgba(123, 47, 247, .35);
+	background: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .1) 0%, rgba(123, 47, 247, .08) 45%, var(--takopic-surface) 80%);
+}
+
+.takopic-action--primary::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 3px;
+	background: var(--takopic-gradient);
+}
+
+/* Decorative: a faint glyph in the corner, nothing like a button. */
+.takopic-action__icon {
+	position: absolute;
+	top: var(--takopic-space-4);
+	right: var(--takopic-space-4);
+	width: 44px;
+	height: 44px;
+	color: var(--takopic-violet);
+	font-size: 44px;
+	opacity: .14;
+	pointer-events: none;
+}
+
+.takopic-action--primary .takopic-action__icon {
+	color: var(--takopic-pink);
+	opacity: .22;
+}
+
+.takopic-page .takopic-action__title {
+	margin: 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+}
+
+.takopic-action__count {
+	margin: var(--takopic-space-1) 0 var(--takopic-space-2);
+	color: var(--takopic-night);
+	font-family: var(--takopic-font-display);
+	font-size: 28px;
+	font-weight: 600;
+	line-height: 1.2;
+	font-variant-numeric: tabular-nums;
+}
+
+.takopic-action__text {
+	flex: 1;
+	margin: 0 0 var(--takopic-space-4);
+	color: var(--takopic-muted);
 }
 
 .takopic-page .takopic-action__button {
 	justify-content: center;
 	width: 100%;
+	min-height: 36px;
 	text-align: center;
-}
-
-.takopic-action__text {
-	margin: 0;
-	color: var(--takopic-text-soft);
 }
 
 .takopic-confirm {
@@ -655,8 +748,49 @@
 	color: var(--takopic-text-soft);
 }
 
-.takopic-page .takopic-confirm__input {
-	margin-top: 2px;
+/* A box of its own, the same on every screen: WordPress makes its
+   checkboxes bigger under 782px. Centred on the first line of the label,
+   whose lines are 20px high. */
+.takopic-page input.takopic-confirm__input {
+	flex: none;
+	align-self: flex-start;
+	width: 18px;
+	height: 18px;
+	min-width: 0;
+	/* (20px line of the label - 18px) / 2. */
+	margin: 1px 0 0;
+	padding: 0;
+	border: 1.5px solid var(--takopic-muted);
+	border-radius: 5px;
+	background: var(--takopic-surface) center / 12px no-repeat;
+	box-shadow: none;
+	cursor: pointer;
+	appearance: none;
+	transition: background-color 0.15s, border-color 0.15s;
+}
+
+.takopic-page input.takopic-confirm__input:hover {
+	border-color: var(--takopic-violet);
+}
+
+.takopic-page input.takopic-confirm__input:checked {
+	border-color: var(--takopic-violet);
+	background-color: var(--takopic-violet);
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.5-5' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.takopic-page input.takopic-confirm__input::before {
+	content: none;
+}
+
+.takopic-page input.takopic-confirm__input:focus-visible {
+	outline: 2px solid var(--takopic-violet);
+	outline-offset: 2px;
+}
+
+.takopic-confirm__label {
+	line-height: 20px;
+	cursor: pointer;
 }
 
 /* 10. Background job and its result
@@ -677,10 +811,12 @@
 }
 
 .takopic-job__progress {
+	position: relative;
+	overflow: hidden;
 	padding: var(--takopic-space-4) var(--takopic-space-5);
-	border: 1px solid var(--takopic-border);
+	border: 1px solid rgba(123, 47, 247, .35);
 	border-radius: var(--takopic-radius);
-	background: var(--takopic-surface);
+	background: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .1) 0%, rgba(123, 47, 247, .06) 40%, var(--takopic-surface) 75%);
 	box-shadow: var(--takopic-shadow);
 }
 
@@ -688,15 +824,57 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	justify-content: space-between;
 	gap: var(--takopic-space-3);
 	margin-bottom: var(--takopic-space-3);
 }
 
+.takopic-job__icon {
+	flex: none;
+	width: 32px;
+	height: 32px;
+	border-radius: 50%;
+	background: var(--takopic-gradient);
+	color: #fff;
+	font-size: 18px;
+	line-height: 32px;
+	text-align: center;
+}
+
+.takopic-job[data-state="running"] .takopic-job__icon::before {
+	display: inline-block;
+	animation: takopic-spin 1.6s linear infinite;
+}
+
+.takopic-job[data-state="paused"] .takopic-job__icon {
+	background: var(--takopic-neutral);
+}
+
 .takopic-job__label {
+	flex: 1;
+	min-width: 0;
 	margin: 0;
 	font-size: var(--takopic-size-lead);
 	font-weight: 600;
+}
+
+.takopic-job__percent {
+	color: var(--takopic-violet-dark);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-heading);
+	font-weight: 600;
+	font-variant-numeric: tabular-nums;
+}
+
+@keyframes takopic-spin {
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.takopic-job[data-state="running"] .takopic-job__icon::before {
+		animation: none;
+	}
 }
 
 .takopic-job__controls {
@@ -825,8 +1003,19 @@
 /* 11. Fields and toggles
    ========================================================================== */
 
+/* One layout for every field: its label on the left, its control on the
+   right (a switch for a checkbox), its note below. The label is not a
+   <label>: hovering it would hover the control. Only the control reacts. */
 .takopic-field {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	align-items: center;
+	column-gap: var(--takopic-space-4);
 	padding: var(--takopic-space-4) 0;
+}
+
+.takopic-field[hidden] {
+	display: none;
 }
 
 .takopic-field + .takopic-field {
@@ -834,8 +1023,6 @@
 }
 
 .takopic-field__label {
-	display: block;
-	margin-bottom: var(--takopic-space-2);
 	font-weight: 600;
 }
 
@@ -846,7 +1033,8 @@
 }
 
 .takopic-page .takopic-field__input {
-	min-width: 96px;
+	width: 96px;
+	min-width: 0;
 	border-color: var(--takopic-border);
 	border-radius: var(--takopic-radius-small);
 }
@@ -861,19 +1049,83 @@
 }
 
 .takopic-field__help {
-	margin: var(--takopic-space-2) 0 0;
+	grid-column: 1 / -1;
+	margin: var(--takopic-space-1) 0 0;
 	max-width: 680px;
 	color: var(--takopic-muted);
 }
 
-.takopic-field--toggle .takopic-field__help {
-	padding-left: 52px;
+/* Fields in a settings card: closer, without rules between them. */
+.takopic-fields .takopic-field {
+	padding: var(--takopic-space-3) 0;
 }
 
+.takopic-fields .takopic-field + .takopic-field {
+	border-top: 0;
+}
+
+/* A sub-option, under its checkbox. */
+.takopic-field--sub {
+	margin-left: var(--takopic-space-1);
+	padding-left: var(--takopic-space-4);
+	border-left: 2px solid var(--takopic-violet-soft);
+}
+
+.takopic-fields .takopic-field--sub {
+	padding: var(--takopic-space-2) 0 var(--takopic-space-2) var(--takopic-space-4);
+}
+
+.takopic-field--sub .takopic-field__label {
+	font-weight: 400;
+}
+
+/* The "?" opening the full help of a field, under its short note. */
+.takopic-page:not(.takopic-page--js) .takopic-help__toggle {
+	display: none;
+}
+
+.takopic-help__toggle {
+	width: 18px;
+	height: 18px;
+	margin-left: 2px;
+	padding: 0;
+	border: 1px solid var(--takopic-violet);
+	border-radius: 50%;
+	background: var(--takopic-surface);
+	color: var(--takopic-violet-dark);
+	font-size: 11px;
+	font-weight: 700;
+	line-height: 16px;
+	text-align: center;
+	vertical-align: 1px;
+	cursor: pointer;
+	transition: background-color var(--takopic-transition), color var(--takopic-transition);
+}
+
+.takopic-help__toggle:hover,
+.takopic-help__toggle:focus-visible {
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-help__toggle:focus-visible {
+	outline: 2px solid var(--takopic-violet);
+	outline-offset: 1px;
+}
+
+.takopic-help__toggle[aria-expanded="true"] {
+	background: var(--takopic-violet);
+	color: #fff;
+}
+
+.takopic-help__text {
+	padding-top: var(--takopic-space-2);
+	border-top: 1px dashed var(--takopic-border);
+}
+
+/* The switch: only its track is clickable. */
 .takopic-toggle {
 	display: inline-flex;
 	align-items: center;
-	gap: var(--takopic-space-3);
 	cursor: pointer;
 }
 
@@ -920,15 +1172,132 @@
 	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-violet);
 }
 
-.takopic-toggle__label {
-	font-weight: 600;
+/* 12. Settings: format cards
+   ========================================================================== */
+
+/* Two per row on wide screens, one on small ones: each shows the same
+   header, its settings folded below. A card opened leaves the other as is. */
+.takopic-formats {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+	align-items: start;
+	gap: var(--takopic-space-4);
 }
 
-/* 12. Install instructions, code
+.takopic-format {
+	display: flex;
+	flex-direction: column;
+	/* Clear of the admin bar when a card of the overview links here. */
+	scroll-margin-top: 48px;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+}
+
+.takopic-format--off {
+	border-color: #f2c8c9;
+}
+
+.takopic-format__header {
+	padding: var(--takopic-space-5) var(--takopic-space-5) var(--takopic-space-3);
+}
+
+.takopic-format__top {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-3);
+	margin-bottom: var(--takopic-space-3);
+}
+
+.takopic-page .takopic-format__title {
+	margin: 0;
+	padding: 0;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-heading);
+	font-weight: 600;
+	line-height: 1.3;
+}
+
+.takopic-format__top .takopic-toggle--switch {
+	margin-left: auto;
+}
+
+/* The library and the optional ones on one line, as long as it fits. */
+.takopic-format__engines {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--takopic-space-1) var(--takopic-space-5);
+}
+
+.takopic-format__engines .takopic-engine__version {
+	margin-left: 0;
+}
+
+.takopic-format__description {
+	margin: 0;
+	padding: 0 var(--takopic-space-5) var(--takopic-space-4);
+	color: var(--takopic-text-soft);
+}
+
+.takopic-format > .takopic-install {
+	margin: 0 var(--takopic-space-5) var(--takopic-space-4);
+}
+
+.takopic-format__settings {
+	border-top: 1px solid var(--takopic-border);
+}
+
+.takopic-format__summary {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	padding: var(--takopic-space-3) var(--takopic-space-5);
+	color: var(--takopic-violet-dark);
+	font-weight: 600;
+	list-style: none;
+	cursor: pointer;
+}
+
+.takopic-format__summary::-webkit-details-marker {
+	display: none;
+}
+
+.takopic-format__summary::before {
+	content: "\f345"; /* Dashicon arrow-right-alt2. */
+	font-family: dashicons;
+	font-size: 16px;
+	line-height: 1;
+	transition: transform var(--takopic-transition);
+}
+
+.takopic-format__settings[open] > .takopic-format__summary::before {
+	transform: rotate(90deg);
+}
+
+.takopic-format__summary:hover {
+	color: var(--takopic-violet);
+}
+
+.takopic-format__fields {
+	padding: 0 var(--takopic-space-5) var(--takopic-space-4);
+}
+
+.takopic-format__fields .takopic-install {
+	margin: var(--takopic-space-2) 0 0;
+}
+
+/* A format switched off: its settings fade until it is switched on again. */
+.takopic-format:has(.takopic-toggle--switch .takopic-toggle__input:not(:checked)) .takopic-format__fields {
+	opacity: .5;
+	transition: opacity var(--takopic-transition);
+}
+
+/* 13. Install instructions, code
    ========================================================================== */
 
 .takopic-install {
-	margin: var(--takopic-space-4) var(--takopic-space-5) 0;
+	margin: 0 var(--takopic-space-5) var(--takopic-space-5);
 	padding: var(--takopic-space-3) var(--takopic-space-4);
 	border: 1px solid #f2c8c9;
 	border-radius: var(--takopic-radius-small);
@@ -986,41 +1355,328 @@
 	color: inherit;
 }
 
-/* 13. Delivery: rules and test
+/* 14. Delivery: steps, methods, folds and test
    ========================================================================== */
 
-.takopic-rules {
-	margin-top: var(--takopic-space-2);
-	padding-top: var(--takopic-space-4);
-	border-top: 1px solid var(--takopic-border);
+/* Numbered steps, an arrow from one to the next: stacked, the arrows point
+   down; side by side when the panel is wide enough, they point right. */
+.takopic-panel {
+	container-type: inline-size;
 }
 
-.takopic-rules__summary {
-	color: var(--takopic-violet-dark);
+.takopic-steps {
+	--takopic-steps-gap: 44px;
+	display: grid;
+	gap: var(--takopic-steps-gap);
+	margin: 0 0 var(--takopic-space-6);
+	padding: 0;
+	list-style: none;
+}
+
+.takopic-step {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+}
+
+.takopic-step:not(:last-child)::after {
+	content: "\f346"; /* Dashicon arrow-down-alt. */
+	position: absolute;
+	z-index: 1;
+	top: calc(100% + (var(--takopic-steps-gap) - 28px) / 2);
+	left: calc(50% - 14px);
+	width: 28px;
+	height: 28px;
+	border-radius: 50%;
+	background: var(--takopic-gradient);
+	box-shadow: 0 2px 8px rgba(123, 47, 247, .35);
+	color: #fff;
+	font-family: dashicons;
+	font-size: 18px;
+	line-height: 28px;
+	text-align: center;
+}
+
+@container (min-width: 900px) {
+	.takopic-steps {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr);
+	}
+
+	/* The arrow sits between two steps, level with their numbers. */
+	.takopic-step:not(:last-child)::after {
+		content: "\f344"; /* Dashicon arrow-right-alt. */
+		top: calc(var(--takopic-space-5) + 6px);
+		left: calc(100% + (var(--takopic-steps-gap) - 28px) / 2);
+	}
+}
+
+.takopic-step__header {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--takopic-space-4);
+	padding: var(--takopic-space-5) var(--takopic-space-5) var(--takopic-space-4);
+}
+
+.takopic-step__number {
+	flex: none;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--takopic-gradient);
+	box-shadow: 0 4px 12px rgba(123, 47, 247, .3);
+	color: #fff;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
 	font-weight: 600;
-	cursor: pointer;
+	line-height: 40px;
+	text-align: center;
 }
 
-.takopic-rules__title {
-	margin: var(--takopic-space-4) 0 var(--takopic-space-2);
+.takopic-step__heading {
+	flex: 1;
+	min-width: 0;
+}
+
+.takopic-page .takopic-step__title {
+	margin: 0;
+	padding: 0;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-heading);
+	font-weight: 500;
+	line-height: 40px;
+}
+
+.takopic-step__description {
+	margin: var(--takopic-space-1) 0 0;
 	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+}
+
+.takopic-step__body {
+	flex: 1;
+	padding: var(--takopic-space-1) var(--takopic-space-5) var(--takopic-space-5);
+}
+
+.takopic-step__actions {
+	display: flex;
+	justify-content: flex-end;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 var(--takopic-radius) var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+}
+
+/* Step 1: how many images have their WebP or AVIF version. */
+.takopic-generate {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--takopic-space-4);
+}
+
+.takopic-generate__value {
+	margin: 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+}
+
+.takopic-generate__value strong {
+	color: var(--takopic-text);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-heading);
 	font-weight: 600;
+}
+
+.takopic-generate__formats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--takopic-space-2);
+	margin: 0;
+}
+
+.takopic-generate__formats li {
+	margin: 0;
+}
+
+.takopic-meter {
+	display: block;
+	align-self: stretch;
+	height: 8px;
+	overflow: hidden;
+	border-radius: 999px;
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-meter__value {
+	display: block;
+	height: 100%;
+	border-radius: 999px;
+	background: var(--takopic-gradient);
+}
+
+/* Step 2: the two ways to serve, the checked one highlighted. */
+.takopic-methods {
+	display: grid;
+	align-content: start;
+	gap: var(--takopic-space-4);
+}
+
+.takopic-method {
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+	transition: border-color var(--takopic-transition), background-color var(--takopic-transition);
+}
+
+.takopic-method:has(.takopic-toggle__input:checked) {
+	border-color: rgba(123, 47, 247, .45);
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-method .takopic-field {
+	padding: 0;
+}
+
+.takopic-method .takopic-field__help {
+	margin-top: var(--takopic-space-2);
+	line-height: 1.6;
+}
+
+/* Step 3: the test, its button as large as it matters, its verdict below. */
+.takopic-test__list {
+	margin: 0 0 var(--takopic-space-5);
+	padding-left: var(--takopic-space-5);
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+	list-style: disc;
+}
+
+.takopic-test__list li {
+	margin-bottom: var(--takopic-space-2);
 }
 
 .takopic-page .takopic-test__button {
-	flex: none;
-	align-self: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 46px;
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+	text-align: center;
 }
 
-.takopic-test__result {
-	padding: var(--takopic-space-4) var(--takopic-space-5) var(--takopic-space-5);
+.takopic-test__summary {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	margin: var(--takopic-space-4) 0 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+	border-radius: var(--takopic-radius-small);
+	font-weight: 600;
 }
 
-.takopic-test__sample {
+.takopic-test__summary[hidden] {
+	display: none;
+}
+
+.takopic-test__summary::before {
+	font-family: dashicons;
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 1;
+}
+
+.takopic-test__summary--ok {
+	background: var(--takopic-on-bg);
+	color: var(--takopic-on);
+}
+
+.takopic-test__summary--ok::before {
+	content: "\f12a"; /* Dashicon yes-alt. */
+}
+
+.takopic-test__summary--fail {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
+}
+
+.takopic-test__summary--fail::before {
+	content: "\f153"; /* Dashicon dismiss. */
+}
+
+.takopic-test__sample:empty {
+	display: none;
+}
+
+/* Rules and code, folded: one line each until opened. */
+.takopic-fold {
+	margin-top: var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+}
+
+/* The chevron, the title, then its badge: on the right, or under the title
+   on small screens. */
+.takopic-fold__summary {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr) auto;
+	align-items: center;
+	gap: var(--takopic-space-1) var(--takopic-space-2);
+	padding: var(--takopic-space-3) var(--takopic-space-5);
+	font-weight: 600;
+	list-style: none;
+	cursor: pointer;
+}
+
+.takopic-fold__summary::-webkit-details-marker {
+	display: none;
+}
+
+.takopic-fold__summary::before {
+	content: "\f345"; /* Dashicon arrow-right-alt2. */
+	font-family: dashicons;
+	font-size: 16px;
+	line-height: 1;
+	color: var(--takopic-violet);
+	transition: transform var(--takopic-transition);
+}
+
+.takopic-fold[open] > .takopic-fold__summary::before {
+	transform: rotate(90deg);
+}
+
+.takopic-fold__summary .takopic-badge {
+	justify-self: end;
+}
+
+.takopic-fold__summary:hover {
+	color: var(--takopic-violet-dark);
+}
+
+.takopic-fold__content {
+	padding: 0 var(--takopic-space-5) var(--takopic-space-5);
+}
+
+.takopic-fold__text {
 	margin: 0 0 var(--takopic-space-3);
-	color: var(--takopic-muted);
+	color: var(--takopic-text-soft);
 }
 
+.takopic-fold__content .takopic-code + .takopic-fold__text {
+	margin: var(--takopic-space-3) 0 0;
+}
+
+/* Results of the test. */
 .takopic-checks {
 	margin: 0;
 	border: 1px solid var(--takopic-border);
@@ -1032,7 +1688,11 @@
 	grid-template-columns: 24px 1fr;
 	gap: 2px var(--takopic-space-3);
 	margin: 0;
-	padding: var(--takopic-space-3) var(--takopic-space-4);
+	padding: var(--takopic-space-4);
+}
+
+.takopic-checks__item--fail {
+	background: var(--takopic-off-bg);
 }
 
 .takopic-checks__item + .takopic-checks__item {
@@ -1041,7 +1701,9 @@
 
 .takopic-checks__icon {
 	grid-row: span 3;
-	font-size: 20px;
+	width: 24px;
+	height: 24px;
+	font-size: 24px;
 	color: var(--takopic-on);
 }
 
@@ -1066,6 +1728,7 @@
 }
 
 .takopic-checks__label {
+	font-size: var(--takopic-size-lead);
 	font-weight: 600;
 }
 
@@ -1082,7 +1745,7 @@
 	display: none;
 }
 
-/* 14. WordPress components
+/* 15. WordPress components
    ========================================================================== */
 
 /* The buttons keep their WordPress classes, in the colours of the logo. */
@@ -1130,7 +1793,7 @@
 	opacity: .55;
 }
 
-/* 15. Small screens
+/* 16. Small screens
    ========================================================================== */
 
 @media (max-width: 782px) {
@@ -1141,6 +1804,39 @@
 
 	.takopic-page .takopic-header__title {
 		font-size: 20px;
+	}
+
+	/* The tabs stay on one line, scrolled sideways, without a scrollbar. */
+	.takopic-tabs {
+		position: relative;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	.takopic-tabs::-webkit-scrollbar {
+		display: none;
+	}
+
+	.takopic-fold__summary {
+		padding: var(--takopic-space-3) var(--takopic-space-4);
+	}
+
+	.takopic-fold__summary .takopic-badge {
+		grid-column: 2;
+		justify-self: start;
+	}
+
+	.takopic-fold__content {
+		padding: 0 var(--takopic-space-4) var(--takopic-space-4);
+	}
+
+	.takopic-page .takopic-tabs__tab {
+		flex: none;
+		padding: var(--takopic-space-2) var(--takopic-space-3);
+		scroll-snap-align: start;
 	}
 
 	.takopic-savings {
@@ -1163,12 +1859,11 @@
 		border-top: 1px solid var(--takopic-border);
 	}
 
-	.takopic-action {
-		grid-template-columns: 1fr;
-		gap: var(--takopic-space-2);
+	.takopic-step__header {
+		padding: var(--takopic-space-4) var(--takopic-space-4) var(--takopic-space-3);
 	}
 
-	.takopic-field--toggle .takopic-field__help {
-		padding-left: 0;
+	.takopic-step__body {
+		padding: 0 var(--takopic-space-4) var(--takopic-space-4);
 	}
 }

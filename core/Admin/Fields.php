@@ -247,7 +247,7 @@ class Fields
 				</section>
 
 				<section class="takopic-panel" id="takopic-panel-delivery" role="tabpanel" data-panel="delivery">
-					<?php $this->render_delivery($sections['display']); ?>
+					<?php $this->render_delivery($sections['display'], $formats, $counts); ?>
 				</section>
 
 				<section class="takopic-panel" id="takopic-panel-settings" role="tabpanel" data-panel="settings">
@@ -356,12 +356,6 @@ class Fields
 						<?php $this->render_badge($state, self::STATE_LABELS[$state]); ?>
 					</span>
 					<?php $this->render_engine($format); ?>
-					<?php foreach ($format['extras'] as $name => $installed) : ?>
-						<span class="takopic-engine takopic-engine--<?php echo $installed ? 'on' : 'off'; ?>">
-							<code class="takopic-engine__name"><?php echo esc_html($name); ?></code>
-							<span class="takopic-engine__state"><?php echo $installed ? 'installed' : 'not installed'; ?></span>
-						</span>
-					<?php endforeach; ?>
 				</a>
 			<?php endforeach; ?>
 		</div>
@@ -370,7 +364,8 @@ class Fields
 
 	/**
 	 * Renders the engine of a format: its library and
-	 * version, or GD or Imagick without the library.
+	 * version, or GD or Imagick without the library,
+	 * then its optional libraries (e.g. pngquant).
 	 *
 	 * @param array $format
 	 * @since 1.0.0
@@ -390,12 +385,18 @@ class Fields
 		}
 		?>
 		<span class="takopic-engine takopic-engine--<?php echo $format['engine'] ? 'on' : 'off'; ?>">
-			<code class="takopic-engine__name"><?php echo esc_html($name); ?></code>
+			<span class="takopic-engine__name"><?php echo esc_html($name); ?></span>
 			<span class="takopic-engine__state"><?php echo esc_html($state); ?></span>
 			<?php if ($format['version']) : ?>
 				<span class="takopic-engine__version"><?php echo esc_html($format['version']); ?></span>
 			<?php endif; ?>
 		</span>
+		<?php foreach ($format['extras'] as $extra => $installed) : ?>
+			<span class="takopic-engine takopic-engine--<?php echo $installed ? 'on' : 'off'; ?>">
+				<span class="takopic-engine__name"><?php echo esc_html($extra); ?></span>
+				<span class="takopic-engine__state"><?php echo $installed ? 'installed' : 'not installed'; ?></span>
+			</span>
+		<?php endforeach; ?>
 		<?php
 	}
 
@@ -416,101 +417,221 @@ class Fields
 				<span class="takopic-card__icon dashicons dashicons-images-alt2" aria-hidden="true"></span>
 				<div>
 					<h2 class="takopic-card__title">Optimise the media library</h2>
-					<p class="takopic-card__description">New uploads are optimised right away. These jobs run in the background, page closed or not, with the lowest priority on the server.</p>
+					<p class="takopic-card__description">These jobs run in the background, page closed or not, with the lowest priority on the server.</p>
 				</div>
 			</header>
 			<?php if ($jobs) : ?>
 				<div class="takopic-actions">
-					<div class="takopic-action">
+					<div class="takopic-action takopic-action--primary">
+						<span class="takopic-action__icon dashicons dashicons-format-image" aria-hidden="true"></span>
+						<h3 class="takopic-action__title">New images</h3>
+						<p class="takopic-action__count" data-count="new"><?php echo esc_html(number_format_i18n($counts[Status::TO_OPTIMISE] + $counts[Status::ERROR])); ?></p>
+						<p class="takopic-action__text">Not optimised yet, or their optimisation failed.</p>
 						<button type="button" class="button button-primary takopic-action__button" data-job="new">Optimise new images</button>
-						<p class="takopic-action__text"><strong data-count="new"><?php echo esc_html(number_format_i18n($counts[Status::TO_OPTIMISE] + $counts[Status::ERROR])); ?></strong> images are not optimised yet, or their optimisation failed.</p>
 					</div>
 					<div class="takopic-action">
+						<span class="takopic-action__icon dashicons dashicons-update" aria-hidden="true"></span>
+						<h3 class="takopic-action__title">Outdated images</h3>
+						<p class="takopic-action__count" data-count="outdated"><?php echo esc_html(number_format_i18n($counts[Status::OUTDATED])); ?></p>
+						<p class="takopic-action__text">Optimised before a quality, a format, the maximum size or the thumbnail sizes changed. Optimised again from their originals.</p>
 						<button type="button" class="button takopic-action__button" data-job="outdated">Re-optimise outdated images</button>
-						<p class="takopic-action__text"><strong data-count="outdated"><?php echo esc_html(number_format_i18n($counts[Status::OUTDATED])); ?></strong> images were optimised before a quality, a format, the maximum size or the thumbnail sizes changed. They are optimised again from their originals.</p>
 					</div>
 					<div class="takopic-action">
+						<span class="takopic-action__icon dashicons dashicons-images-alt" aria-hidden="true"></span>
+						<h3 class="takopic-action__title">All images</h3>
+						<p class="takopic-action__count" data-count="total"><?php echo esc_html(number_format_i18n($counts['total'])); ?></p>
+						<p class="takopic-action__text">Every image optimised again from its original, with its thumbnails made again.</p>
 						<button type="button" class="button takopic-action__button" data-job="all" data-confirm="Re-optimise all images from their originals, with their thumbnails? This can take a while.">Re-optimise all images</button>
-						<p class="takopic-action__text">Every image is optimised again from its original, with its thumbnails made again.</p>
 					</div>
 				</div>
 			<?php else : ?>
 				<?php $this->render_no_jobs(); ?>
 			<?php endif; ?>
+			<p class="takopic-card__footer">
+				New uploads are optimised right away.
+				<a href="<?php echo esc_url(admin_url('upload.php?mode=list')); ?>">See each image in the Media library</a>
+			</p>
 		</div>
 		<?php
 	}
 
 	/**
-	 * Renders the delivery of the WebP and AVIF files:
-	 * in the HTML or from the server, its rules, and a
-	 * test of what the server sends.
+	 * Renders the delivery of the WebP and AVIF files,
+	 * in three steps side by side: generate them (how
+	 * many images have them), serve them (in the HTML or
+	 * from the server) and test what the server sends.
+	 * The results of the test come below, then the rules
+	 * of the server and the theme helper, folded.
 	 *
 	 * @param array $display
+	 * @param array $formats
+	 * @param array $counts
 	 * @since 1.0.0
 	 * @date 25/10/2026
 	 */
-	private function render_delivery($display)
+	private function render_delivery($display, $formats, $counts)
 	{
 		$server = Delivery::server();
 		$names = ['apache' => 'Apache', 'nginx' => 'nginx', 'other' => 'Your server'];
+		$made = self::with_formats();
+		$total = $counts['total'];
+		$percent = $total ? min(100, (int)round($made / $total * 100)) : 0;
+		$rewrite = $display['fields'][Delivery::OPTION];
+		if ($server !== 'apache') {
+			// Takopic cannot write the rules: the option tells they are in place.
+			$rewrite['note'] = sprintf('%s: add the rules below to its configuration, then tick this box.', esc_html($names[$server]));
+			$rewrite['help'] = sprintf('%s does not read <code>.htaccess</code> files: add the rules below to its configuration, then tick this box so that Takopic counts the bytes saved. The HTML does not change, and every image is served, CSS backgrounds and custom themes included.', esc_html($names[$server]));
+		}
 		?>
-		<div class="takopic-card">
-			<header class="takopic-card__header">
-				<span class="takopic-card__icon dashicons dashicons-admin-site-alt3" aria-hidden="true"></span>
-				<div>
-					<h2 class="takopic-card__title"><?php echo esc_html($display['title']); ?></h2>
-					<p class="takopic-card__description"><?php echo esc_html($display['description']); ?></p>
+		<ol class="takopic-steps">
+			<li class="takopic-step">
+				<header class="takopic-step__header">
+					<span class="takopic-step__number" aria-hidden="true">1</span>
+					<div class="takopic-step__heading">
+						<h2 class="takopic-step__title">Generate</h2>
+						<p class="takopic-step__description">The WebP and AVIF versions are made while the images are optimised.</p>
+					</div>
+				</header>
+				<div class="takopic-step__body takopic-generate">
+					<p class="takopic-generate__value">
+						<strong><?php echo esc_html(number_format_i18n($made)); ?></strong>
+						<?php echo esc_html(sprintf(_n('of %s image has its WebP or AVIF version', 'of %s images have their WebP or AVIF version', $total), number_format_i18n($total))); ?>
+					</p>
+					<span class="takopic-meter" role="img" aria-label="<?php echo esc_attr($percent . ' %'); ?>"><span class="takopic-meter__value" style="width: <?php echo esc_attr($percent); ?>%"></span></span>
+					<ul class="takopic-generate__formats">
+						<?php foreach (['webp', 'avif'] as $id) : ?>
+							<?php $state = self::state($formats[$id]); ?>
+							<li>
+								<a class="takopic-chip" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
+									<span class="takopic-dot takopic-dot--<?php echo esc_attr($state); ?>" aria-hidden="true"></span>
+									<span class="takopic-chip__name"><?php echo esc_html($formats[$id]['title']); ?></span>
+									<span class="takopic-chip__state"><?php echo esc_html(self::STATE_LABELS[$state]); ?></span>
+								</a>
+							</li>
+						<?php endforeach; ?>
+					</ul>
+					<?php if ($made < $total) : ?>
+						<a class="button takopic-generate__button" href="#optimise" data-tab="optimise">Optimise the media library</a>
+					<?php endif; ?>
 				</div>
-			</header>
-			<div class="takopic-card__body">
-				<?php $this->render_field('takopic_display_formats', $display['fields']['takopic_display_formats']); ?>
-				<?php
-				$rewrite = $display['fields'][Delivery::OPTION];
-				if ($server !== 'apache') {
-					// Takopic cannot write the rules: the option tells they are in place.
-					$rewrite['help'] = sprintf('%s does not read <code>.htaccess</code> files: add the rules below to its configuration, then tick this box so that Takopic counts the bytes saved with the WebP and AVIF served. The HTML does not change, and every image is served, CSS backgrounds and custom themes included.', esc_html($names[$server]));
-				}
-				$this->render_field(Delivery::OPTION, $rewrite);
-				?>
-				<details class="takopic-rules"<?php echo $server === 'apache' ? '' : ' open'; ?>>
-					<summary class="takopic-rules__summary">The rewrite rules</summary>
-					<?php if ($server !== 'nginx') : ?>
-						<p class="takopic-rules__title">Apache, LiteSpeed: <code>uploads/.htaccess</code></p>
-						<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Delivery::apache_rules())); ?></code></pre>
-					<?php endif; ?>
-					<?php if ($server !== 'apache') : ?>
-						<p class="takopic-rules__title">nginx: the configuration of the site</p>
-						<pre class="takopic-code"><code><?php echo esc_html(Delivery::nginx_rules()); ?></code></pre>
-					<?php endif; ?>
-				</details>
-			</div>
-			<footer class="takopic-card__actions">
-				<?php submit_button('Save changes', 'primary', 'submit', false, ['id' => 'takopic-save-delivery']); ?>
-			</footer>
-		</div>
+			</li>
 
-		<div class="takopic-card takopic-test">
+			<li class="takopic-step takopic-step--wide">
+				<header class="takopic-step__header">
+					<span class="takopic-step__number" aria-hidden="true">2</span>
+					<div class="takopic-step__heading">
+						<h2 class="takopic-step__title"><?php echo esc_html($display['title']); ?></h2>
+						<p class="takopic-step__description"><?php echo esc_html($display['description']); ?></p>
+					</div>
+				</header>
+				<div class="takopic-step__body takopic-methods">
+					<div class="takopic-method">
+						<?php $this->render_field('takopic_display_formats', $display['fields']['takopic_display_formats']); ?>
+					</div>
+					<div class="takopic-method">
+						<?php $this->render_field(Delivery::OPTION, $rewrite); ?>
+					</div>
+				</div>
+				<footer class="takopic-step__actions">
+					<?php submit_button('Save changes', 'primary', 'submit', false, ['id' => 'takopic-save-delivery']); ?>
+				</footer>
+			</li>
+
+			<li class="takopic-step takopic-test">
+				<header class="takopic-step__header">
+					<span class="takopic-step__number" aria-hidden="true">3</span>
+					<div class="takopic-step__heading">
+						<h2 class="takopic-step__title">Test</h2>
+						<p class="takopic-step__description">Requests an optimised image as a browser, after saving.</p>
+					</div>
+				</header>
+				<div class="takopic-step__body">
+					<ul class="takopic-test__list">
+						<li>Are the WebP and AVIF files served with their type?</li>
+						<li>Does the server answer the image with them?</li>
+						<li>Are the originals kept private?</li>
+					</ul>
+					<button type="button" class="button button-primary takopic-test__button" data-delivery-test>Run the test</button>
+					<p class="takopic-test__summary" aria-live="polite" hidden></p>
+				</div>
+			</li>
+		</ol>
+
+		<div class="takopic-card takopic-test__result" hidden>
 			<header class="takopic-card__header">
 				<span class="takopic-card__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
 				<div>
-					<h2 class="takopic-card__title">Test the delivery</h2>
-					<p class="takopic-card__description">Requests an optimised image from the site, as a browser: are the WebP and AVIF files served with their type, does the server answer with them, are the originals kept private?</p>
+					<h2 class="takopic-card__title">Test results</h2>
+					<p class="takopic-card__description takopic-test__sample"></p>
 				</div>
-				<button type="button" class="button takopic-test__button" data-delivery-test>Run the test</button>
 			</header>
-			<div class="takopic-test__result" aria-live="polite" hidden>
-				<p class="takopic-test__sample"></p>
+			<div class="takopic-card__body">
 				<ul class="takopic-checks"></ul>
 			</div>
 		</div>
+
+		<h2 class="takopic-heading">Rules and code</h2>
+		<?php if ($server === 'apache') : ?>
+			<?php $written = Delivery::rules_written(); ?>
+			<details class="takopic-fold">
+				<summary class="takopic-fold__summary">
+					<span class="takopic-fold__title">Rewrite rules for Apache and LiteSpeed</span>
+					<?php $this->render_badge($written ? 'on' : 'muted', $written ? 'Written in uploads/.htaccess' : 'Not written'); ?>
+				</summary>
+				<div class="takopic-fold__content">
+					<p class="takopic-fold__text">Takopic writes them in <code>uploads/.htaccess</code> when the server option is on, and removes them when it is off.</p>
+					<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Delivery::apache_rules())); ?></code></pre>
+				</div>
+			</details>
+		<?php else : ?>
+			<?php if ($server === 'other') : ?>
+				<details class="takopic-fold">
+					<summary class="takopic-fold__summary"><span class="takopic-fold__title">Rewrite rules for Apache and LiteSpeed</span></summary>
+					<div class="takopic-fold__content">
+						<p class="takopic-fold__text">In <code>uploads/.htaccess</code>, written by Takopic when the server option is on.</p>
+						<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Delivery::apache_rules())); ?></code></pre>
+					</div>
+				</details>
+			<?php endif; ?>
+			<details class="takopic-fold">
+				<summary class="takopic-fold__summary"><span class="takopic-fold__title">Rewrite rules for nginx</span></summary>
+				<div class="takopic-fold__content">
+					<p class="takopic-fold__text">Add them to the configuration of the site, reload nginx, then tick the server option.</p>
+					<pre class="takopic-code"><code><?php echo esc_html(Delivery::nginx_rules()); ?></code></pre>
+				</div>
+			</details>
+		<?php endif; ?>
 		<?php $this->render_theme_help(); ?>
 		<?php
 	}
 
 	/**
-	 * Renders the settings: the general ones, then one
-	 * card per format with its library.
+	 * Returns the number of images with a WebP or an
+	 * AVIF version, for the first step of the delivery.
+	 *
+	 * @return int
+	 * @since 1.0.0
+	 * @date 26/10/2026
+	 */
+	private static function with_formats()
+	{
+		global $wpdb;
+		return (int)$wpdb->get_var($wpdb->prepare(
+			"SELECT COUNT(DISTINCT m.post_id) FROM {$wpdb->postmeta} m
+			INNER JOIN {$wpdb->posts} p ON p.ID = m.post_id
+			WHERE m.meta_key IN (%s, %s)
+			AND p.post_type = 'attachment' AND p.post_status = 'inherit'
+			AND p.post_mime_type IN (" . implode(', ', array_fill(0, count(Status::MIMES), '%s')) . ")",
+			array_merge([WebP::meta_key(), AVIF::meta_key()], Status::MIMES)
+		));
+	}
+
+	/**
+	 * Renders the settings: the image size, then one
+	 * compact card per format, two per row on wide
+	 * screens: its name, state and switch, the library
+	 * making it, its quality fields, and how to install
+	 * a missing library, folded.
 	 *
 	 * @param array $general
 	 * @param array $formats
@@ -528,52 +649,64 @@ class Fields
 					<p class="takopic-card__description"><?php echo esc_html($general['description']); ?></p>
 				</div>
 			</header>
-			<div class="takopic-card__body">
+			<div class="takopic-card__body takopic-fields">
 				<?php foreach ($general['fields'] as $name => $field) : ?>
 					<?php $this->render_field($name, $field); ?>
 				<?php endforeach; ?>
 			</div>
 		</div>
 
-		<?php foreach ($formats as $id => $format) : ?>
-			<?php $state = self::state($format); ?>
-			<div class="takopic-card" id="takopic-settings-<?php echo esc_attr($id); ?>">
-				<header class="takopic-card__header">
-					<span class="takopic-dot takopic-dot--<?php echo esc_attr($state); ?>" aria-hidden="true"></span>
-					<div>
-						<h2 class="takopic-card__title"><?php echo esc_html($format['title']); ?></h2>
-						<?php $this->render_engine($format); ?>
-					</div>
-					<?php $this->render_badge($state, self::STATE_LABELS[$state]); ?>
-				</header>
-				<?php if (!$format['installed'] && $format['engine']) : ?>
-					<details class="takopic-install takopic-install--advice" open>
-						<summary class="takopic-install__summary">Recommended: install <?php echo esc_html($format['library']); ?></summary>
-						<p class="takopic-install__text"><?php echo esc_html(sprintf($format['recommendation'], $format['engine'])); ?></p>
-						<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
+		<div class="takopic-formats">
+			<?php foreach ($formats as $id => $format) : ?>
+				<?php
+				$state = self::state($format);
+				$switch = 'takopic_' . $id . '_enable';
+				$fields = $format['fields'];
+				unset($fields[$switch]);
+				?>
+				<section class="takopic-format takopic-format--<?php echo esc_attr($state); ?>" id="takopic-settings-<?php echo esc_attr($id); ?>">
+					<header class="takopic-format__header">
+						<div class="takopic-format__top">
+							<h2 class="takopic-format__title"><?php echo esc_html($format['title']); ?></h2>
+							<?php $this->render_badge($state, self::STATE_LABELS[$state]); ?>
+							<?php $this->render_switch($switch, $format['fields'][$switch]); ?>
+						</div>
+						<div class="takopic-format__engines">
+							<?php $this->render_engine($format); ?>
+						</div>
+					</header>
+					<p class="takopic-format__description"><?php echo wp_kses($format['fields'][$switch]['help'], ['strong' => [], 'code' => []]); ?></p>
+					<?php if (!$format['installed'] && $format['engine']) : ?>
+						<details class="takopic-install takopic-install--advice">
+							<summary class="takopic-install__summary">Recommended: install <?php echo esc_html($format['library']); ?></summary>
+							<p class="takopic-install__text"><?php echo esc_html(sprintf($format['recommendation'], $format['engine'])); ?></p>
+							<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
+						</details>
+					<?php elseif (!$format['installed']) : ?>
+						<details class="takopic-install">
+							<summary class="takopic-install__summary">How to install <?php echo esc_html($format['library']); ?></summary>
+							<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
+						</details>
+					<?php endif; ?>
+					<details class="takopic-format__settings">
+						<summary class="takopic-format__summary">Settings</summary>
+						<div class="takopic-format__fields takopic-fields">
+							<?php foreach ($fields as $name => $field) : ?>
+								<?php $this->render_field($name, $field); ?>
+							<?php endforeach; ?>
+							<?php foreach ($format['optional'] as $name => $use) : ?>
+								<?php if ($format['installed'] && !$format['extras'][$name]) : ?>
+									<details class="takopic-install takopic-install--advice">
+										<summary class="takopic-install__summary">How to install <?php echo esc_html($name); ?>, for the <?php echo esc_html($use); ?></summary>
+										<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
+									</details>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</div>
 					</details>
-				<?php elseif (!$format['installed']) : ?>
-					<details class="takopic-install" open>
-						<summary class="takopic-install__summary">How to install <?php echo esc_html($format['library']); ?></summary>
-						<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
-					</details>
-				<?php else : ?>
-					<?php foreach ($format['optional'] as $name => $use) : ?>
-						<?php if (!$format['extras'][$name]) : ?>
-							<details class="takopic-install takopic-install--advice">
-								<summary class="takopic-install__summary">How to install <?php echo esc_html($name); ?>, for the <?php echo esc_html($use); ?></summary>
-								<?php echo $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
-							</details>
-						<?php endif; ?>
-					<?php endforeach; ?>
-				<?php endif; ?>
-				<div class="takopic-card__body">
-					<?php foreach ($format['fields'] as $name => $field) : ?>
-						<?php $this->render_field($name, $field); ?>
-					<?php endforeach; ?>
-				</div>
-			</div>
-		<?php endforeach; ?>
+				</section>
+			<?php endforeach; ?>
+		</div>
 
 		<div class="takopic-page__save">
 			<?php submit_button('Save changes', 'primary', 'submit', false, ['id' => 'takopic-save-settings']); ?>
@@ -658,7 +791,9 @@ class Fields
 		<div class="takopic-job" hidden>
 			<div class="takopic-job__progress">
 				<div class="takopic-job__head">
+					<span class="takopic-job__icon dashicons dashicons-update" aria-hidden="true"></span>
 					<p class="takopic-job__label" aria-live="polite"></p>
+					<span class="takopic-job__percent"></span>
 					<div class="takopic-job__controls">
 						<button type="button" class="button" data-control="pause">Pause</button>
 						<button type="button" class="button" data-control="resume">Resume</button>
@@ -694,22 +829,17 @@ class Fields
 	{
 		$code = "<?php\nif (function_exists('takopic_image')) {\n\techo takopic_image(\$image_id, 'my-class');\n} else {\n\techo wp_get_attachment_image(\$image_id, 'full');\n}";
 		?>
-		<div class="takopic-card">
-			<header class="takopic-card__header">
-				<span class="takopic-card__icon dashicons dashicons-editor-code" aria-hidden="true"></span>
-				<div>
-					<h2 class="takopic-card__title">Custom themes</h2>
-					<p class="takopic-card__description">Images output with your own markup (e.g. from an ACF field) are not wrapped in a <code>&lt;picture&gt;</code> by the option above: serve them from the server, or use the <code>takopic_image()</code> helper, which returns their <code>&lt;picture&gt;</code> whatever the options.</p>
-				</div>
-			</header>
-			<div class="takopic-card__body">
+		<details class="takopic-fold">
+			<summary class="takopic-fold__summary"><span class="takopic-fold__title">Custom themes: the <code>takopic_image()</code> helper</span></summary>
+			<div class="takopic-fold__content">
+				<p class="takopic-fold__text">Images output with your own markup (e.g. from an ACF field) are not wrapped in a <code>&lt;picture&gt;</code> by the HTML option: serve them from the server, or use the <code>takopic_image()</code> helper, which returns their <code>&lt;picture&gt;</code> whatever the options.</p>
 				<pre class="takopic-code"><code><?php echo esc_html($code); ?></code></pre>
-				<p class="takopic-field__help">The second argument is the class of the <code>&lt;picture&gt;</code> element. Pass
+				<p class="takopic-fold__text">The second argument is the class of the <code>&lt;picture&gt;</code> element. Pass
 					<code>true</code> as third argument to output <code>data-src</code> and <code>data-srcset</code> for a
 					JavaScript lazy loader. Keep the <code>function_exists()</code> check: without it, the pages break while
 					Takopic is deactivated.</p>
 			</div>
-		</div>
+		</details>
 		<?php
 	}
 
@@ -786,20 +916,24 @@ class Fields
 	{
 		$id = esc_attr(self::OPTION_PREFIX . $name);
 		$value = self::get($name);
+		// A sub-option, e.g. the lossy quality, shown under its checkbox while it is ticked (admin.js).
+		$sub = empty($field['parent']) ? '' : ' takopic-field--sub';
+		$parent = empty($field['parent']) ? '' : sprintf(' data-parent="%s"', esc_attr(self::OPTION_PREFIX . $field['parent']));
+
+		// The label names the control without being a <label>: hovering it would hover the control.
+		printf('<div class="takopic-field%s%s"%s><span class="takopic-field__label" id="%s-label">%s</span>', $field['type'] === 'checkbox' ? ' takopic-field--toggle' : '', $sub, $parent, $id, esc_html($field['label']));
 
 		if ($field['type'] === 'checkbox') {
-			echo '<div class="takopic-field takopic-field--toggle">';
 			printf(
-				'<label class="takopic-toggle"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="%s" %s><span class="takopic-toggle__track" aria-hidden="true"></span><span class="takopic-toggle__label">%s</span></label>',
-				$id, $id, self::CHECKBOX_ON, checked($value, true, false), esc_html($field['label'])
+				'<label class="takopic-toggle"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="%s" aria-labelledby="%s-label" %s><span class="takopic-toggle__track" aria-hidden="true"></span></label>',
+				$id, $id, self::CHECKBOX_ON, $id, checked($value, true, false)
 			);
 		} else {
-			echo '<div class="takopic-field">';
-			printf('<label class="takopic-field__label" for="%s">%s</label><div class="takopic-field__control">', $id, esc_html($field['label']));
+			echo '<div class="takopic-field__control">';
 			if ($field['type'] === 'number') {
-				printf('<input type="number" class="takopic-field__input" id="%s" name="%s" value="%s" min="%d" max="%d" step="1">', $id, $id, esc_attr($value), $field['min'], $field['max']);
+				printf('<input type="number" class="takopic-field__input" id="%s" name="%s" value="%s" min="%d" max="%d" step="1" aria-labelledby="%s-label">', $id, $id, esc_attr($value), $field['min'], $field['max'], $id);
 			} elseif ($field['type'] === 'select') {
-				printf('<select class="takopic-field__input" id="%s" name="%s">', $id, $id);
+				printf('<select class="takopic-field__input" id="%s" name="%s" aria-labelledby="%s-label">', $id, $id, $id);
 				foreach ($field['options'] as $optionValue => $optionLabel) {
 					printf('<option value="%s" %s>%s</option>', esc_attr($optionValue), selected((string)$value, (string)$optionValue, false), esc_html($optionLabel));
 				}
@@ -811,7 +945,35 @@ class Fields
 			echo '</div>';
 		}
 
-		printf('<p class="takopic-field__help">%s</p></div>', wp_kses($field['help'], ['strong' => [], 'code' => []]));
+		$help = wp_kses($field['help'], ['strong' => [], 'code' => []]);
+		if (empty($field['note'])) {
+			printf('<p class="takopic-field__help">%s</p></div>', $help);
+			return;
+		}
+		// A short note, the full help behind a "?" button (admin.js hides it, shown without JS).
+		printf(
+			'<p class="takopic-field__help">%s <button type="button" class="takopic-help__toggle" aria-expanded="false" aria-controls="%s-help"><span aria-hidden="true">?</span><span class="screen-reader-text">More about: %s</span></button></p><p class="takopic-field__help takopic-help__text" id="%s-help">%s</p></div>',
+			wp_kses($field['note'], ['strong' => [], 'code' => []]), $id, esc_html($field['label']), $id, $help
+		);
+	}
+
+	/**
+	 * Renders a checkbox option as a bare switch, for
+	 * the header of a format card: its label is read by
+	 * screen readers, its help shown apart.
+	 *
+	 * @param string $name
+	 * @param array $field
+	 * @since 1.0.0
+	 * @date 26/10/2026
+	 */
+	private function render_switch($name, $field)
+	{
+		$id = esc_attr(self::OPTION_PREFIX . $name);
+		printf(
+			'<label class="takopic-toggle takopic-toggle--switch"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="%s" %s><span class="takopic-toggle__track" aria-hidden="true"></span><span class="screen-reader-text">%s</span></label>',
+			$id, $id, self::CHECKBOX_ON, checked(self::get($name), true, false), esc_html($field['label'])
+		);
 	}
 
 	/**
@@ -866,7 +1028,7 @@ class Fields
 						'min' => 0,
 						'max' => 100,
 						'default' => 80,
-						'help' => 'From 0 to 100, 80 by default. Images already lighter are only optimised without loss.',
+						'help' => 'From 0 to 100, 80 by default.',
 					],
 				],
 			],
@@ -896,13 +1058,13 @@ class Fields
 							'7' => 'o7',
 						],
 						'default' => '2',
-						'help' => 'From o0 (fastest) to o7 (slowest, smallest files), o2 by default. oxipng goes up to o6, used for o7.',
+						'help' => 'From o0 (fastest) to o7 (smallest files), o2 by default.',
 					],
 					'takopic_png_lossy' => [
 						'type' => 'checkbox',
 						'label' => 'Lossy compression (pngquant)',
 						'default' => false,
-						'help' => 'Reduces the colours of the PNG images before compressing them, often 60 to 80 % lighter. Suits graphics, logos and screenshots; gradients and photos may show some grain. An image that cannot keep the minimum quality stays lossless. Needs pngquant.',
+						'help' => 'Often 60 to 80 % lighter, for graphics and screenshots. Needs pngquant.',
 					],
 					'takopic_png_lossy_quality' => [
 						'type' => 'number',
@@ -910,7 +1072,8 @@ class Fields
 						'min' => 0,
 						'max' => 100,
 						'default' => 80,
-						'help' => 'The quality pngquant aims at, from 0 to 100, 80 by default. The minimum accepted is 15 below.',
+						'parent' => 'takopic_png_lossy',
+						'help' => 'The quality pngquant aims at, from 0 to 100, 80 by default.',
 					],
 				],
 			],
@@ -932,7 +1095,7 @@ class Fields
 						'min' => 0,
 						'max' => 100,
 						'default' => 80,
-						'help' => 'From 0 to 100, 80 by default. The PNG graphics are made near-lossless when it is lighter.',
+						'help' => 'From 0 to 100, 80 by default.',
 					],
 				],
 			],
@@ -969,25 +1132,27 @@ class Fields
 						'max' => 20000,
 						'unit' => 'px',
 						'default' => 2560,
-						'help' => 'Longest side, in pixels. Bigger images are scaled down on upload, 2560 by default as in WordPress. <strong>0 means no limit: huge images then reach the libraries as uploaded, and can exhaust the memory or the CPU of the server.</strong>',
+						'help' => 'Longest side, 2560 by default. <strong>0 means no limit: huge images can exhaust the server.</strong>',
 					],
 				],
 			],
 			'display' => [
-				'title' => 'Serve WebP and AVIF',
-				'description' => 'Your site already serves the compressed JPG and PNG images. Two ways to serve their AVIF and WebP versions too, lighter: each browser gets the best one it reads, older ones the JPG or PNG.',
+				'title' => 'Serve',
+				'description' => 'Each browser gets the lightest version it reads: AVIF, then WebP, or the JPG or PNG for older ones. Choose one way, or both.',
 				'fields' => [
 					'takopic_display_formats' => [
 						'type' => 'checkbox',
 						'label' => 'In the HTML, with <picture>',
 						'default' => false,
+						'note' => 'Wraps the images of the content in a <code>&lt;picture&gt;</code>. Untick it if the layout breaks.',
 						'help' => 'Images of the post content, featured images and galleries are wrapped in a <code>&lt;picture&gt;</code> tag offering the AVIF and WebP versions. Works on every server. <strong>Untick this if your theme layout breaks around images.</strong>',
 					],
 					Delivery::OPTION => [
 						'type' => 'checkbox',
 						'label' => 'From the server, with rewrite rules',
 						'default' => false,
-						'help' => 'The server answers <code>photo.jpg</code> with <code>photo.jpg.avif</code> or <code>.webp</code> when the browser reads them: the HTML does not change, and every image is served, CSS backgrounds and custom themes included. Takopic writes the rules in <code>uploads/.htaccess</code> (Apache, LiteSpeed). Check the result with the test below; a CDN must vary its cache on the <code>Accept</code> header.',
+						'note' => 'Every image, CSS backgrounds included, the HTML unchanged.',
+						'help' => 'The server answers <code>photo.jpg</code> with <code>photo.jpg.avif</code> or <code>.webp</code> when the browser reads them. The HTML does not change, and every image is served, CSS backgrounds and custom themes included. A CDN must vary its cache on the <code>Accept</code> header.',
 					],
 				],
 			],
