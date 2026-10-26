@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Encoder
+ * AbstractEncoder
  *
  * The base of the encoders: runs the library of a
  * format, or the image editor, on every file of an
@@ -19,17 +19,18 @@
 namespace Takopic\Encoders;
 
 use Exception;
+use Takopic\Engines\ImageEditor;
+use Takopic\Engines\Libraries;
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
 use Takopic\Media\Files;
 use Takopic\Media\Optimiser;
-use Takopic\System\Process;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-abstract class Encoder
+abstract class AbstractEncoder
 {
 	/**
 	 * FORMAT is the format the encoder makes or
@@ -145,8 +146,8 @@ abstract class Encoder
 	 */
 	protected static function run($arguments, $filepath, $args)
 	{
-		$command = array_merge(Process::nice(Optimiser::$context), [Process::binary(static::library())], $arguments);
-		list($code, $output) = Process::execute($command);
+		$command = array_merge(Libraries::nice(Optimiser::$context), [Libraries::binary(static::library())], $arguments);
+		list($code, $output) = Libraries::execute($command);
 		if ($code === 0) {
 			return true;
 		}
@@ -340,7 +341,7 @@ abstract class Encoder
 	 */
 	public static function installed($name = null)
 	{
-		return Process::installed($name === null ? static::cmd_name() : $name);
+		return Libraries::installed($name === null ? static::cmd_name() : $name);
 	}
 
 	/**
@@ -369,7 +370,7 @@ abstract class Encoder
 	 */
 	public static function version_number()
 	{
-		return static::installed() ? Process::version(static::library()) : '';
+		return static::installed() ? Libraries::version(static::library()) : '';
 	}
 
 	/**

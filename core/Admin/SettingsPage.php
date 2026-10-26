@@ -22,12 +22,12 @@ use Takopic\Encoders\AVIF;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
+use Takopic\Engines\Libraries;
 use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
 use Takopic\Media\Stats;
 use Takopic\Media\Status;
 use Takopic\Settings;
-use Takopic\System\Process;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -123,7 +123,7 @@ class SettingsPage
 		// Saving the settings reads the versions of the libraries again, e.g. after an upgrade.
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Set by WordPress after the settings are saved, with their nonce.
 		if (isset($_GET['settings-updated'])) {
-			Process::forget_versions();
+			Libraries::forget_versions();
 		}
 		$sections = self::sections();
 		$formats = self::formats($sections);

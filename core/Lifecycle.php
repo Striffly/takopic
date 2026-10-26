@@ -18,10 +18,10 @@ namespace Takopic;
 
 use Takopic\Admin\PluginsScreen;
 use Takopic\Delivery\Htaccess;
+use Takopic\Engines\Libraries;
 use Takopic\Log\Errors;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
-use Takopic\System\Process;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -78,7 +78,7 @@ class Lifecycle
 			foreach ([Settings::OPTION, Errors::OPTION, Job::PROGRESS] as $option) {
 				delete_option($option);
 			}
-			foreach ([Process::VERSIONS_TRANSIENT, PluginsScreen::THEME_TRANSIENT] as $transient) {
+			foreach ([Libraries::VERSIONS_TRANSIENT, PluginsScreen::THEME_TRANSIENT] as $transient) {
 				delete_transient($transient);
 			}
 			// Settings used, files made, errors and bytes of the images.

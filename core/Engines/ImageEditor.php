@@ -15,11 +15,11 @@
  *
  */
 
-namespace Takopic\Encoders;
+namespace Takopic\Engines;
 
 use Imagick;
-use Takopic\Media\Files;
 use Takopic\Log\Logger;
+use Takopic\Media\Files;
 use Throwable;
 use WP_Error;
 use WP_Image_Editor_Imagick;

@@ -15,11 +15,11 @@
 
 namespace Takopic;
 
-use Takopic\Admin\SettingsPage;
 use Takopic\Admin\JobsAjax;
 use Takopic\Admin\MediaColumn;
 use Takopic\Admin\Notices;
 use Takopic\Admin\PluginsScreen;
+use Takopic\Admin\SettingsPage;
 use Takopic\Delivery\Display;
 use Takopic\Delivery\Htaccess;
 use Takopic\Delivery\Test;

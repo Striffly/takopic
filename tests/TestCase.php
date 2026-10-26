@@ -15,11 +15,10 @@
 
 namespace Takopic\Tests;
 
-use Takopic\Encoders\Encoder;
-use Takopic\Encoders\ImageEditor;
+use Takopic\Engines\ImageEditor;
+use Takopic\Engines\Libraries;
 use Takopic\Media\Optimiser;
 use Takopic\Settings;
-use Takopic\System\Process;
 use ReflectionProperty;
 use WP_UnitTestCase;
 
@@ -52,7 +51,7 @@ abstract class TestCase extends WP_UnitTestCase
 	public function tear_down()
 	{
 		self::remove(dirname($this->uploads));
-		Process::forget_versions();
+		Libraries::forget_versions();
 		parent::tear_down();
 	}
 
@@ -213,7 +212,7 @@ abstract class TestCase extends WP_UnitTestCase
 	protected function require_libraries(...$names)
 	{
 		foreach ($names as $name) {
-			if (!Encoder::installed($name)) {
+			if (!Libraries::installed($name)) {
 				$this->markTestSkipped($name . ' is not installed.');
 			}
 		}
@@ -238,7 +237,7 @@ abstract class TestCase extends WP_UnitTestCase
 	 */
 	protected static function forget_libraries()
 	{
-		$caches = [[Process::class, 'binaries', []], [Process::class, 'versions', null], [ImageEditor::class, 'classes', []]];
+		$caches = [[Libraries::class, 'binaries', []], [Libraries::class, 'versions', null], [ImageEditor::class, 'classes', []]];
 		foreach ($caches as list($class, $name, $value)) {
 			$property = new ReflectionProperty($class, $name);
 			$property->setAccessible(true);
