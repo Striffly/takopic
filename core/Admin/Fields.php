@@ -421,6 +421,12 @@ class Fields
 				</div>
 			</header>
 			<?php if ($jobs) : ?>
+				<?php $done = $counts['total'] > 0 && $counts[Status::OPTIMISED] === $counts['total']; ?>
+				<div class="takopic-done" data-done role="status"<?php echo $done ? '' : ' hidden'; ?>>
+					<span class="takopic-done__confetti" aria-hidden="true"></span>
+					<span class="takopic-done__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
+					<p class="takopic-done__text"><strong>All your images are optimised.</strong> Nothing left to do: the new ones are optimised on upload.</p>
+				</div>
 				<div class="takopic-actions">
 					<div class="takopic-action takopic-action--primary">
 						<span class="takopic-action__icon dashicons dashicons-format-image" aria-hidden="true"></span>

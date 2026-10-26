@@ -793,6 +793,66 @@
 	cursor: pointer;
 }
 
+/* All the images optimised: a message, with confetti when it shows. */
+.takopic-done {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-3);
+	margin: var(--takopic-space-4) var(--takopic-space-5) 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+	border: 1px solid rgba(123, 47, 247, .25);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	/* The halo of the logo. */
+	box-shadow: var(--takopic-glow);
+}
+
+.takopic-done[hidden] {
+	display: none;
+}
+
+.takopic-done__icon {
+	flex: none;
+	width: 28px;
+	height: 28px;
+	color: var(--takopic-violet);
+	font-size: 28px;
+}
+
+.takopic-done__text {
+	margin: 0;
+	color: var(--takopic-text);
+}
+
+.takopic-done__confetti {
+	position: absolute;
+	z-index: 2;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 0;
+	pointer-events: none;
+}
+
+.takopic-done__piece {
+	position: absolute;
+	top: 50%;
+	left: var(--x);
+	width: 7px;
+	height: 11px;
+	border-radius: 2px;
+	background: var(--color);
+	opacity: 0;
+	will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.takopic-done__confetti {
+		display: none;
+	}
+}
+
 /* 10. Background job and its result
    ========================================================================== */
 
