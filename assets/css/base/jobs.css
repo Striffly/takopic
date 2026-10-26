@@ -279,7 +279,6 @@
 	border: 0;
 	border-radius: var(--takopic-radius-pill);
 	background: var(--takopic-violet-soft);
-	-webkit-appearance: none;
 	appearance: none;
 
 	&::-webkit-progress-bar {
