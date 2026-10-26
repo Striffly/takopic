@@ -1,0 +1,372 @@
+/**
+ * base/layout.css
+ *
+ * The frame of the options page: the page, its
+ * header, the tabs, the cards the tabs are made of,
+ * and the support at the bottom.
+ */
+
+/* Page
+   ========================================================================== */
+
+.takopic-page {
+	max-width: 1160px;
+	color: var(--takopic-text);
+
+	& .wp-header-end {
+		margin: 0;
+		border: 0;
+	}
+
+	& code {
+		padding: 1px 6px;
+		border-radius: var(--takopic-radius-small);
+		background: var(--takopic-violet-soft);
+		font-family: var(--takopic-font-code);
+		font-size: var(--takopic-size-small);
+	}
+
+	& a {
+		color: var(--takopic-violet-dark);
+
+		&:hover,
+		&:focus {
+			color: var(--takopic-violet);
+		}
+	}
+}
+
+.takopic-page__save {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: var(--takopic-space-4);
+}
+
+/* The steps of the Delivery tab lay out on the width of the panel. */
+.takopic-panel {
+	margin-top: var(--takopic-space-5);
+	container-type: inline-size;
+}
+
+.takopic-heading {
+	margin: var(--takopic-space-6) 0 var(--takopic-space-3);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 500;
+}
+
+/* Header
+   ========================================================================== */
+
+.takopic-header {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-5);
+	margin-top: var(--takopic-space-4);
+	padding: var(--takopic-space-5) var(--takopic-space-6);
+	border-radius: var(--takopic-radius-large);
+	background: var(--takopic-gradient-night);
+	box-shadow: var(--takopic-shadow);
+	color: #fff;
+
+	@media (max-width: 782px) {
+		flex-wrap: wrap;
+		padding: var(--takopic-space-5);
+	}
+}
+
+.takopic-header__logo {
+	flex: none;
+	width: 64px;
+	height: 64px;
+	border-radius: var(--takopic-radius);
+	box-shadow: var(--takopic-glow);
+}
+
+.takopic-header__text {
+	flex: 1;
+	min-width: 0;
+}
+
+.takopic-page .takopic-header__title {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+	font-family: var(--takopic-font-display);
+	font-size: 26px;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: -.01em;
+
+	@media (max-width: 782px) {
+		font-size: 20px;
+	}
+}
+
+.takopic-header__tagline {
+	margin: var(--takopic-space-1) 0 0;
+	color: var(--takopic-cyan);
+	font-size: var(--takopic-size-lead);
+}
+
+.takopic-header__version {
+	flex: none;
+	align-self: flex-start;
+	padding: 2px 10px;
+	border: 1px solid rgba(255, 255, 255, .25);
+	border-radius: var(--takopic-radius-pill);
+	color: rgba(255, 255, 255, .8);
+	font-size: var(--takopic-size-small);
+}
+
+/* Tabs: without JS, every panel shows one after another
+   ========================================================================== */
+
+.takopic-tabs {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--takopic-space-1);
+	margin-top: var(--takopic-space-5);
+	padding: var(--takopic-space-1);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+
+	.takopic-page:not(.takopic-page--js) & {
+		display: none;
+	}
+
+	/* On one line, scrolled sideways, without a scrollbar. */
+	@media (max-width: 782px) {
+		position: relative;
+		flex-wrap: nowrap;
+		overflow-x: auto;
+		scroll-snap-type: x proximity;
+		scrollbar-width: none;
+
+		&::-webkit-scrollbar {
+			display: none;
+		}
+	}
+}
+
+.takopic-page .takopic-tabs__tab {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	padding: var(--takopic-space-2) var(--takopic-space-4);
+	border-radius: var(--takopic-radius-small);
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color var(--takopic-transition), color var(--takopic-transition);
+
+	&:hover,
+	&:focus {
+		background: var(--takopic-violet-soft);
+		color: var(--takopic-violet-dark);
+		box-shadow: none;
+	}
+
+	/* The dot of the Settings tab, a format without library: it pulses. */
+	& .takopic-dot--off {
+		animation: takopic-pulse 1.8s ease-out infinite;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+	}
+
+	@media (max-width: 782px) {
+		flex: none;
+		padding: var(--takopic-space-2) var(--takopic-space-3);
+		scroll-snap-align: start;
+	}
+}
+
+.takopic-page .takopic-tabs__tab--active {
+	&,
+	&:hover,
+	&:focus {
+		background: var(--takopic-gradient);
+		color: #fff;
+	}
+
+	/* White on the gradient, where red would not show. */
+	& .takopic-dot--off {
+		animation-name: takopic-pulse-light;
+	}
+}
+
+/* A wave spreading from the dot, fading. */
+@keyframes takopic-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(214, 54, 56, .7);
+	}
+
+	70%,
+	100% {
+		box-shadow: 0 0 0 6px rgba(214, 54, 56, 0);
+	}
+}
+
+@keyframes takopic-pulse-light {
+	0% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, .9);
+	}
+
+	70%,
+	100% {
+		box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+	}
+}
+
+/* Cards
+   ========================================================================== */
+
+.takopic-card {
+	margin-bottom: var(--takopic-space-4);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+}
+
+.takopic-card--danger {
+	border-color: var(--takopic-off-border);
+
+	& .takopic-card__icon {
+		background: var(--takopic-off-bg);
+		color: var(--takopic-off);
+	}
+}
+
+.takopic-card--hero {
+	overflow: hidden;
+}
+
+.takopic-card__header {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--takopic-space-3);
+	padding: var(--takopic-space-5) var(--takopic-space-5) 0;
+
+	& > div {
+		flex: 1;
+		min-width: 0;
+	}
+}
+
+.takopic-card__icon {
+	flex: none;
+	width: 36px;
+	height: 36px;
+	border-radius: 10px;
+	background: var(--takopic-violet-soft);
+	color: var(--takopic-violet);
+	font-size: 20px;
+	line-height: 36px;
+	text-align: center;
+}
+
+.takopic-page .takopic-card__title {
+	margin: 0 0 var(--takopic-space-1);
+	padding: 0;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+.takopic-card__description {
+	margin: 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-body);
+}
+
+.takopic-card__body {
+	padding: var(--takopic-space-2) var(--takopic-space-5) var(--takopic-space-5);
+}
+
+.takopic-card__actions {
+	display: flex;
+	justify-content: flex-end;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 var(--takopic-radius) var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+}
+
+.takopic-card__footer {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	gap: var(--takopic-space-2);
+	margin: 0;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	color: var(--takopic-muted);
+
+	& a {
+		font-weight: 600;
+		text-decoration: none;
+	}
+}
+
+.takopic-card__notice {
+	margin: var(--takopic-space-4) var(--takopic-space-5) var(--takopic-space-5);
+	color: var(--takopic-text-soft);
+}
+
+/* Support: at the bottom right of every tab, quiet
+   ========================================================================== */
+
+/* A line of small links under a separator, the Bitcoin address under it
+   once asked for. */
+.takopic-support {
+	margin-top: var(--takopic-space-6);
+	padding-top: var(--takopic-space-3);
+	border-top: 1px solid var(--takopic-border);
+	text-align: right;
+}
+
+.takopic-support__links {
+	margin: 0;
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-support__links a,
+.takopic-page .takopic-support__toggle {
+	color: var(--takopic-violet-dark);
+	font-size: inherit;
+}
+
+.takopic-support__wallet {
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	max-width: 100%;
+	margin-top: var(--takopic-space-2);
+	padding: var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.takopic-support__qr img {
+	display: block;
+}
+
+.takopic-support__address {
+	max-width: 100%;
+	font-size: 11px;
+	word-break: break-all;
+}

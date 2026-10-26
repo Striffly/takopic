@@ -1,0 +1,376 @@
+/**
+ * tabs/overview.css
+ *
+ * The Overview tab: the bytes saved and the button to
+ * optimise, the disk used, the counts by status and
+ * the libraries.
+ */
+
+/* Savings: the bytes saved, the button to optimise on their right
+   ========================================================================== */
+
+.takopic-savings {
+	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--takopic-space-4);
+	padding: var(--takopic-space-6);
+	background: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .12) 0%, rgba(123, 47, 247, .08) 35%, transparent 70%);
+
+	@media (max-width: 782px) {
+		padding: var(--takopic-space-5);
+	}
+}
+
+.takopic-savings__value {
+	margin: 0;
+	color: var(--takopic-night);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-figure);
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -.02em;
+
+	& span {
+		background: var(--takopic-gradient);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+
+	@media (max-width: 782px) {
+		font-size: 26px;
+	}
+}
+
+.takopic-savings__detail {
+	margin: var(--takopic-space-2) 0 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+}
+
+.takopic-savings__reduction {
+	color: var(--takopic-violet-dark);
+	font-weight: 700;
+}
+
+.takopic-savings__hint a {
+	font-weight: 600;
+	text-decoration: none;
+}
+
+/* Call to action: the button to optimise
+   ========================================================================== */
+
+/* In the colours of the logo: its text in violet once all images are
+   done, filled with the gradient while some wait. */
+.takopic-page .takopic-cta {
+	display: inline-flex;
+	flex: none;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	padding: 10px 18px 10px 22px;
+	border: 1px solid var(--takopic-violet-line);
+	border-radius: var(--takopic-radius-pill);
+	background: rgba(255, 255, 255, .75);
+	box-shadow: var(--takopic-shadow);
+	color: var(--takopic-violet-dark);
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-body);
+	font-weight: 600;
+	word-spacing: .12em;
+	text-decoration: none;
+	transition: box-shadow var(--takopic-transition), transform var(--takopic-transition), background-color var(--takopic-transition);
+
+	&:hover,
+	&:focus {
+		background: #fff;
+		box-shadow: var(--takopic-shadow-hover);
+		color: var(--takopic-violet-dark);
+		transform: translateY(-1px);
+	}
+
+	&:focus-visible {
+		outline: 2px solid var(--takopic-violet);
+		outline-offset: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		transition: none;
+
+		&:hover {
+			transform: none;
+		}
+	}
+}
+
+.takopic-page .takopic-cta__arrow {
+	width: 18px;
+	height: 18px;
+	font-size: 18px;
+	transition: transform var(--takopic-transition);
+
+	.takopic-cta:hover & {
+		transform: translateX(3px);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		&,
+		.takopic-cta:hover & {
+			transform: none;
+			transition: none;
+		}
+	}
+}
+
+/* Images wait. No border: the gradient would repeat under it, a seam on
+   the edges. An echo of the button grows from behind it, its edges showing
+   gradually, and spreads blurring until it fades; not while hovered. */
+.takopic-page .takopic-cta--filled {
+	position: relative;
+	isolation: isolate;
+	padding: 11px 19px 11px 23px;
+	border: 0;
+	background: var(--takopic-gradient);
+	box-shadow: 0 2px 8px rgba(255, 60, 172, .25);
+	color: #fff;
+
+	&::before {
+		content: "";
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		border-radius: inherit;
+		background: var(--takopic-gradient);
+		opacity: 0;
+		animation: takopic-cta-pulse 2.4s cubic-bezier(.25, .6, .4, 1) infinite, takopic-cta-fade 2.4s linear infinite;
+		pointer-events: none;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+	}
+
+	&:hover,
+	&:focus {
+		background: var(--takopic-gradient);
+		box-shadow: var(--takopic-glow);
+		color: #fff;
+
+		&::before {
+			animation: none;
+		}
+	}
+}
+
+/* Two tracks of the same length: the echo grows in one gliding move, its
+   opacity rises and falls in a smooth bell, so the pulse has no seam. */
+@keyframes takopic-cta-pulse {
+	from {
+		filter: blur(2px);
+		transform: scale(.9, .7);
+	}
+
+	to {
+		filter: blur(10px);
+		transform: translateY(2px) scale(1.12, 1.45);
+	}
+}
+
+@keyframes takopic-cta-fade {
+	0% {
+		opacity: 0;
+	}
+
+	10% {
+		opacity: .3;
+	}
+
+	20% {
+		opacity: .55;
+	}
+
+	30% {
+		opacity: .65;
+	}
+
+	45% {
+		opacity: .55;
+	}
+
+	60% {
+		opacity: .38;
+	}
+
+	75% {
+		opacity: .2;
+	}
+
+	90% {
+		opacity: .06;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
+/* Disk: the space used by Takopic, two pills after a quiet label
+   ========================================================================== */
+
+.takopic-disk {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	margin: var(--takopic-space-5) 0 0;
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-disk__label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-1);
+	margin-right: var(--takopic-space-1);
+
+	& .dashicons {
+		width: 16px;
+		height: 16px;
+		font-size: 16px;
+	}
+}
+
+.takopic-disk__item {
+	padding: 3px var(--takopic-space-3);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius-pill);
+	background: rgba(255, 255, 255, .7);
+	color: var(--takopic-text-soft);
+
+	& strong {
+		color: var(--takopic-night);
+	}
+}
+
+/* Counts: the images by status, four columns, two on small screens
+   ========================================================================== */
+
+.takopic-counts {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	margin: 0;
+	border-top: 1px solid var(--takopic-border);
+
+	@media (max-width: 782px) {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+.takopic-counts__item {
+	--takopic-status: var(--takopic-neutral);
+	margin: 0;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+
+	& + & {
+		border-left: 1px solid var(--takopic-border);
+	}
+
+	@media (max-width: 782px) {
+		&:nth-child(3) {
+			border-left: 0;
+		}
+
+		&:nth-child(n + 3) {
+			border-top: 1px solid var(--takopic-border);
+		}
+	}
+}
+
+.takopic-counts__item--optimised {
+	--takopic-status: var(--takopic-on);
+}
+
+.takopic-counts__item--outdated {
+	--takopic-status: var(--takopic-warning-strong);
+}
+
+.takopic-counts__item--error {
+	--takopic-status: var(--takopic-off);
+}
+
+.takopic-counts__value {
+	display: block;
+	font-family: var(--takopic-font-display);
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 1.3;
+	font-variant-numeric: tabular-nums;
+}
+
+.takopic-counts__label {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	color: var(--takopic-muted);
+
+	&::before {
+		content: "";
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: var(--takopic-status);
+	}
+}
+
+/* Libraries: one card per format, linking to its settings
+   ========================================================================== */
+
+.takopic-libraries {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+	gap: var(--takopic-space-3);
+}
+
+.takopic-page .takopic-library {
+	display: flex;
+	flex-direction: column;
+	gap: var(--takopic-space-2);
+	padding: var(--takopic-space-4);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+	color: var(--takopic-text);
+	text-decoration: none;
+	transition: transform var(--takopic-transition), box-shadow var(--takopic-transition), border-color var(--takopic-transition);
+
+	&:hover,
+	&:focus {
+		border-color: var(--takopic-violet-edge);
+		box-shadow: var(--takopic-shadow-hover);
+		color: var(--takopic-text);
+		transform: translateY(-2px);
+	}
+}
+
+.takopic-page .takopic-library--off {
+	border-color: var(--takopic-off-border);
+}
+
+.takopic-library__head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--takopic-space-2);
+	padding-bottom: var(--takopic-space-2);
+	border-bottom: 1px solid var(--takopic-border);
+}
+
+.takopic-library__format {
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 600;
+}

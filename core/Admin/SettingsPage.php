@@ -27,6 +27,7 @@ use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
 use Takopic\Media\Stats;
 use Takopic\Media\Status;
+use Takopic\Plugin;
 use Takopic\Settings;
 
 if (!defined('ABSPATH')) {
@@ -50,6 +51,26 @@ class SettingsPage
 	 */
 	const PAYPAL = 'https://paypal.me/striffly/5EUR';
 	const BITCOIN = 'bc1q3j7gxxykpu9zp3sgxyallw0hq0sr659zl35wre';
+
+	/**
+	 * The stylesheets of the page, in their cascade
+	 * order: base/ what every tab shares, tabs/ one tab
+	 * each.
+	 *
+	 * @var string[]
+	 */
+	const STYLES = [
+		'base/tokens',
+		'base/layout',
+		'base/wordpress',
+		'base/components',
+		'base/fields',
+		'base/jobs',
+		'tabs/overview',
+		'tabs/optimise',
+		'tabs/delivery',
+		'tabs/settings',
+	];
 
 	/**
 	 * Registers the options page.
@@ -84,10 +105,9 @@ class SettingsPage
 		if ($hook !== 'settings_page_' . self::PAGE) {
 			return;
 		}
-		wp_enqueue_style('takopic-settings', TAKOPIC_URL . 'assets/css/settings.css', [], filemtime(TAKOPIC_PATH . 'assets/css/settings.css'));
-		wp_enqueue_script('takopic-settings', TAKOPIC_URL . 'assets/js/settings.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/js/settings.js'), true);
-		wp_set_script_translations('takopic-settings', 'takopic');
-		wp_localize_script('takopic-settings', 'takopicJob', [
+		Plugin::enqueue_chain(self::STYLES, 'style');
+		$script = Plugin::enqueue_script('settings', ['wp-i18n']);
+		wp_localize_script($script, 'takopicJob', [
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce(JobsAjax::NONCE),
 		]);

@@ -84,4 +84,76 @@ final class Plugin
 		}
 		new Display();
 	}
+
+	/**
+	 * Enqueues a stylesheet of assets/css, e.g.
+	 * base/tokens as takopic-base-tokens. Its version
+	 * is its last change, so that browsers load it again
+	 * after an update.
+	 *
+	 * @param string $path Relative to assets/css, without .css.
+	 * @param string[] $deps
+	 * @return string The handle.
+	 * @since 1.0.0
+	 */
+	public static function enqueue_style($path, $deps = [])
+	{
+		$handle = self::handle($path);
+		$file = 'assets/css/' . $path . '.css';
+		wp_enqueue_style($handle, TAKOPIC_URL . $file, $deps, filemtime(TAKOPIC_PATH . $file));
+		return $handle;
+	}
+
+	/**
+	 * Enqueues a script of assets/js in the footer, with
+	 * its translations when it uses wp.i18n.
+	 *
+	 * @param string $path Relative to assets/js, without .js.
+	 * @param string[] $deps
+	 * @return string The handle.
+	 * @since 1.0.0
+	 */
+	public static function enqueue_script($path, $deps = [])
+	{
+		$handle = self::handle($path);
+		$file = 'assets/js/' . $path . '.js';
+		wp_enqueue_script($handle, TAKOPIC_URL . $file, $deps, filemtime(TAKOPIC_PATH . $file), true);
+		if (in_array('wp-i18n', $deps, true)) {
+			wp_set_script_translations($handle, 'takopic');
+		}
+		return $handle;
+	}
+
+	/**
+	 * Enqueues files in their order, each one after
+	 * the previous one: the stylesheets cascade, the
+	 * scripts use the classes loaded before them.
+	 *
+	 * @param string[] $paths
+	 * @param string $type style or script.
+	 * @param string[] $deps Of the first file.
+	 * @return string The handle of the last file.
+	 * @since 1.0.0
+	 */
+	public static function enqueue_chain($paths, $type, $deps = [])
+	{
+		$handle = '';
+		foreach ($paths as $path) {
+			$handle = $type === 'style' ? self::enqueue_style($path, $deps) : self::enqueue_script($path, array_merge(['wp-i18n'], $deps));
+			$deps = [$handle];
+		}
+		return $handle;
+	}
+
+	/**
+	 * Returns the handle of an asset, from its path.
+	 *
+	 * @param string $path
+	 * @return string
+	 * @since 1.0.0
+	 */
+	private static function handle($path)
+	{
+		return 'takopic-' . strtolower(str_replace('/', '-', $path));
+	}
 }

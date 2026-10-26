@@ -20,6 +20,7 @@ namespace Takopic\Admin;
 
 use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
+use Takopic\Plugin;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -98,16 +99,15 @@ class PluginsScreen
 		if ($hook !== 'plugins.php' || !current_user_can('activate_plugins')) {
 			return;
 		}
-		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/js/plugins.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/js/plugins.js'), true);
-		wp_set_script_translations('takopic-plugins', 'takopic');
-		wp_localize_script('takopic-plugins', 'takopicPlugins', [
+		$script = Plugin::enqueue_script('plugins', ['wp-i18n']);
+		wp_localize_script($script, 'takopicPlugins', [
 			'plugin' => plugin_basename(TAKOPIC_FILE),
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce(self::NONCE),
 			'restoreUrl' => SettingsPage::page_url() . '#overview',
 			'themeCalls' => $this->theme_calls(),
 		]);
-		wp_enqueue_style('takopic-plugins', TAKOPIC_URL . 'assets/css/plugins.css', [], filemtime(TAKOPIC_PATH . 'assets/css/plugins.css'));
+		Plugin::enqueue_style('screens/plugins');
 	}
 
 	/**

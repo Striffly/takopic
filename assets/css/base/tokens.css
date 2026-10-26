@@ -1,0 +1,119 @@
+/**
+ * base/tokens.css
+ *
+ * The tokens of the Takopic options page, and its font.
+ * Loaded first: base/ styles what every tab shares,
+ * tabs/ one tab each, screens/ the other screens of
+ * the admin.
+ *
+ * Conventions:
+ * - BEM: one block per component (takopic-card), its
+ *   elements (takopic-card__title) and modifiers
+ *   (takopic-card--danger), each a rule of its own:
+ *   native nesting cannot build a class name from &.
+ *   States, pseudo-elements, the children a modifier
+ *   changes and the media queries nest in their rule.
+ * - Every colour, size and shadow comes from the tokens.
+ * - .takopic-page before a class only where the styles
+ *   of the WordPress admin would win otherwise.
+ * - Only what can be clicked reacts on hover.
+ *
+ * @author Clément Gayot
+ * @author Ainsley Clark (Squidge, original author)
+ */
+
+/* Tokens
+   ========================================================================== */
+
+.takopic-page {
+	/* Palette of the logo. */
+	--takopic-night: #1b0b3b;
+	--takopic-night-2: #2a0e4f;
+	--takopic-night-3: #3d1170;
+	--takopic-pink: #ff3cac;
+	--takopic-violet: #7b2ff7;
+	--takopic-violet-dark: #6420d6;
+	--takopic-violet-soft: #f3edff;
+	--takopic-violet-line: rgba(123, 47, 247, .25);
+	--takopic-violet-edge: rgba(123, 47, 247, .4);
+	--takopic-cyan: #00e5ff;
+	--takopic-gradient: linear-gradient(120deg, var(--takopic-pink) 0%, var(--takopic-violet) 100%);
+	--takopic-gradient-night: linear-gradient(120deg, var(--takopic-night) 0%, var(--takopic-night-2) 55%, var(--takopic-night-3) 100%);
+	/* A light glow of the logo, from the top right corner. */
+	--takopic-gradient-glow: radial-gradient(circle at 100% 0%, rgba(255, 60, 172, .1) 0%, rgba(123, 47, 247, .07) 40%, var(--takopic-surface) 78%);
+
+	/* Text and surfaces. The pink and cyan are too light for text on white. */
+	--takopic-text: #1d2327;
+	--takopic-text-soft: #50575e;
+	--takopic-muted: #646970;
+	--takopic-surface: #fff;
+	--takopic-surface-soft: #f8f7fc;
+	--takopic-border: #e4e2ee;
+	--takopic-code-text: #e9e5f5;
+
+	/* States. */
+	--takopic-on: #00a32a;
+	--takopic-on-bg: #edfaef;
+	--takopic-warning: #b8860b;
+	--takopic-warning-strong: #dba617;
+	--takopic-warning-bg: #fcf9e8;
+	--takopic-off: #d63638;
+	--takopic-off-bg: #fcf0f1;
+	--takopic-off-border: #f2c8c9;
+	--takopic-neutral: #8c8f94;
+	--takopic-neutral-bg: #f0f0f1;
+
+	/* Type. Unbounded is wide: titles and figures only. */
+	--takopic-font-display: "Unbounded", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+	--takopic-font-code: Consolas, Monaco, monospace;
+	--takopic-size-small: 12px;
+	--takopic-size-body: 13px;
+	--takopic-size-lead: 14px;
+	--takopic-size-title: 15px;
+	--takopic-size-heading: 20px;
+	--takopic-size-figure: 34px;
+
+	/* Space, shapes, motion. */
+	--takopic-space-1: 4px;
+	--takopic-space-2: 8px;
+	--takopic-space-3: 12px;
+	--takopic-space-4: 16px;
+	--takopic-space-5: 24px;
+	--takopic-space-6: 32px;
+	--takopic-radius-small: 6px;
+	--takopic-radius: 12px;
+	--takopic-radius-large: 16px;
+	--takopic-radius-pill: 999px;
+	--takopic-shadow: 0 1px 2px rgba(27, 11, 59, .06), 0 6px 20px rgba(27, 11, 59, .06);
+	--takopic-shadow-hover: 0 2px 4px rgba(27, 11, 59, .08), 0 12px 32px rgba(123, 47, 247, .14);
+	--takopic-glow: 0 0 24px rgba(255, 60, 172, .45);
+	--takopic-focus-ring: 0 0 0 2px var(--takopic-surface), 0 0 0 4px var(--takopic-violet);
+	--takopic-transition: 150ms ease;
+}
+
+/* Font
+   ========================================================================== */
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url("../../fonts/unbounded-500.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url("../../fonts/unbounded-600.woff2") format("woff2");
+}
+
+@font-face {
+	font-family: "Unbounded";
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url("../../fonts/unbounded-700.woff2") format("woff2");
+}

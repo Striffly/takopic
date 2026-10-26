@@ -1,0 +1,340 @@
+/**
+ * tabs/delivery.css
+ *
+ * The Delivery tab, in three numbered steps: the WebP
+ * and AVIF versions made, the way to serve them, then
+ * the test and its checks.
+ */
+
+/* Steps: an arrow from one to the next
+   ========================================================================== */
+
+/* Stacked, the arrows point down; side by side when the panel is wide
+   enough, they point right. */
+.takopic-steps {
+	--takopic-steps-gap: 44px;
+	display: grid;
+	gap: var(--takopic-steps-gap);
+	margin: 0 0 var(--takopic-space-6);
+	padding: 0;
+	list-style: none;
+
+	@container (min-width: 1080px) {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.45fr) minmax(0, 1fr);
+	}
+}
+
+.takopic-step {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	box-shadow: var(--takopic-shadow);
+
+	&:not(:last-child)::after {
+		content: "\f346"; /* Dashicon arrow-down-alt. */
+		position: absolute;
+		z-index: 1;
+		top: calc(100% + (var(--takopic-steps-gap) - 28px) / 2);
+		left: calc(50% - 14px);
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--takopic-gradient);
+		box-shadow: 0 2px 8px rgba(123, 47, 247, .35);
+		color: #fff;
+		font-family: dashicons;
+		font-size: 18px;
+		line-height: 28px;
+		text-align: center;
+
+		/* Between two steps, level with their numbers. */
+		@container (min-width: 1080px) {
+			content: "\f344"; /* Dashicon arrow-right-alt. */
+			top: calc(var(--takopic-space-5) + 6px);
+			left: calc(100% + (var(--takopic-steps-gap) - 28px) / 2);
+		}
+	}
+}
+
+.takopic-step__header {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--takopic-space-4);
+	padding: var(--takopic-space-5) var(--takopic-space-5) var(--takopic-space-4);
+
+	@media (max-width: 782px) {
+		padding: var(--takopic-space-4) var(--takopic-space-4) var(--takopic-space-3);
+	}
+}
+
+.takopic-step__number {
+	flex: none;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	background: var(--takopic-gradient);
+	box-shadow: 0 4px 12px rgba(123, 47, 247, .3);
+	color: #fff;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-title);
+	font-weight: 600;
+	line-height: 40px;
+	text-align: center;
+}
+
+.takopic-step__heading {
+	flex: 1;
+	min-width: 0;
+}
+
+.takopic-page .takopic-step__title {
+	margin: 0;
+	padding: 0;
+	font-family: var(--takopic-font-display);
+	font-size: var(--takopic-size-heading);
+	font-weight: 500;
+	line-height: 40px;
+}
+
+.takopic-step__description {
+	margin: var(--takopic-space-1) 0 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+}
+
+.takopic-step__body {
+	flex: 1;
+	padding: var(--takopic-space-1) var(--takopic-space-5) var(--takopic-space-5);
+
+	@media (max-width: 782px) {
+		padding: 0 var(--takopic-space-4) var(--takopic-space-4);
+	}
+}
+
+.takopic-step__actions {
+	display: flex;
+	justify-content: flex-end;
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 var(--takopic-radius) var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+}
+
+/* Step 1: how many images have their WebP or AVIF version
+   ========================================================================== */
+
+.takopic-generate {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: var(--takopic-space-4);
+}
+
+.takopic-generate__value {
+	margin: 0;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+
+	& strong {
+		color: var(--takopic-text);
+		font-family: var(--takopic-font-display);
+		font-size: var(--takopic-size-heading);
+		font-weight: 600;
+	}
+}
+
+.takopic-generate__formats {
+	display: flex;
+	flex-wrap: wrap;
+	gap: var(--takopic-space-2);
+	margin: 0;
+
+	& li {
+		margin: 0;
+	}
+}
+
+.takopic-meter {
+	display: block;
+	align-self: stretch;
+	height: 8px;
+	overflow: hidden;
+	border-radius: var(--takopic-radius-pill);
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-meter__value {
+	display: block;
+	height: 100%;
+	border-radius: var(--takopic-radius-pill);
+	background: var(--takopic-gradient);
+}
+
+/* Step 2: the two ways to serve, the checked one highlighted
+   ========================================================================== */
+
+.takopic-methods {
+	display: grid;
+	align-content: start;
+	gap: var(--takopic-space-4);
+}
+
+.takopic-method {
+	padding: var(--takopic-space-4) var(--takopic-space-5);
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface-soft);
+	transition: border-color var(--takopic-transition), background-color var(--takopic-transition);
+
+	&:has(.takopic-toggle__input:checked) {
+		border-color: var(--takopic-violet-edge);
+		background: var(--takopic-violet-soft);
+	}
+
+	& .takopic-field {
+		padding: 0;
+	}
+
+	& .takopic-field__help {
+		margin-top: var(--takopic-space-2);
+		line-height: 1.6;
+	}
+}
+
+/* Step 3: the test, its button as large as it matters, its verdict below
+   ========================================================================== */
+
+.takopic-test__list {
+	margin: 0 0 var(--takopic-space-5);
+	padding-left: var(--takopic-space-5);
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-lead);
+	line-height: 1.6;
+	list-style: disc;
+
+	& li {
+		margin-bottom: var(--takopic-space-2);
+	}
+}
+
+.takopic-page .takopic-test__button {
+	justify-content: center;
+	width: 100%;
+	min-height: 46px;
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+	text-align: center;
+}
+
+.takopic-test__summary {
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-2);
+	margin: var(--takopic-space-4) 0 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+	border-radius: var(--takopic-radius-small);
+	font-weight: 600;
+
+	&[hidden] {
+		display: none;
+	}
+
+	&::before {
+		font-family: dashicons;
+		font-size: 20px;
+		font-weight: 400;
+		line-height: 1;
+	}
+}
+
+.takopic-test__summary--ok {
+	background: var(--takopic-on-bg);
+	color: var(--takopic-on);
+
+	&::before {
+		content: "\f12a"; /* Dashicon yes-alt. */
+	}
+}
+
+.takopic-test__summary--fail {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
+
+	&::before {
+		content: "\f153"; /* Dashicon dismiss. */
+	}
+}
+
+.takopic-test__sample:empty {
+	display: none;
+}
+
+/* Checks: the results of the test
+   ========================================================================== */
+
+.takopic-checks {
+	margin: 0;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius-small);
+}
+
+.takopic-checks__item {
+	--takopic-check-colour: var(--takopic-on);
+	--takopic-check-icon: "\f12a"; /* Dashicon yes-alt. */
+	display: grid;
+	grid-template-columns: 24px 1fr;
+	gap: 2px var(--takopic-space-3);
+	margin: 0;
+	padding: var(--takopic-space-4);
+
+	& + & {
+		border-top: 1px solid var(--takopic-border);
+	}
+}
+
+.takopic-checks__item--fail {
+	--takopic-check-colour: var(--takopic-off);
+	--takopic-check-icon: "\f153"; /* Dashicon dismiss. */
+	background: var(--takopic-off-bg);
+}
+
+.takopic-checks__item--info {
+	--takopic-check-colour: var(--takopic-neutral);
+	--takopic-check-icon: "\f14c"; /* Dashicon info-outline. */
+}
+
+.takopic-checks__icon {
+	grid-row: span 3;
+	width: 24px;
+	height: 24px;
+	color: var(--takopic-check-colour);
+	font-size: 24px;
+
+	&::before {
+		content: var(--takopic-check-icon);
+	}
+}
+
+.takopic-checks__label {
+	font-size: var(--takopic-size-lead);
+	font-weight: 600;
+}
+
+.takopic-checks__detail {
+	color: var(--takopic-muted);
+	font-size: var(--takopic-size-small);
+}
+
+.takopic-checks__advice {
+	color: var(--takopic-text-soft);
+
+	&:empty {
+		display: none;
+	}
+}

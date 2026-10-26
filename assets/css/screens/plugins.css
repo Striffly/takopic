@@ -1,8 +1,8 @@
 /**
- * plugins.css
+ * screens/plugins.css
  *
  * The dialog of the plugins screen, warning before Takopic
- * is deactivated or deleted (see plugins.js).
+ * is deactivated (see plugins.js).
  */
 
 .takopic-dialog {
@@ -11,14 +11,14 @@
 	border: 0;
 	border-radius: 8px;
 	box-shadow: 0 10px 40px rgba(0, 0, 0, .25);
-}
 
-.takopic-dialog::backdrop {
-	background: rgba(0, 0, 0, .4);
-}
+	&::backdrop {
+		background: rgba(0, 0, 0, .4);
+	}
 
-.takopic-dialog h2 {
-	margin-top: 0;
+	& h2 {
+		margin-top: 0;
+	}
 }
 
 .takopic-dialog__actions {

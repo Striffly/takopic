@@ -21,6 +21,7 @@ use Takopic\Media\Files;
 use Takopic\Media\Optimiser;
 use Takopic\Media\Stats;
 use Takopic\Media\Status;
+use Takopic\Plugin;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -303,6 +304,6 @@ class MediaColumn
 		if ($hook !== 'upload.php') {
 			return;
 		}
-		wp_enqueue_style('takopic-media', TAKOPIC_URL . 'assets/css/media.css', [], filemtime(TAKOPIC_PATH . 'assets/css/media.css'));
+		Plugin::enqueue_style('screens/media');
 	}
 }

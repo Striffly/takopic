@@ -19,6 +19,7 @@ namespace Takopic\Admin;
 
 use Takopic\Log\Errors;
 use Takopic\Media\Optimiser;
+use Takopic\Plugin;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -250,13 +251,13 @@ class Notices
 		if (!$this->is_notice_screen()) {
 			return;
 		}
-		wp_enqueue_script('takopic-notices', TAKOPIC_URL . 'assets/js/notices.js', ['jquery'], filemtime(TAKOPIC_PATH . 'assets/js/notices.js'), true);
-		wp_localize_script('takopic-notices', 'takopicNotices', [
+		$script = Plugin::enqueue_script('notices', ['jquery']);
+		wp_localize_script($script, 'takopicNotices', [
 			'action' => self::NONCE,
 			'nonce' => wp_create_nonce(self::NONCE),
 			'title' => self::title(),
 		]);
-		wp_enqueue_style('takopic-notices', TAKOPIC_URL . 'assets/css/notices.css', [], filemtime(TAKOPIC_PATH . 'assets/css/notices.css'));
+		Plugin::enqueue_style('screens/notices');
 	}
 
 	/**

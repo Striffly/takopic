@@ -1,0 +1,41 @@
+/**
+ * screens/media.css
+ *
+ * The Optimisation column of the media library: the
+ * status of each image, a dot of its colour, and the
+ * bytes saved.
+ */
+
+.column-takopic {
+	width: 170px;
+}
+
+.takopic-saved {
+	white-space: nowrap;
+}
+
+.takopic-status-label {
+	--takopic-status: #a7aaad;
+
+	&::before {
+		content: "";
+		display: inline-block;
+		width: 8px;
+		height: 8px;
+		margin-right: 6px;
+		border-radius: 50%;
+		background: var(--takopic-status);
+	}
+}
+
+.takopic-status-label--optimised {
+	--takopic-status: #00a32a;
+}
+
+.takopic-status-label--outdated {
+	--takopic-status: #dba617;
+}
+
+.takopic-status-label--error {
+	--takopic-status: #d63638;
+}

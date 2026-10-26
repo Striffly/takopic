@@ -1,0 +1,41 @@
+/**
+ * tabs/optimise.css
+ *
+ * The Optimise tab: the message when the page opens on
+ * a media library all optimised. Its jobs are styled
+ * by base/jobs.css, shared with the Maintenance tab.
+ */
+
+/* Done: all the images optimised, shown when the page opens
+   ========================================================================== */
+
+.takopic-done {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: var(--takopic-space-3);
+	margin: var(--takopic-space-4) var(--takopic-space-5) 0;
+	padding: var(--takopic-space-3) var(--takopic-space-4);
+	border: 1px solid var(--takopic-violet-line);
+	border-radius: var(--takopic-radius);
+	background: var(--takopic-surface);
+	/* The halo of the logo. */
+	box-shadow: var(--takopic-glow);
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.takopic-done__icon {
+	flex: none;
+	width: 28px;
+	height: 28px;
+	color: var(--takopic-violet);
+	font-size: 28px;
+}
+
+.takopic-done__text {
+	margin: 0;
+	color: var(--takopic-text);
+}

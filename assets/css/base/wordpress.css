@@ -1,0 +1,53 @@
+/**
+ * base/wordpress.css
+ *
+ * The WordPress components of the options page,
+ * their classes kept, in the colours of the logo.
+ */
+
+/* Buttons
+   ========================================================================== */
+
+.takopic-page .button-primary {
+	border-color: var(--takopic-violet-dark);
+	background: var(--takopic-violet);
+	color: #fff;
+	transition: background-color var(--takopic-transition), box-shadow var(--takopic-transition);
+
+	&:hover,
+	&:focus {
+		border-color: var(--takopic-violet-dark);
+		background: var(--takopic-violet-dark);
+		color: #fff;
+	}
+
+	&:focus {
+		box-shadow: 0 0 0 1px #fff, 0 0 0 3px var(--takopic-violet);
+	}
+}
+
+.takopic-page .button:not(.button-primary) {
+	border-color: var(--takopic-violet);
+	color: var(--takopic-violet-dark);
+
+	&:hover,
+	&:focus {
+		background: var(--takopic-violet-soft);
+		color: var(--takopic-violet-dark);
+	}
+}
+
+.takopic-page .button.takopic-button--danger {
+	border-color: var(--takopic-off);
+	color: var(--takopic-off);
+
+	&:hover,
+	&:focus {
+		background: var(--takopic-off-bg);
+		color: var(--takopic-off);
+	}
+}
+
+.takopic-page .button[disabled] {
+	opacity: .55;
+}
