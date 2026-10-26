@@ -19,7 +19,7 @@ namespace Takopic\Encoders;
 
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
-use Takopic\Types\Mimes;
+use Takopic\Media\Files;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -50,7 +50,7 @@ class JPG extends Encoder implements Convertor
 	 */
 	public static function convert($filepath, $mime, $args)
 	{
-		if ($mime != Mimes::JPG) {
+		if ($mime != Files::JPG) {
 			return;
 		}
 		if (!isset($args['quality'])) {
@@ -61,7 +61,7 @@ class JPG extends Encoder implements Convertor
 		if (!self::backup($filepath, $args)) {
 			return;
 		}
-		$original = self::backup_path($filepath);
+		$original = Files::backup_path($filepath);
 		if (!copy($original, $filepath)) {
 			Errors::add(isset($args['id']) ? $args['id'] : 0, self::cmd_name(), $filepath, 'cannot write ' . basename($filepath));
 			return;

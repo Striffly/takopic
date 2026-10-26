@@ -17,6 +17,7 @@
 namespace Takopic\Admin;
 
 use Takopic\Media\Cleaner;
+use Takopic\Media\Files;
 use Takopic\Media\Optimiser;
 use Takopic\Media\Stats;
 use Takopic\Media\Status;
@@ -87,7 +88,7 @@ class MediaColumn
 	 */
 	private function is_image($id)
 	{
-		return in_array(get_post_mime_type($id), Status::MIMES, true);
+		return in_array(get_post_mime_type($id), Files::MIMES, true);
 	}
 
 	/**

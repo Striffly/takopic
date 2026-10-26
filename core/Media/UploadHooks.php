@@ -18,7 +18,6 @@
 namespace Takopic\Media;
 
 use Takopic\Admin\Fields;
-use Takopic\Encoders\Encoder;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -91,7 +90,7 @@ class UploadHooks
 	 */
 	public function delete_files($attachment)
 	{
-		Encoder::delete($attachment);
+		Cleaner::delete_files($attachment);
 		return $attachment;
 	}
 }

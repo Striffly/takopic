@@ -20,6 +20,7 @@ use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
 use Takopic\Media\Cleaner;
+use Takopic\Media\Files;
 use Takopic\Media\Lock;
 use Takopic\Media\Optimiser;
 use Takopic\Media\Stats;
@@ -280,7 +281,7 @@ class Commands extends WP_CLI_Command
 		foreach (array_chunk(Cleaner::ids(), 500) as $ids) {
 			_prime_post_caches($ids, false, true);
 			foreach ($ids as $id) {
-				if (!in_array(get_post_mime_type($id), Status::MIMES, true) || (!$rebuild && Stats::of($id) !== null)) {
+				if (!in_array(get_post_mime_type($id), Files::MIMES, true) || (!$rebuild && Stats::of($id) !== null)) {
 					continue;
 				}
 				$done = Lock::run($id, function () use ($id) {

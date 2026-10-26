@@ -15,8 +15,8 @@
 
 namespace Takopic\Tests\Integration;
 
-use Takopic\Encoders\Encoder;
 use Takopic\Encoders\WebP;
+use Takopic\Media\Files;
 use Takopic\Media\Job;
 use Takopic\Media\Optimiser;
 use Takopic\Media\Status;
@@ -89,7 +89,7 @@ class JobTest extends TestCase
 	{
 		$kept = $this->upload('photo.jpg');
 		$lost = $this->upload('photo.jpg');
-		unlink(Encoder::backup_path(get_attached_file($lost)));
+		unlink(Files::backup_path(get_attached_file($lost)));
 
 		$this->job->start(Job::RESTORE, [$kept, $lost]);
 		$this->run_job();

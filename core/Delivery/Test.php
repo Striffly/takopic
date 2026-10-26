@@ -20,8 +20,8 @@ namespace Takopic\Delivery;
 use Takopic\Admin\Fields;
 use Takopic\Admin\JobsAjax;
 use Takopic\Encoders\AVIF;
-use Takopic\Encoders\Encoder;
 use Takopic\Encoders\WebP;
+use Takopic\Media\Files;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -127,7 +127,7 @@ class Test
 	{
 		$label = 'The original images are not public';
 		$uploads = wp_get_upload_dir();
-		$backup = wp_normalize_path(Encoder::backup_path($sample['file']));
+		$backup = wp_normalize_path(Files::backup_path($sample['file']));
 		$base = trailingslashit(wp_normalize_path($uploads['basedir']));
 		if (!file_exists($backup)) {
 			return ['state' => 'info', 'label' => $label, 'detail' => 'The sample image has no original kept.', 'advice' => ''];
@@ -141,7 +141,7 @@ class Test
 			'state' => $public ? 'fail' : 'ok',
 			'label' => $label,
 			'detail' => self::describe($response),
-			'advice' => $public ? 'Anyone can download them, with their metadata (GPS position of the photos). nginx: add <code>location ^~ ' . esc_html(wp_parse_url($uploads['baseurl'], PHP_URL_PATH)) . '/' . esc_html(Encoder::BACKUP_DIR) . '/ { deny all; }</code> to the server block, or move them with the <code>takopic_backup_dir</code> filter.' : '',
+			'advice' => $public ? 'Anyone can download them, with their metadata (GPS position of the photos). nginx: add <code>location ^~ ' . esc_html(wp_parse_url($uploads['baseurl'], PHP_URL_PATH)) . '/' . esc_html(Files::BACKUP_DIR) . '/ { deny all; }</code> to the server block, or move them with the <code>takopic_backup_dir</code> filter.' : '',
 		];
 	}
 

@@ -56,10 +56,6 @@ class Status
 	 */
 	const PROCESSED = 'processed';
 
-	/**
-	 * Image types Takopic optimises.
-	 */
-	const MIMES = ['image/jpeg', 'image/png'];
 
 	/**
 	 * Meta key saving the thumbnail sizes an image was

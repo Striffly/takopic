@@ -18,8 +18,8 @@ use Takopic\Admin\JobsAjax;
 use Takopic\Delivery\Htaccess;
 use Takopic\Delivery\Test;
 use Takopic\Encoders\AVIF;
-use Takopic\Encoders\Encoder;
 use Takopic\Encoders\WebP;
+use Takopic\Media\Files;
 use Takopic\Tests\TestCase;
 use WPAjaxDieContinueException;
 
@@ -165,8 +165,8 @@ class DeliveryTest extends TestCase
 		$id = self::factory()->attachment->create_object(['file' => '2026/10/photo.jpg', 'post_mime_type' => 'image/jpeg']);
 		$file = $this->uploads . '/2026/10/photo.jpg';
 		wp_mkdir_p(dirname($file));
-		wp_mkdir_p(dirname(Encoder::backup_path($file)));
-		foreach ([$file, $file . '.webp', $file . '.avif', Encoder::backup_path($file)] as $path) {
+		wp_mkdir_p(dirname(Files::backup_path($file)));
+		foreach ([$file, $file . '.webp', $file . '.avif', Files::backup_path($file)] as $path) {
 			touch($path);
 		}
 		update_post_meta($id, WebP::meta_key(), 'quality:80');
@@ -187,7 +187,7 @@ class DeliveryTest extends TestCase
 			$accept = isset($args['headers']['Accept']) ? $args['headers']['Accept'] : '';
 			$status = 200;
 			$vary = '';
-			if (strpos($url, '/' . Encoder::BACKUP_DIR . '/') !== false) {
+			if (strpos($url, '/' . Files::BACKUP_DIR . '/') !== false) {
 				list($status, $type) = [$server['originals'], 'image/jpeg'];
 			} elseif (substr($url, -5) === '.avif') {
 				$type = $server['avif'];

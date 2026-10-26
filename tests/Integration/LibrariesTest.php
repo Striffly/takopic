@@ -15,11 +15,11 @@
 namespace Takopic\Tests\Integration;
 
 use Takopic\Encoders\AVIF;
-use Takopic\Encoders\Encoder;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
 use Takopic\Log\Errors;
+use Takopic\Media\Files;
 use Takopic\Media\Status;
 use Takopic\Tests\TestCase;
 
@@ -91,7 +91,7 @@ class LibrariesTest extends TestCase
 
 		$this->assertTrue(Errors::has($id, 'jpegoptim'));
 		$this->assertFileEquals(self::fixture('photo.jpg'), $main);
-		$this->assertFileDoesNotExist(Encoder::backup_path($main), 'Retried next time.');
+		$this->assertFileDoesNotExist(Files::backup_path($main), 'Retried next time.');
 	}
 
 	public function test_the_original_is_kept_when_it_cannot_be_put_back()
@@ -105,7 +105,7 @@ class LibrariesTest extends TestCase
 		$id = $this->upload('photo.jpg');
 		$main = get_attached_file($id);
 
-		$this->assertFileEquals(self::fixture('photo.jpg'), Encoder::backup_path($main));
+		$this->assertFileEquals(self::fixture('photo.jpg'), Files::backup_path($main));
 		$this->assertStringContainsString('cannot put the original back', wp_json_encode(Errors::for_attachment($id)));
 		chmod($main, 0644);
 	}
@@ -139,7 +139,7 @@ class LibrariesTest extends TestCase
 		$this->assertFalse(JPG::available());
 		$id = $this->upload('photo.jpg');
 		$this->assertFileEquals(self::fixture('photo.jpg'), get_attached_file($id));
-		$this->assertFileDoesNotExist(Encoder::backup_path(get_attached_file($id)));
+		$this->assertFileDoesNotExist(Files::backup_path(get_attached_file($id)));
 		$this->assertSame('', get_post_meta($id, JPG::meta_key(), true));
 	}
 
