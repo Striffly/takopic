@@ -863,9 +863,10 @@ class SettingsPage
 		);
 
 		if ($field['type'] === 'checkbox') {
+			// An unticked box is not sent: the hidden field sends 0 instead.
 			printf(
-				'<label class="takopic-toggle"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="1" aria-labelledby="%s-label" %s><span class="takopic-toggle__track" aria-hidden="true"></span></label>',
-				esc_attr($id), esc_attr($input), esc_attr($id), checked($value, true, false)
+				'<input type="hidden" name="%s" value="0"><label class="takopic-toggle"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="1" aria-labelledby="%s-label" %s><span class="takopic-toggle__track" aria-hidden="true"></span></label>',
+				esc_attr($input), esc_attr($id), esc_attr($input), esc_attr($id), checked($value, true, false)
 			);
 		} else {
 			echo '<div class="takopic-field__control">';
@@ -919,9 +920,10 @@ class SettingsPage
 	 */
 	private function render_switch($name, $field)
 	{
+		$input = Settings::OPTION . '[' . $name . ']';
 		printf(
-			'<label class="takopic-toggle takopic-toggle--switch"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="1" %s><span class="takopic-toggle__track" aria-hidden="true"></span><span class="screen-reader-text">%s</span></label>',
-			esc_attr('takopic-' . str_replace('_', '-', $name)), esc_attr(Settings::OPTION . '[' . $name . ']'), checked(Settings::get($name), true, false), esc_html($field['label'])
+			'<input type="hidden" name="%s" value="0"><label class="takopic-toggle takopic-toggle--switch"><input type="checkbox" class="takopic-toggle__input" id="%s" name="%s" value="1" %s><span class="takopic-toggle__track" aria-hidden="true"></span><span class="screen-reader-text">%s</span></label>',
+			esc_attr($input), esc_attr('takopic-' . str_replace('_', '-', $name)), esc_attr($input), checked(Settings::get($name), true, false), esc_html($field['label'])
 		);
 	}
 
