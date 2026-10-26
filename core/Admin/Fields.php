@@ -19,7 +19,6 @@ namespace Takopic\Admin;
 
 use Takopic\Delivery\Htaccess;
 use Takopic\Encoders\AVIF;
-use Takopic\Encoders\Encoder;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
@@ -28,6 +27,7 @@ use Takopic\Media\Files;
 use Takopic\Media\Stats;
 use Takopic\Media\Status;
 use Takopic\Settings;
+use Takopic\System\Process;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -127,7 +127,7 @@ class Fields
 		}
 		// Saving the settings reads the versions of the libraries again, e.g. after an upgrade.
 		if (isset($_GET['settings-updated'])) {
-			Encoder::forget_versions();
+			Process::forget_versions();
 		}
 		$sections = self::sections();
 		$formats = self::formats($sections);
