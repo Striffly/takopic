@@ -1124,21 +1124,6 @@
 	border-top: 0;
 }
 
-/* A sub-option, under its checkbox. */
-.takopic-field--sub {
-	margin-left: var(--takopic-space-1);
-	padding-left: var(--takopic-space-4);
-	border-left: 2px solid var(--takopic-violet-soft);
-}
-
-.takopic-fields .takopic-field--sub {
-	padding: var(--takopic-space-2) 0 var(--takopic-space-2) var(--takopic-space-4);
-}
-
-.takopic-field--sub .takopic-field__label {
-	font-weight: 400;
-}
-
 /* The "?" opening the full help of a field, under its short note. */
 .takopic-page:not(.takopic-page--js) .takopic-help__toggle {
 	display: none;

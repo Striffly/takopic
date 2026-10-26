@@ -18,6 +18,7 @@ use Takopic\Delivery\Htaccess;
 use Takopic\Lifecycle;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
+use Takopic\Settings;
 use Takopic\Tests\TestCase;
 
 class LifecycleTest extends TestCase
@@ -28,7 +29,7 @@ class LifecycleTest extends TestCase
 		$job = $this->running_job();
 		// As another request locking an image, see Lock.
 		$wpdb->insert($wpdb->options, ['option_name' => Lock::PREFIX . 7, 'option_value' => time(), 'autoload' => 'no']);
-		self::set(Htaccess::OPTION, true);
+		self::set('serve_rewrite', true);
 
 		Lifecycle::deactivate();
 
@@ -39,7 +40,7 @@ class LifecycleTest extends TestCase
 		$this->assertSame('cancelled', $job->progress()['state']);
 		$this->assertSame('0', $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->options} WHERE option_name = %s", Lock::PREFIX . 7)));
 		$this->assertFalse(Htaccess::rules_written());
-		$this->assertTrue((bool)get_option('_' . Htaccess::OPTION), 'The settings stay.');
+		$this->assertTrue(Settings::get('serve_rewrite'), 'The settings stay.');
 	}
 
 	public function test_a_job_that_ended_stays_as_it_ended()
@@ -53,7 +54,7 @@ class LifecycleTest extends TestCase
 
 	public function test_activating_takopic_writes_its_rules_again()
 	{
-		self::set(Htaccess::OPTION, true);
+		self::set('serve_rewrite', true);
 		Lifecycle::deactivate();
 
 		Lifecycle::activate();

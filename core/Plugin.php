@@ -71,6 +71,7 @@ final class Plugin
 		$this->define('TAKOPIC_URL', plugin_dir_url($base));
 		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
 		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
+		add_action('init', [Settings::class, 'register']);
 		new Fields();
 		new UploadHooks();
 		new Notices();

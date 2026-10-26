@@ -17,13 +17,13 @@
 namespace Takopic\Media;
 
 use Exception;
-use Takopic\Admin\Fields;
 use Takopic\Encoders\AVIF;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
+use Takopic\Settings;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -46,12 +46,13 @@ class Optimiser
 	];
 
 	/**
-	 * The tool of the errors of the images WordPress
-	 * cannot read, as the libraries for their failures.
+	 * The key of the errors of the images WordPress
+	 * cannot read, next to the formats of the
+	 * libraries (see Errors).
 	 *
 	 * @var string
 	 */
-	const READER = 'wordpress';
+	const READER = 'read';
 
 	/**
 	 * HEAVIER_KEY is the meta key listing the WebP and
@@ -93,17 +94,13 @@ class Optimiser
 	public static function settings($enabled_only = true)
 	{
 		$settings = [
-			'webp' => ['quality' => Fields::get('takopic_webp_quality')],
-			'avif' => ['quality' => Fields::get('takopic_avif_quality')],
-			'jpg' => ['quality' => Fields::get('takopic_jpg_quality')],
-			'png' => [
-				'optimization' => Fields::get('takopic_png_quality'),
-				'lossy' => Fields::get('takopic_png_lossy'),
-				'lossy_quality' => Fields::get('takopic_png_lossy_quality'),
-			],
+			'webp' => ['quality' => Settings::get('webp_quality')],
+			'avif' => ['quality' => Settings::get('avif_quality')],
+			'jpg' => ['quality' => Settings::get('jpg_quality')],
+			'png' => ['lossy' => Settings::get('png_compression') === 'lossy'],
 		];
 		foreach (array_keys($settings) as $format) {
-			if ($enabled_only && !Fields::get('takopic_' . $format . '_enable')) {
+			if ($enabled_only && !Settings::get($format . '_enable')) {
 				unset($settings[$format]);
 			}
 		}

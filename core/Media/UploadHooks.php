@@ -17,7 +17,7 @@
 
 namespace Takopic\Media;
 
-use Takopic\Admin\Fields;
+use Takopic\Settings;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -53,7 +53,7 @@ class UploadHooks
 	 */
 	public function threshold()
 	{
-		$size = (int)Fields::get('takopic_max_size');
+		$size = Settings::get('max_size');
 		return $size > 0 ? $size : false;
 	}
 
