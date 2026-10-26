@@ -1217,6 +1217,53 @@
 	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-violet);
 }
 
+/* A choice between a few values, all in sight: buttons side by side, the
+   chosen one in the colours of Takopic. Radio buttons underneath. */
+.takopic-choice {
+	display: inline-flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	padding: 3px;
+	border: 1px solid var(--takopic-border);
+	border-radius: var(--takopic-radius-small);
+	background: var(--takopic-surface-soft);
+}
+
+.takopic-choice__option {
+	display: flex;
+	cursor: pointer;
+}
+
+.takopic-page .takopic-choice__input {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: 0;
+	opacity: 0;
+}
+
+.takopic-choice__label {
+	padding: 5px 12px;
+	border-radius: 4px;
+	color: var(--takopic-text-soft);
+	font-weight: 600;
+	white-space: nowrap;
+	transition: background var(--takopic-transition), color var(--takopic-transition);
+}
+
+.takopic-choice__option:hover .takopic-choice__label {
+	color: var(--takopic-violet-dark);
+}
+
+.takopic-choice__input:checked + .takopic-choice__label {
+	background: var(--takopic-gradient);
+	color: #fff;
+}
+
+.takopic-choice__input:focus-visible + .takopic-choice__label {
+	box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--takopic-violet);
+}
+
 /* 12. Settings: format cards
    ========================================================================== */
 
