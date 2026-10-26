@@ -3,7 +3,7 @@
 /**
  * Mimes
  *
- * Mime times for files stored here.
+ * Mime types of the images Takopic optimises.
  *
  * @package     Takopic
  * @author      Clément Gayot
