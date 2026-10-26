@@ -14,7 +14,9 @@
 		if ($notice.length) {
 			return $notice;
 		}
-		$notice = $('<div class="notice notice-warning is-dismissible takopic-errors-notice"><p><strong>Takopic</strong> could not fully optimise some images:</p><ul></ul></div>');
+		// Its first line, translated and escaped by PHP.
+		$notice = $('<div class="notice notice-warning is-dismissible takopic-errors-notice"><p></p><ul></ul></div>');
+		$notice.find('p').html(settings.title);
 		var $headerEnd = $('.wp-header-end').first();
 		if ($headerEnd.length) {
 			$notice.insertAfter($headerEnd);

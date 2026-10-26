@@ -153,7 +153,7 @@ class Htaccess
 		}
 		require_once ABSPATH . 'wp-admin/includes/misc.php';
 		if (!insert_with_markers(self::htaccess(), self::MARKER, self::apache_rules())) {
-			add_settings_error(Settings::OPTION, 'takopic_rewrite_rules', 'Takopic could not write the rules in uploads/.htaccess: copy them by hand from the Delivery tab.');
+			add_settings_error(Settings::OPTION, 'takopic_rewrite_rules', __('Takopic could not write the rules in uploads/.htaccess: copy them by hand from the Delivery tab.', 'takopic'));
 		}
 	}
 

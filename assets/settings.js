@@ -1,5 +1,5 @@
 /**
- * admin.js
+ * settings.js
  *
  * Tabs for the Takopic options page, the "?" of the
  * fields opening their full help, and the sub-options
@@ -135,6 +135,9 @@
 	if (!page || !box || !settings) {
 		return;
 	}
+	var __ = wp.i18n.__;
+	var _n = wp.i18n._n;
+	var sprintf = wp.i18n.sprintf;
 
 	var label = box.querySelector('.takopic-job__label');
 	var bar = box.querySelector('.takopic-job__bar');
@@ -146,12 +149,37 @@
 	var timer = null;
 	// Set while a job runs on this page, to report its end.
 	var following = false;
-	var LABELS = {optimise: 'Optimising', remove_formats: 'Removing WebP and AVIF', restore: 'Restoring the originals'};
-	// Title when the job is done, when it is cancelled, and what was done to each image.
+	var LABELS = {
+		optimise: __('Optimising', 'takopic'),
+		remove_formats: __('Removing WebP and AVIF', 'takopic'),
+		restore: __('Restoring the originals', 'takopic')
+	};
+	// Title when the job is done, when it is cancelled, and what was done to the images.
 	var RESULTS = {
-		optimise: ['Optimisation complete', 'Optimisation cancelled', 'optimised'],
-		remove_formats: ['WebP and AVIF files removed', 'Removal cancelled', 'cleaned up'],
-		restore: ['Original images restored', 'Restore cancelled', 'restored']
+		optimise: [
+			__('Optimisation complete', 'takopic'),
+			__('Optimisation cancelled', 'takopic'),
+			function (count) {
+				/* translators: %s: the number of images. */
+				return sprintf(_n('%s image optimised', '%s images optimised', count, 'takopic'), number(count));
+			}
+		],
+		remove_formats: [
+			__('WebP and AVIF files removed', 'takopic'),
+			__('Removal cancelled', 'takopic'),
+			function (count) {
+				/* translators: %s: the number of images. */
+				return sprintf(_n('%s image cleaned up', '%s images cleaned up', count, 'takopic'), number(count));
+			}
+		],
+		restore: [
+			__('Original images restored', 'takopic'),
+			__('Restore cancelled', 'takopic'),
+			function (count) {
+				/* translators: %s: the number of images. */
+				return sprintf(_n('%s image restored', '%s images restored', count, 'takopic'), number(count));
+			}
+		]
 	};
 	var MEDIA_URL = settings.ajaxurl.replace('admin-ajax.php', 'upload.php?mode=list');
 
@@ -282,9 +310,21 @@
 	function duration(seconds) {
 		var minutes = Math.floor(seconds / 60);
 		if (minutes >= 60) {
-			return Math.floor(minutes / 60) + ' h ' + (minutes % 60) + ' min';
+			/* translators: 1: hours, 2: minutes. */
+			return sprintf(__('%1$d h %2$d min', 'takopic'), Math.floor(minutes / 60), minutes % 60);
 		}
-		return minutes ? minutes + ' min ' + (seconds % 60) + ' s' : Math.max(1, seconds) + ' s';
+		if (minutes) {
+			/* translators: 1: minutes, 2: seconds. */
+			return sprintf(__('%1$d min %2$d s', 'takopic'), minutes, seconds % 60);
+		}
+		/* translators: %d: seconds. */
+		return sprintf(__('%d s', 'takopic'), Math.max(1, seconds));
+	}
+
+	// What was done, and how long it took if known.
+	function took(text, job) {
+		/* translators: 1: what was done, e.g. 12 images optimised, 2: a duration, e.g. 2 min 5 s. */
+		return job.finished && job.started ? sprintf(__('%1$s in %2$s', 'takopic'), text, duration(job.finished - job.started)) : text;
 	}
 
 	// Sums up a job that ended while this page followed it.
@@ -292,21 +332,25 @@
 		var texts = RESULTS[job.action] || RESULTS.optimise;
 		var cancelled = job.state === 'cancelled';
 		var processed = job.done - job.failed - job.missing;
-		var took = job.finished && job.started ? ' in ' + duration(job.finished - job.started) : '';
-		var detail = cancelled
-			? 'Stopped after ' + number(job.done) + ' of ' + number(job.total) + ' images' + took + '. The images already processed stay processed.'
-			: number(processed) + ' ' + (processed === 1 ? 'image' : 'images') + ' ' + texts[2] + took + '.';
+		var detail = took(texts[2](processed), job) + '.';
+		if (cancelled) {
+			/* translators: 1: the number of images processed, 2: the number of images. */
+			var stopped = sprintf(_n('Stopped after %1$s of %2$s image', 'Stopped after %1$s of %2$s images', job.total, 'takopic'), number(job.done), number(job.total));
+			detail = took(stopped, job) + '. ' + __('The images already processed stay processed.', 'takopic');
+		}
 		resultTitle.textContent = cancelled ? texts[1] : texts[0];
 		resultDetail.textContent = detail;
 		if (job.failed) {
-			resultDetail.append(' ' + number(job.failed) + ' could not be optimised: ');
+			/* translators: %s: the number of images. */
+			resultDetail.append(' ' + sprintf(_n('%s could not be optimised:', '%s could not be optimised:', job.failed, 'takopic'), number(job.failed)) + ' ');
 			var link = document.createElement('a');
 			link.href = MEDIA_URL;
-			link.textContent = 'see the errors in the Media library';
+			link.textContent = __('see the errors in the Media library', 'takopic');
 			resultDetail.append(link, '.');
 		}
 		if (job.missing) {
-			resultDetail.append(' ' + number(job.missing) + ' had no original to restore, they stay compressed.');
+			/* translators: %s: the number of images. */
+			resultDetail.append(' ' + sprintf(_n('%s had no original to restore, it stays compressed.', '%s had no original to restore, they stay compressed.', job.missing, 'takopic'), number(job.missing)));
 		}
 		box.setAttribute('data-result', cancelled ? 'cancelled' : (job.failed || job.missing ? 'warning' : 'success'));
 	}
@@ -326,9 +370,14 @@
 			var percent = job.total ? Math.round(job.done / job.total * 100) : 0;
 			bar.value = percent;
 			percentLabel.textContent = percent + ' %';
-			label.textContent = (state === 'paused' ? 'Paused: ' : (LABELS[job.action] || 'Processing') + '… ')
-				+ number(job.done) + ' / ' + number(job.total) + ' images'
-				+ (job.failed ? ', ' + number(job.failed) + ' with errors' : '');
+			/* translators: 1: the number of images processed, 2: the number of images. */
+			var progress = sprintf(_n('%1$s / %2$s image', '%1$s / %2$s images', job.total, 'takopic'), number(job.done), number(job.total));
+			if (job.failed) {
+				/* translators: 1: the progress, e.g. 3 / 12 images, 2: the number of images with errors. */
+				progress = sprintf(_n('%1$s, %2$s with errors', '%1$s, %2$s with errors', job.failed, 'takopic'), progress, number(job.failed));
+			}
+			label.textContent = (state === 'paused' ? __('Paused:', 'takopic') : (LABELS[job.action] || __('Processing', 'takopic')) + '…')
+				+ ' ' + progress;
 			box.removeAttribute('data-result');
 		} else if (following && job && (job.state === 'finished' || job.state === 'cancelled')) {
 			following = false;
@@ -371,7 +420,7 @@
 					render(response.data);
 					box.scrollIntoView({behavior: 'smooth', block: 'center'});
 				} else {
-					window.alert(response.data && response.data.message ? response.data.message : 'The job could not start.');
+					window.alert(response.data && response.data.message ? response.data.message : __('The job could not start.', 'takopic'));
 				}
 			});
 		} else if (control) {
@@ -380,7 +429,7 @@
 				box.removeAttribute('data-result');
 				return;
 			}
-			if (command === 'cancel' && !window.confirm('Cancel the job? The images already processed stay processed.')) {
+			if (command === 'cancel' && !window.confirm(__('Cancel the job? The images already processed stay processed.', 'takopic'))) {
 				return;
 			}
 			request('takopic_job_control', {command: command}).then(function (response) {
@@ -405,6 +454,9 @@
 	if (!button || !settings) {
 		return;
 	}
+	var __ = wp.i18n.__;
+	var _n = wp.i18n._n;
+	var sprintf = wp.i18n.sprintf;
 	var result = document.querySelector('.takopic-test__result');
 	var sample = result.querySelector('.takopic-test__sample');
 	var list = result.querySelector('.takopic-checks');
@@ -422,7 +474,7 @@
 
 	button.addEventListener('click', function () {
 		button.disabled = true;
-		button.textContent = 'Testing…';
+		button.textContent = __('Testing…', 'takopic');
 		var body = new URLSearchParams({action: 'takopic_delivery_test', _ajax_nonce: settings.nonce});
 		fetch(settings.ajaxurl, {method: 'POST', credentials: 'same-origin', body: body})
 			.then(function (response) {
@@ -432,7 +484,7 @@
 				list.textContent = '';
 				result.hidden = false;
 				if (!response.success) {
-					sample.textContent = response.data && response.data.message ? response.data.message : 'The test failed.';
+					sample.textContent = response.data && response.data.message ? response.data.message : __('The test failed.', 'takopic');
 					showSummary(sample.textContent, 'fail');
 					return;
 				}
@@ -440,10 +492,15 @@
 					return check.state === 'fail';
 				}).length;
 				var total = response.data.checks.length;
-				showSummary(failed
-					? failed + ' of ' + total + ' checks failed: see the results below.'
-					: 'All ' + total + ' checks passed.', failed ? 'fail' : 'ok');
-				sample.textContent = 'Tested on ' + response.data.sample + '.';
+				if (failed) {
+					/* translators: 1: the number of checks failed, 2: the number of checks. */
+					showSummary(sprintf(_n('%1$s of %2$s check failed: see the results below.', '%1$s of %2$s checks failed: see the results below.', total, 'takopic'), failed, total), 'fail');
+				} else {
+					/* translators: %s: the number of checks. */
+					showSummary(sprintf(_n('The %s check passed.', 'All %s checks passed.', total, 'takopic'), total), 'ok');
+				}
+				/* translators: %s: the file of an image. */
+				sample.textContent = sprintf(__('Tested on %s.', 'takopic'), response.data.sample);
 				response.data.checks.forEach(function (check) {
 					var item = document.createElement('li');
 					item.className = 'takopic-checks__item takopic-checks__item--' + check.state;
@@ -457,7 +514,7 @@
 			})
 			.finally(function () {
 				button.disabled = false;
-				button.textContent = 'Run the test again';
+				button.textContent = __('Run the test again', 'takopic');
 			});
 	});
 })();
@@ -473,6 +530,7 @@
 	if (!page) {
 		return;
 	}
+	var __ = wp.i18n.__;
 	var status = document.createElement('span');
 	status.className = 'screen-reader-text';
 	status.setAttribute('aria-live', 'polite');
@@ -482,7 +540,7 @@
 		var copy = document.createElement('button');
 		copy.type = 'button';
 		copy.className = 'takopic-copy' + (modifier ? ' takopic-copy--' + modifier : '');
-		copy.textContent = 'Copy';
+		copy.textContent = __('Copy', 'takopic');
 		copy.takopicCode = code;
 		return copy;
 	}
@@ -533,11 +591,11 @@
 				// The code stays selected, to copy by hand.
 				select(target.takopicCode);
 			}
-			target.textContent = done ? 'Copied' : 'Press Ctrl+C';
-			status.textContent = done ? 'Copied to the clipboard.' : 'The code is selected: press Ctrl+C to copy it.';
+			target.textContent = done ? __('Copied', 'takopic') : __('Press Ctrl+C', 'takopic');
+			status.textContent = done ? __('Copied to the clipboard.', 'takopic') : __('The code is selected: press Ctrl+C to copy it.', 'takopic');
 			clearTimeout(target.takopicTimer);
 			target.takopicTimer = setTimeout(function () {
-				target.textContent = 'Copy';
+				target.textContent = __('Copy', 'takopic');
 				status.textContent = '';
 			}, 2000);
 		});

@@ -79,7 +79,8 @@ class PluginsScreen
 		if ($hook !== 'plugins.php' || !current_user_can('activate_plugins')) {
 			return;
 		}
-		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/plugins.js', [], filemtime(TAKOPIC_PATH . 'assets/plugins.js'), true);
+		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/plugins.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/plugins.js'), true);
+		wp_set_script_translations('takopic-plugins', 'takopic');
 		wp_localize_script('takopic-plugins', 'takopicPlugins', [
 			'plugin' => plugin_basename(TAKOPIC_FILE),
 			'ajaxurl' => admin_url('admin-ajax.php'),

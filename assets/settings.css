@@ -1,5 +1,5 @@
 /**
- * admin.css
+ * settings.css
  *
  * Style of the Takopic options page, in BEM: one block per
  * component (takopic-header, takopic-card, takopic-job...), its
@@ -1447,7 +1447,7 @@
 	color: inherit;
 }
 
-/* Copy buttons (admin.js): at the top right of a block, after a command. */
+/* Copy buttons (settings.js): at the top right of a block, after a command. */
 .takopic-code-block {
 	position: relative;
 }

@@ -30,7 +30,11 @@ require_once __DIR__ . '/autoload.php';
 // The dependencies, prefixed by Strauss, are made by composer install.
 if (!file_exists(__DIR__ . '/vendor-prefixed/autoload.php')) {
 	add_action('admin_notices', function () {
-		echo '<div class="notice notice-error"><p><strong>Takopic</strong>: its dependencies are missing, run <code>composer install</code> in the plugin folder.</p></div>';
+		printf(
+			'<div class="notice notice-error"><p><strong>Takopic</strong>: %s</p></div>',
+			/* translators: %s: composer install */
+			sprintf(esc_html__('its dependencies are missing, run %s in the plugin folder.', 'takopic'), '<code>composer install</code>') // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped, with a <code>.
+		);
 	});
 }
 

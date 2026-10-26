@@ -13,6 +13,9 @@
 	if (!row) {
 		return;
 	}
+	var __ = wp.i18n.__;
+	var _n = wp.i18n._n;
+	var sprintf = wp.i18n.sprintf;
 
 	function dialog(title, html, buttons) {
 		var element = document.createElement('dialog');
@@ -81,20 +84,26 @@
 				}
 				var html = '';
 				var buttons = [];
+				var restore = __('Restore original images', 'takopic');
 				if (settings.themeCalls) {
-					html += '<p><strong>Your theme calls <code>takopic_image()</code></strong>: the pages using it will break while Takopic is deactivated.</p>';
+					/* translators: %s: takopic_image() */
+					var calls = '<strong>' + sprintf(__('Your theme calls %s', 'takopic'), '<code>takopic_image()</code>') + '</strong>';
+					/* translators: %s: Your theme calls takopic_image() */
+					html += '<p>' + sprintf(__('%s: the pages using it will break while Takopic is deactivated.', 'takopic'), calls) + '</p>';
 				}
 				if (info.images) {
-					html += '<p>Takopic has optimised <strong>' + Number(info.images).toLocaleString() + ' images</strong>.'
-						+ ' Deactivating or deleting Takopic keeps them as they are: compressed, with their WebP and AVIF versions,'
-						+ ' and their originals in <code>uploads/takopic-originals/</code>' + (info.size ? ' (' + info.size + ')' : '') + '.</p>'
-						+ '<p>If you are going to delete Takopic, run <strong>Restore original images</strong> first to get your original'
-						+ ' images back and remove every Takopic file.</p>';
-					buttons.push({label: 'Restore original images', href: settings.restoreUrl, primary: true});
+					var folder = '<code>uploads/takopic-originals/</code>' + (info.size ? ' (' + info.size + ')' : '');
+					/* translators: %s: the number of images. */
+					var images = '<strong>' + sprintf(_n('%s image', '%s images', info.images, 'takopic'), Number(info.images).toLocaleString()) + '</strong>';
+					/* translators: 1: the number of images, 2: the folder of the originals and its size. */
+					html += '<p>' + sprintf(__('Takopic has optimised %1$s. Deactivating or deleting Takopic keeps them as they are: compressed, with their WebP and AVIF versions, and their originals in %2$s.', 'takopic'), images, folder) + '</p>';
+					/* translators: %s: Restore original images */
+					html += '<p>' + sprintf(__('If you are going to delete Takopic, run %s first to get your original images back and remove every Takopic file.', 'takopic'), '<strong>' + restore + '</strong>') + '</p>';
+					buttons.push({label: restore, href: settings.restoreUrl, primary: true});
 				}
-				buttons.push({label: 'Deactivate anyway', onClick: proceed});
-				buttons.push({label: 'Cancel', primary: !info.images});
-				dialog('Before deactivating Takopic', html, buttons);
+				buttons.push({label: __('Deactivate anyway', 'takopic'), onClick: proceed});
+				buttons.push({label: __('Cancel', 'takopic'), primary: !info.images});
+				dialog(__('Before deactivating Takopic', 'takopic'), html, buttons);
 			});
 	});
 })();
