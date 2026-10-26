@@ -288,6 +288,16 @@ composer test:multisite   # On a network.
 A test needing a library that is not installed is skipped. The GitHub workflow runs them on PHP 8.2 and 8.4, on a
 single site and on a network, at each push and before each release.
 
+### Logo
+
+The logo is drawn by `tools/logo/build.js`: the octopus and the arms it wraps in front of the picture come from the
+pixel grids of `tools/logo/`, one letter per colour, and the script draws the rest and the animation. It writes the
+still PNGs and the floating GIFs of `assets/images/`, at 128 and 256 px.
+
+```bash
+bun run logo
+```
+
 ## Support
 
 Takopic is free, and will stay so. If it saves you time or bytes, you can buy me a coffee ☕:
