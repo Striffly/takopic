@@ -1,10 +1,12 @@
 /**
  * tools/brand/build.js
  *
- * Draws the logo, a pixel-art octopus hugging a picture, and
- * writes it to assets/images: a still PNG and a floating GIF,
- * at 128 and 256 px, and the banner of WordPress.org, at
- * 772x250 and 1544x500. Run it with `bun run brand`.
+ * Draws the logo, a pixel-art octopus hugging a picture: a
+ * still PNG and a floating GIF, at 128 and 256 px, in
+ * assets/images for the plugin, and the GIF alone in
+ * .wordpress-org for its page on WordPress.org, which shows
+ * one icon per size, with its banner, at 772x250 and
+ * 1544x500. Run it with `bun run brand`.
  *
  * The octopus comes from sprites/octopus.txt, and the arms
  * it wraps in front of the picture from sprites/arms.txt:
@@ -22,6 +24,8 @@ import {GIFEncoder} from 'gifenc';
 
 const SPRITES = new URL('./sprites/', import.meta.url);
 const IMAGES = new URL('../../assets/images/', import.meta.url);
+// The assets of the page on WordPress.org, as in the assets folder of its SVN.
+const WORDPRESS_ORG = new URL('../../.wordpress-org/', import.meta.url);
 const SIZE = 128;
 
 const C = {
@@ -644,13 +648,15 @@ const still = render(0, null, [2, 1, 2, 1]);
 const animation = frames();
 for (const scale of [1, 2]) {
 	const name = `icon-${SIZE * scale}x${SIZE * scale}`;
+	const animated = gif(animation, scale);
 	writeFileSync(new URL(`${name}.png`, IMAGES), png(still, scale));
-	writeFileSync(new URL(`${name}.gif`, IMAGES), gif(animation, scale));
-	console.log(`assets/images/${name}.png, assets/images/${name}.gif`);
+	writeFileSync(new URL(`${name}.gif`, IMAGES), animated);
+	writeFileSync(new URL(`${name}.gif`, WORDPRESS_ORG), animated);
+	console.log(`assets/images/${name}.png, assets/images/ and .wordpress-org/${name}.gif`);
 }
 const wide = banner();
 for (const scale of [2, 4]) {
 	const name = `banner-${BANNER.width * scale}x${BANNER.height * scale}`;
-	writeFileSync(new URL(`${name}.png`, IMAGES), bannerPng(wide, scale));
-	console.log(`assets/images/${name}.png`);
+	writeFileSync(new URL(`${name}.png`, WORDPRESS_ORG), bannerPng(wide, scale));
+	console.log(`.wordpress-org/${name}.png`);
 }
