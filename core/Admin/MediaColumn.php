@@ -283,6 +283,6 @@ class MediaColumn
 		if ($hook !== 'upload.php') {
 			return;
 		}
-		wp_add_inline_style('wp-admin', '.column-takopic{width:170px}.takopic-saved{white-space:nowrap}.takopic-status-label::before{content:"";display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:#a7aaad}.takopic-status-label--optimised::before{background:#00a32a}.takopic-status-label--outdated::before{background:#dba617}.takopic-status-label--error::before{background:#d63638}');
+		wp_enqueue_style('takopic-media', TAKOPIC_URL . 'assets/media.css', [], filemtime(TAKOPIC_PATH . 'assets/media.css'));
 	}
 }

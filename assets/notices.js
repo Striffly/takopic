@@ -1,5 +1,5 @@
 /**
- * media.js
+ * notices.js
  *
  * Shows the Takopic errors of an image right after
  * it is uploaded to the media library, and clears
@@ -7,7 +7,7 @@
  */
 
 (function ($) {
-	var settings = window.takopicMedia || {};
+	var settings = window.takopicNotices || {};
 
 	function getNotice() {
 		var $notice = $('.takopic-errors-notice');
