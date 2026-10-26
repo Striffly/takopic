@@ -1056,7 +1056,8 @@
 	color: var(--takopic-text);
 }
 
-.takopic-done__confetti {
+/* Confetti, thrown from the top of the message or of the result of a job. */
+.takopic-confetti {
 	position: absolute;
 	z-index: 2;
 	top: 0;
@@ -1066,7 +1067,7 @@
 	pointer-events: none;
 }
 
-.takopic-done__piece {
+.takopic-confetti__piece {
 	position: absolute;
 	top: 50%;
 	left: var(--x);
@@ -1079,7 +1080,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.takopic-done__confetti {
+	.takopic-confetti {
 		display: none;
 	}
 }
@@ -1213,6 +1214,7 @@
 
 /* Sum up of the last job: success, with errors, or cancelled. */
 .takopic-job[data-result] .takopic-result {
+	position: relative;
 	display: flex;
 	align-items: flex-start;
 	gap: var(--takopic-space-3);

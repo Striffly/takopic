@@ -434,7 +434,7 @@ class SettingsPage
 			<?php if ($jobs) : ?>
 				<?php $done = $counts['total'] > 0 && $counts[Status::OPTIMISED] === $counts['total']; ?>
 				<div class="takopic-done" data-done role="status"<?php echo $done ? '' : ' hidden'; ?>>
-					<span class="takopic-done__confetti" aria-hidden="true"></span>
+					<span class="takopic-confetti" aria-hidden="true"></span>
 					<span class="takopic-done__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
 					<p class="takopic-done__text"><strong><?php esc_html_e('All your images are optimised.', 'takopic'); ?></strong> <?php esc_html_e('Nothing left to do: the new ones are optimised on upload.', 'takopic'); ?></p>
 				</div>
@@ -861,6 +861,7 @@ class SettingsPage
 				<progress class="takopic-job__bar" max="100" value="0"></progress>
 			</div>
 			<div class="takopic-result" role="status" aria-live="polite">
+				<span class="takopic-confetti" aria-hidden="true"></span>
 				<span class="takopic-result__icon dashicons" aria-hidden="true"></span>
 				<div class="takopic-result__body">
 					<p class="takopic-result__title"></p>
