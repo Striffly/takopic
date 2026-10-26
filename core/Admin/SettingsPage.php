@@ -205,10 +205,10 @@ class SettingsPage
 		?>
 		<div class="wrap takopic-page js-takopic-page">
 			<header class="takopic-header">
-				<?php // The octopus floats, unless the system asks for less motion. ?>
+				<?php // The octopus floats, unless the system asks for less motion. Loaded early, as it opens the page. ?>
 				<picture class="takopic-header__picture">
 					<source srcset="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.png'); ?> 1x, <?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-256x256.png'); ?> 2x" media="(prefers-reduced-motion: reduce)">
-					<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.gif'); ?>" srcset="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-256x256.gif'); ?> 2x" alt="" width="80" height="80">
+					<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.gif'); ?>" srcset="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-256x256.gif'); ?> 2x" alt="" width="80" height="80" fetchpriority="high">
 				</picture>
 				<div class="takopic-header__text">
 					<h1 class="takopic-header__title">Takopic</h1>
