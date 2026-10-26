@@ -21,8 +21,7 @@
   "plugins": {
     "@release-it/bumper": {
       "out": [
-        "takopic.php",
-        "core/Takopic.php"
+        "takopic.php"
       ]
     }
   },

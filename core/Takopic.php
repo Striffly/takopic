@@ -24,13 +24,6 @@ if (!defined('ABSPATH')) {
 final class Takopic
 {
 	/**
-	 * The plugin version number.
-	 *
-	 * @var string
-	 */
-	var $version = '0.1.4';
-
-	/**
 	 * The instance of Takopic.
 	 *
 	 * @var null
@@ -68,12 +61,7 @@ final class Takopic
 		$base = dirname(__FILE__);
 		$this->define('TAKOPIC_URL', plugin_dir_url($base));
 		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
-		$this->define('TAKOPIC_BASENAME', plugin_basename(dirname($base)));
 		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
-		$this->define('TAKOPIC_VERSION', $this->version);
-		$uploadData = wp_upload_dir();
-		$this->define('TAKOPIC_UPLOAD_DIR', $uploadData['basedir']);
-		$this->define('TAKOPIC_UPLOAD_URL', $uploadData['baseurl']);
 		new Admin\Fields();
 		new Admin\Upload();
 		new Admin\Notices();

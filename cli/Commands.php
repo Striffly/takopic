@@ -27,7 +27,6 @@ use Takopic\Package\Lock;
 use Takopic\Package\Optimiser;
 use Takopic\Package\Stats;
 use Takopic\Package\Status;
-use Takopic\Takopic;
 use Takopic\Services\JPG;
 use Takopic\Services\PNG;
 use Takopic\Services\WebP;
@@ -45,7 +44,7 @@ class TAKOPIC_CLI extends WP_CLI_Command
 	public function version()
 	{
 		$this->print_welcome();
-		WP_CLI::log(Takopic::boot()->version);
+		WP_CLI::log(TAKOPIC_VERSION);
 	}
 
 	/**

@@ -22,6 +22,9 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
+// The version of Takopic, set by npm run release with the header above.
+define('TAKOPIC_VERSION', '0.1.4');
+
 // Autoload Takopic classes (Takopic\Foo\Bar => core/Foo/Bar.php).
 spl_autoload_register(function ($class) {
 	$prefix = 'Takopic\\';
