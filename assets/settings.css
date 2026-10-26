@@ -757,6 +757,45 @@
 	box-shadow: 0 0 0 3px var(--takopic-off-bg);
 }
 
+/* The dot of the Settings tab, a format without library: it pulses. */
+.takopic-tabs__tab .takopic-dot--off {
+	animation: takopic-pulse 1.8s ease-out infinite;
+}
+
+/* White on the gradient of the active tab, where red would not show. */
+.takopic-tabs__tab--active .takopic-dot--off {
+	animation-name: takopic-pulse-light;
+}
+
+/* A wave spreading from the dot, fading. */
+@keyframes takopic-pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(214, 54, 56, .7);
+	}
+
+	70%,
+	100% {
+		box-shadow: 0 0 0 6px rgba(214, 54, 56, 0);
+	}
+}
+
+@keyframes takopic-pulse-light {
+	0% {
+		box-shadow: 0 0 0 0 rgba(255, 255, 255, .9);
+	}
+
+	70%,
+	100% {
+		box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.takopic-tabs__tab .takopic-dot--off {
+		animation: none;
+	}
+}
+
 /* A format and its state, linking to its settings. */
 .takopic-page .takopic-chip {
 	display: inline-flex;
@@ -1307,9 +1346,32 @@
 	color: var(--takopic-muted);
 }
 
-/* Fields in a settings card: closer, without rules between them. */
+/* Fields in a settings card: closer, without rules between them. The help
+   stays under its label, the control on their right, centred on both. */
 .takopic-fields .takopic-field {
 	padding: var(--takopic-space-3) 0;
+}
+
+.takopic-fields .takopic-field__help {
+	grid-column: 1;
+}
+
+.takopic-fields .takopic-field__control,
+.takopic-fields .takopic-field > .takopic-toggle {
+	grid-column: 2;
+	grid-row: 1 / span 3;
+}
+
+/* Small screens: the help back under both, as wide as the field. */
+@media (max-width: 782px) {
+	.takopic-fields .takopic-field__help {
+		grid-column: 1 / -1;
+	}
+
+	.takopic-fields .takopic-field__control,
+	.takopic-fields .takopic-field > .takopic-toggle {
+		grid-row: auto;
+	}
 }
 
 .takopic-fields .takopic-field + .takopic-field {
@@ -1553,8 +1615,13 @@
 	margin: 0 var(--takopic-space-5) var(--takopic-space-4);
 }
 
+/* The settings of a format: a soft band at the bottom of its card, its
+   title and its fields together. At the bottom of the cards of a row. */
 .takopic-format__settings {
+	margin-top: auto;
 	border-top: 1px solid var(--takopic-border);
+	border-radius: 0 0 calc(var(--takopic-radius) - 1px) calc(var(--takopic-radius) - 1px);
+	background: var(--takopic-surface-soft);
 }
 
 .takopic-format__summary {
@@ -1562,34 +1629,55 @@
 	align-items: center;
 	gap: var(--takopic-space-2);
 	padding: var(--takopic-space-3) var(--takopic-space-5);
-	color: var(--takopic-violet-dark);
-	font-weight: 600;
+	color: var(--takopic-text-soft);
+	font-size: var(--takopic-size-small);
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
 	list-style: none;
 	cursor: pointer;
+	transition: color var(--takopic-transition);
 }
 
 .takopic-format__summary::-webkit-details-marker {
 	display: none;
 }
 
-.takopic-format__summary::before {
-	content: "\f345"; /* Dashicon arrow-right-alt2. */
+/* A gear before, a chevron at the end, turned once open. */
+.takopic-format__summary::before,
+.takopic-format__summary::after {
 	font-family: dashicons;
 	font-size: 16px;
+	font-weight: 400;
 	line-height: 1;
-	transition: transform var(--takopic-transition);
+	letter-spacing: 0;
 }
 
-.takopic-format__settings[open] > .takopic-format__summary::before {
-	transform: rotate(90deg);
-}
-
-.takopic-format__summary:hover {
+.takopic-format__summary::before {
+	content: "\f111"; /* Dashicon admin-generic. */
 	color: var(--takopic-violet);
 }
 
+.takopic-format__summary::after {
+	content: "\f347"; /* Dashicon arrow-down-alt2. */
+	margin-left: auto;
+	transition: transform var(--takopic-transition);
+}
+
+.takopic-format__settings[open] > .takopic-format__summary {
+	padding-bottom: var(--takopic-space-1);
+}
+
+.takopic-format__settings[open] > .takopic-format__summary::after {
+	transform: rotate(180deg);
+}
+
+.takopic-format__summary:hover {
+	color: var(--takopic-violet-dark);
+}
+
 .takopic-format__fields {
-	padding: 0 var(--takopic-space-5) var(--takopic-space-4);
+	padding: 0 var(--takopic-space-5) var(--takopic-space-3);
 }
 
 .takopic-format__fields .takopic-install {
