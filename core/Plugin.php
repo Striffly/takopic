@@ -66,9 +66,9 @@ final class Plugin
 	private function initialize()
 	{
 		$base = dirname(__FILE__);
-		$this->define('TAKOPIC_URL', plugin_dir_url($base));
-		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
-		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
+		define('TAKOPIC_URL', plugin_dir_url($base));
+		define('TAKOPIC_PATH', plugin_dir_path($base));
+		define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
 		add_action('init', [Settings::class, 'register']);
 		new SettingsPage();
 		new UploadHooks();
@@ -83,21 +83,5 @@ final class Plugin
 			new JobsAjax();
 		}
 		new Display();
-	}
-
-	/**
-	 * Defines a constant if doesnt already exist.
-	 *
-	 * @param string $name The constant name.
-	 * @param mixed $value The constant value.
-	 * @return void
-	 * @since 1.0.0
-	 *
-	 */
-	function define($name, $value = true)
-	{
-		if (!defined($name)) {
-			define($name, $value);
-		}
 	}
 }
