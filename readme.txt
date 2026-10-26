@@ -76,9 +76,11 @@ Yes for the WebP and AVIF formats: without their libraries, or where PHP cannot 
 
 Takopic writes a `.htaccess` denying the web access to `uploads/takopic-originals/`, which works with Apache and LiteSpeed. With nginx, add a `location ^~ /wp-content/uploads/takopic-originals/ { deny all; }` rule, or move the folder out of the web root with the `takopic_backup_dir` filter.
 
-= What happens when I delete Takopic? =
+= What happens when I deactivate or delete Takopic? =
 
-Its settings and data are removed from the database, and the files stay: the compressed images, their WebP and AVIF versions and the originals. To get your original images back, run `Restore original images` before deleting Takopic, which reminds it when it is deactivated.
+Deactivated, Takopic stops its background job and removes its rewrite rules from `uploads/.htaccess`: the site serves the JPG and PNG images again. Its settings and files stay, and the rules come back when it is activated again.
+
+Deleted, its settings and data are removed from the database, and the files stay: the compressed images, their WebP and AVIF versions and the originals. To get your original images back, run `Restore original images` before deleting Takopic, which reminds it when it is deactivated.
 
 == Privacy ==
 
