@@ -14,12 +14,13 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Encoders;
 
 use Exception;
 use Imagick;
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
+use Takopic\Media\Optimiser;
 use Takopic\Types\Mimes;
 use Throwable;
 use WP_Error;
@@ -29,7 +30,7 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class Service
+class Encoder
 {
 
 	/**

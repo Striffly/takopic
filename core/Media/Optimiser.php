@@ -14,16 +14,17 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Media;
 
 use Exception;
 use Takopic\Admin\Fields;
+use Takopic\Encoders\AVIF;
+use Takopic\Encoders\Encoder;
+use Takopic\Encoders\JPG;
+use Takopic\Encoders\PNG;
+use Takopic\Encoders\WebP;
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
-use Takopic\Services\AVIF;
-use Takopic\Services\JPG;
-use Takopic\Services\PNG;
-use Takopic\Services\WebP;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -148,7 +149,7 @@ class Optimiser
 			self::drop_heavier($id, $metadata);
 			Status::stamp_sizes($id, $metadata);
 			// On upload, the metadata is saved once the filter returns it, see
-			// Upload::process(): saving it now would be overwritten.
+			// UploadHooks::process(): saving it now would be overwritten.
 			if (!doing_filter('wp_generate_attachment_metadata')) {
 				self::save_file_sizes($id);
 			}
@@ -267,10 +268,10 @@ class Optimiser
 		foreach (array_unique($files) as $file) {
 			foreach ([WebP::extension(), AVIF::extension()] as $extension) {
 				$variant = $file . $extension;
-				if (!file_exists($variant) || !file_exists($file) || !Service::contained($variant)) {
+				if (!file_exists($variant) || !file_exists($file) || !Encoder::contained($variant)) {
 					continue;
 				}
-				$relative = Service::relative_path($variant);
+				$relative = Encoder::relative_path($variant);
 				$limit = filesize($file);
 				// WebP comes first: the AVIF is compared to the WebP kept.
 				if ($extension === AVIF::extension() && file_exists($file . WebP::extension())) {
@@ -394,8 +395,8 @@ class Optimiser
 			$source = wp_get_original_image_path($id);
 			if (!$source || $source === $file || !file_exists($source)) {
 				$source = $file;
-				$backup = Service::backup_path($file);
-				if (file_exists($backup) && Service::contained($file) && Service::contained($backup)) {
+				$backup = Encoder::backup_path($file);
+				if (file_exists($backup) && Encoder::contained($file) && Encoder::contained($backup)) {
 					copy($backup, $file);
 				}
 			}
@@ -427,8 +428,8 @@ class Optimiser
 				$made[] = dirname($file) . DIRECTORY_SEPARATOR . $size['file'];
 			}
 			foreach ($made as $path) {
-				$backup = Service::backup_path($path);
-				if (file_exists($backup) && Service::contained($backup)) {
+				$backup = Encoder::backup_path($path);
+				if (file_exists($backup) && Encoder::contained($backup)) {
 					unlink($backup);
 				}
 			}
@@ -449,12 +450,12 @@ class Optimiser
 	 */
 	private static function release_main($file, $uploaded)
 	{
-		$paths = [$file . WebP::extension(), $file . AVIF::extension(), Service::backup_path($file)];
+		$paths = [$file . WebP::extension(), $file . AVIF::extension(), Encoder::backup_path($file)];
 		if ($file !== $uploaded) {
 			$paths[] = $file;
 		}
 		foreach ($paths as $path) {
-			if (file_exists($path) && Service::contained($path)) {
+			if (file_exists($path) && Encoder::contained($path)) {
 				unlink($path);
 			}
 		}

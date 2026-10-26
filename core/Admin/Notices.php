@@ -18,7 +18,7 @@
 namespace Takopic\Admin;
 
 use Takopic\Log\Errors;
-use Takopic\Package\Optimiser;
+use Takopic\Media\Optimiser;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly

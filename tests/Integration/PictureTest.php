@@ -14,7 +14,7 @@
 
 namespace Takopic\Tests\Integration;
 
-use Takopic\Package\Picture;
+use Takopic\Delivery\Picture;
 use Takopic\Tests\TestCase;
 
 class PictureTest extends TestCase

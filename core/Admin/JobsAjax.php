@@ -16,15 +16,15 @@
 
 namespace Takopic\Admin;
 
-use Takopic\Package\Cleaner;
-use Takopic\Package\Job;
-use Takopic\Package\Status;
+use Takopic\Media\Cleaner;
+use Takopic\Media\Job;
+use Takopic\Media\Status;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class Tools
+class JobsAjax
 {
 	/**
 	 * Nonce action of the requests.

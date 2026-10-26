@@ -15,7 +15,16 @@
 
 namespace Takopic;
 
-use Takopic\Admin;
+use Takopic\Admin\Fields;
+use Takopic\Admin\JobsAjax;
+use Takopic\Admin\MediaColumn;
+use Takopic\Admin\Notices;
+use Takopic\Admin\PluginsScreen;
+use Takopic\Delivery\Display;
+use Takopic\Delivery\Htaccess;
+use Takopic\Delivery\Test;
+use Takopic\Media\Job;
+use Takopic\Media\UploadHooks;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -62,18 +71,19 @@ final class Plugin
 		$this->define('TAKOPIC_URL', plugin_dir_url($base));
 		$this->define('TAKOPIC_PATH', plugin_dir_path($base));
 		$this->define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
-		new Admin\Fields();
-		new Admin\Upload();
-		new Admin\Notices();
-		new Admin\Media();
-		new Admin\Plugins();
-		new Admin\Delivery();
+		new Fields();
+		new UploadHooks();
+		new Notices();
+		new MediaColumn();
+		new PluginsScreen();
+		new Htaccess();
+		new Test();
 		// The background jobs need the dependencies of composer install.
 		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
-			Package\Job::instance();
-			new Admin\Tools();
+			Job::instance();
+			new JobsAjax();
 		}
-		new Front\Display();
+		new Display();
 	}
 
 	/**

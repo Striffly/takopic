@@ -14,7 +14,7 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Media;
 
 use Takopic\Admin\Fields;
 use Takopic\Log\Errors;

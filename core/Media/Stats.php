@@ -14,12 +14,13 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Media;
 
-use Takopic\Admin\Delivery;
 use Takopic\Admin\Fields;
-use Takopic\Services\AVIF;
-use Takopic\Services\WebP;
+use Takopic\Delivery\Htaccess;
+use Takopic\Encoders\AVIF;
+use Takopic\Encoders\Encoder;
+use Takopic\Encoders\WebP;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -90,7 +91,7 @@ class Stats
 			}
 			$found = true;
 			$size = (int)filesize($file);
-			$backup = Service::backup_path($file);
+			$backup = Encoder::backup_path($file);
 			$bytes['original'] += file_exists($backup) ? (int)filesize($backup) : $size;
 			$bytes['compressed'] += $size;
 			$served = $size;
@@ -222,7 +223,7 @@ class Stats
 	 */
 	public static function served()
 	{
-		return Fields::get('takopic_display_formats') || Fields::get(Delivery::OPTION) ? 'modern' : 'compressed';
+		return Fields::get('takopic_display_formats') || Fields::get(Htaccess::OPTION) ? 'modern' : 'compressed';
 	}
 
 	/**

@@ -52,9 +52,8 @@ Takopic\Plugin::boot();
 register_activation_hook(__FILE__, ['Takopic\\Lifecycle', 'activate']);
 register_deactivation_hook(__FILE__, ['Takopic\\Lifecycle', 'deactivate']);
 
-// Require CLI.
-if (file_exists(__DIR__ . '/cli/Commands.php')) {
-	require(__DIR__ . '/cli/Commands.php');
+if (defined('WP_CLI') && WP_CLI) {
+	WP_CLI::add_command('takopic', Takopic\Cli\Commands::class);
 }
 
 // Require Functions.

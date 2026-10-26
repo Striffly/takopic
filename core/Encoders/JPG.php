@@ -15,19 +15,17 @@
  *
  */
 
-namespace Takopic\Services;
+namespace Takopic\Encoders;
 
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
-use Takopic\Package\Convertor;
-use Takopic\Package\Service;
 use Takopic\Types\Mimes;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class JPG extends Service implements Convertor
+class JPG extends Encoder implements Convertor
 {
 
 	/**
@@ -41,7 +39,7 @@ class JPG extends Service implements Convertor
 	 * from its original kept as a backup.
 	 *
 	 * The library runs without shell, see
-	 * Service::execute().
+	 * Encoder::execute().
 	 *
 	 * @param $filepath
 	 * @param $mime

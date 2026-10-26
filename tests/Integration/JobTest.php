@@ -15,11 +15,11 @@
 
 namespace Takopic\Tests\Integration;
 
-use Takopic\Package\Job;
-use Takopic\Package\Optimiser;
-use Takopic\Package\Service;
-use Takopic\Package\Status;
-use Takopic\Services\WebP;
+use Takopic\Encoders\Encoder;
+use Takopic\Encoders\WebP;
+use Takopic\Media\Job;
+use Takopic\Media\Optimiser;
+use Takopic\Media\Status;
 use Takopic\Tests\TestCase;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -89,7 +89,7 @@ class JobTest extends TestCase
 	{
 		$kept = $this->upload('photo.jpg');
 		$lost = $this->upload('photo.jpg');
-		unlink(Service::backup_path(get_attached_file($lost)));
+		unlink(Encoder::backup_path(get_attached_file($lost)));
 
 		$this->job->start(Job::RESTORE, [$kept, $lost]);
 		$this->run_job();

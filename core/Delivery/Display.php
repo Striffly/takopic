@@ -15,10 +15,9 @@
  *
  */
 
-namespace Takopic\Front;
+namespace Takopic\Delivery;
 
 use Takopic\Admin\Fields;
-use Takopic\Package\Picture;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly

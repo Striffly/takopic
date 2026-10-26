@@ -15,16 +15,16 @@
  *
  */
 
-namespace Takopic\Admin;
+namespace Takopic\Media;
 
-use Takopic\Package\Optimiser;
-use Takopic\Package\Service;
+use Takopic\Admin\Fields;
+use Takopic\Encoders\Encoder;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class Upload
+class UploadHooks
 {
 
 	/**
@@ -91,7 +91,7 @@ class Upload
 	 */
 	public function delete_files($attachment)
 	{
-		Service::delete($attachment);
+		Encoder::delete($attachment);
 		return $attachment;
 	}
 }

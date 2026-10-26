@@ -14,9 +14,9 @@
 namespace Takopic\Tests\Integration;
 
 use Exception;
-use Takopic\Package\Cleaner;
-use Takopic\Package\Lock;
-use Takopic\Package\Optimiser;
+use Takopic\Media\Cleaner;
+use Takopic\Media\Lock;
+use Takopic\Media\Optimiser;
 use Takopic\Tests\TestCase;
 
 class LockTest extends TestCase

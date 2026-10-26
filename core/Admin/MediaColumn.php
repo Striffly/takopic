@@ -16,16 +16,16 @@
 
 namespace Takopic\Admin;
 
-use Takopic\Package\Cleaner;
-use Takopic\Package\Optimiser;
-use Takopic\Package\Stats;
-use Takopic\Package\Status;
+use Takopic\Media\Cleaner;
+use Takopic\Media\Optimiser;
+use Takopic\Media\Stats;
+use Takopic\Media\Status;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class Media
+class MediaColumn
 {
 	/**
 	 * Action optimising one image.

@@ -15,7 +15,7 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Media;
 
 use Takopic_Vendor_WP_Background_Process;
 

@@ -1,10 +1,9 @@
 <?php
 
 /**
- * CLI
+ * Commands
  *
- * Command for accessing Takopic compression
- * functions via the WP CLI.
+ * The wp takopic commands of WP-CLI.
  *
  * @package     Takopic
  * @author      Clément Gayot
@@ -14,30 +13,33 @@
  *
  */
 
-if (!defined('WP_CLI')) {
-	return; // Exit, WP CLI is not defined.
-}
+namespace Takopic\Cli;
+
+use Takopic\Encoders\AVIF;
+use Takopic\Encoders\JPG;
+use Takopic\Encoders\PNG;
+use Takopic\Encoders\WebP;
+use Takopic\Media\Cleaner;
+use Takopic\Media\Lock;
+use Takopic\Media\Optimiser;
+use Takopic\Media\Stats;
+use Takopic\Media\Status;
+use WP_CLI;
+use WP_CLI_Command;
+use WP_Query;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-use Takopic\Package\Cleaner;
-use Takopic\Package\Lock;
-use Takopic\Package\Optimiser;
-use Takopic\Package\Stats;
-use Takopic\Package\Status;
-use Takopic\Services\JPG;
-use Takopic\Services\PNG;
-use Takopic\Services\WebP;
-use Takopic\Services\AVIF;
-
 /**
- * Optimises the images of the media library, removes
- * their WebP and AVIF files or restores their
- * originals.
+ * Optimises the images of the media library, or undoes it.
+ *
+ * Compresses the JPG and PNG images and makes their
+ * WebP and AVIF versions, removes these versions or
+ * restores the originals.
  */
-class Takopic_CLI extends WP_CLI_Command
+class Commands extends WP_CLI_Command
 {
 
 	/**
@@ -310,7 +312,7 @@ class Takopic_CLI extends WP_CLI_Command
 				'Reduction' => in_array($name, ['compressed', 'modern'], true) ? (string)Stats::reduction($totals, $name) : '',
 			];
 		}
-		WP_CLI\Utils\format_items('table', $items, ['Files', 'Bytes', 'Size', 'Reduction']);
+		\WP_CLI\Utils\format_items('table', $items, ['Files', 'Bytes', 'Size', 'Reduction']);
 
 		$served = Stats::served();
 		WP_CLI::success(sprintf(
@@ -369,8 +371,3 @@ class Takopic_CLI extends WP_CLI_Command
 		WP_CLI::success(sprintf('%s active for %s: %s not installed, recommended.', $service::editor(), $format, $service::cmd_name()));
 	}
 }
-
-/**
- * Add the main Takopic command to the WP CLI.
- */
-WP_CLI::add_command('takopic', 'Takopic_CLI');

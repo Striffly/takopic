@@ -15,13 +15,14 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Media;
 
+use Takopic\Encoders\AVIF;
+use Takopic\Encoders\Encoder;
+use Takopic\Encoders\JPG;
+use Takopic\Encoders\PNG;
+use Takopic\Encoders\WebP;
 use Takopic\Log\Errors;
-use Takopic\Services\AVIF;
-use Takopic\Services\JPG;
-use Takopic\Services\PNG;
-use Takopic\Services\WebP;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -105,8 +106,8 @@ class Cleaner
 			$compressed = get_post_meta($id, JPG::meta_key(), true) !== '' || get_post_meta($id, PNG::meta_key(), true) !== '';
 			$original = get_attached_file($id);
 			foreach (self::files($id) as $file) {
-				$backup = Service::backup_path($file);
-				if (file_exists($backup) && Service::contained($file) && Service::contained($backup)) {
+				$backup = Encoder::backup_path($file);
+				if (file_exists($backup) && Encoder::contained($file) && Encoder::contained($backup)) {
 					copy($backup, $file);
 					unlink($backup);
 				} elseif ($file === $original && $compressed && in_array(get_post_mime_type($id), Status::MIMES, true)) {
@@ -175,7 +176,7 @@ class Cleaner
 	 */
 	private static function listed($id)
 	{
-		$listed = get_post_meta($id, Service::FILES_KEY, true);
+		$listed = get_post_meta($id, Encoder::FILES_KEY, true);
 		if (!is_array($listed)) {
 			return [];
 		}
@@ -201,9 +202,9 @@ class Cleaner
 			return substr($path, strlen($base));
 		}, $paths));
 		if (empty($relative)) {
-			delete_post_meta($id, Service::FILES_KEY);
+			delete_post_meta($id, Encoder::FILES_KEY);
 		} else {
-			update_post_meta($id, Service::FILES_KEY, $relative);
+			update_post_meta($id, Encoder::FILES_KEY, $relative);
 		}
 	}
 
@@ -216,7 +217,7 @@ class Cleaner
 	 */
 	private static function unlink($path)
 	{
-		if (file_exists($path) && Service::contained($path)) {
+		if (file_exists($path) && Encoder::contained($path)) {
 			unlink($path);
 		}
 	}

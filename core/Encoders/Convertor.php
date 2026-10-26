@@ -14,7 +14,7 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Encoders;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly

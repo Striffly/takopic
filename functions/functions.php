@@ -17,8 +17,8 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-use Takopic\Front\Display;
-use Takopic\Package\Picture;
+use Takopic\Delivery\Display;
+use Takopic\Delivery\Picture;
 
 if (!function_exists('takopic_image')) {
 

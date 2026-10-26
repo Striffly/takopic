@@ -16,19 +16,17 @@
  *
  */
 
-namespace Takopic\Services;
+namespace Takopic\Encoders;
 
 use Takopic\Log\Logger;
-use Takopic\Package\Convertor;
-use Takopic\Package\Optimiser;
-use Takopic\Package\Service;
+use Takopic\Media\Optimiser;
 use Takopic\Types\Mimes;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
 
-class PNG extends Service implements Convertor
+class PNG extends Encoder implements Convertor
 {
 
 	/**
@@ -52,7 +50,7 @@ class PNG extends Service implements Convertor
 	 * backup.
 	 *
 	 * The library runs without shell, see
-	 * Service::execute().
+	 * Encoder::execute().
 	 *
 	 * @param $filepath
 	 * @param $mime

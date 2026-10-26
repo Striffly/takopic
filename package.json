@@ -9,7 +9,6 @@
     "takopic.php",
     "uninstall.php",
     "core",
-    "cli",
     "functions",
     "templates",
     "assets/*.css",

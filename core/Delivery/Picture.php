@@ -16,7 +16,7 @@
  *
  */
 
-namespace Takopic\Package;
+namespace Takopic\Delivery;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
