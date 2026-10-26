@@ -19,6 +19,7 @@ use Takopic\Encoders\AVIF;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
+use Takopic\Engines\Libraries;
 use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
 use Takopic\Media\Lock;
@@ -65,6 +66,9 @@ class Commands extends WP_CLI_Command
 	public function health()
 	{
 		$this->print_welcome();
+		if (!Libraries::can_execute()) {
+			WP_CLI::warning(__('PHP cannot run programs: proc_open() and exec() are disabled, the libraries cannot run.', 'takopic'));
+		}
 		$this->print_health("jpegoptim", JPG::installed());
 		$this->print_health(PNG::library(), PNG::installed());
 		/* translators: %s: pngquant */

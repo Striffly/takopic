@@ -230,6 +230,22 @@ class SettingsPage
 	{
 		$savings = self::savings();
 		?>
+		<?php if (!Libraries::can_execute()) : ?>
+			<div class="notice notice-error inline takopic-alert">
+				<p>
+					<strong><?php esc_html_e('PHP cannot run programs on this server.', 'takopic'); ?></strong>
+					<?php
+					$this->printf_html(
+						/* translators: 1: proc_open(), 2: exec(), 3: disable_functions */
+						__('%1$s and %2$s are disabled (%3$s): the libraries cannot run, even installed, so the JPG and PNG images are not compressed. Ask your host to enable %1$s. Meanwhile, GD or Imagick make the WebP and AVIF when they can.', 'takopic'),
+						'<code>proc_open()</code>',
+						'<code>exec()</code>',
+						'<code>disable_functions</code>'
+					);
+					?>
+				</p>
+			</div>
+		<?php endif; ?>
 		<div class="takopic-card takopic-card--hero">
 			<div class="takopic-savings">
 				<div class="takopic-savings__main"<?php echo $savings['images'] ? '' : ' hidden'; ?>>
@@ -312,16 +328,20 @@ class SettingsPage
 	 */
 	private function render_engine($format)
 	{
+		$runs = Libraries::can_execute();
 		if ($format['installed']) {
 			$name = $format['library'];
 			$state = __('installed', 'takopic');
 		} elseif ($format['engine']) {
 			$name = $format['engine'];
-			/* translators: %s: a library, e.g. cwebp. */
-			$state = sprintf(__('%s not installed', 'takopic'), $format['library']);
+			$state = $runs
+				/* translators: %s: a library, e.g. cwebp. */
+				? sprintf(__('%s not installed', 'takopic'), $format['library'])
+				/* translators: %s: a library, e.g. cwebp. */
+				: sprintf(__('%s cannot run', 'takopic'), $format['library']);
 		} else {
 			$name = $format['library'];
-			$state = __('not installed', 'takopic');
+			$state = $runs ? __('not installed', 'takopic') : __('cannot run', 'takopic');
 		}
 		?>
 		<span class="takopic-engine takopic-engine--<?php echo $format['engine'] ? 'on' : 'off'; ?>">
@@ -334,7 +354,7 @@ class SettingsPage
 		<?php foreach ($format['extras'] as $extra => $installed) : ?>
 			<span class="takopic-engine takopic-engine--<?php echo $installed ? 'on' : 'off'; ?>">
 				<span class="takopic-engine__name"><?php echo esc_html($extra); ?></span>
-				<span class="takopic-engine__state"><?php echo esc_html($installed ? __('installed', 'takopic') : __('not installed', 'takopic')); ?></span>
+				<span class="takopic-engine__state"><?php echo esc_html($installed ? __('installed', 'takopic') : ($runs ? __('not installed', 'takopic') : __('cannot run', 'takopic'))); ?></span>
 			</span>
 		<?php endforeach; ?>
 		<?php
@@ -634,7 +654,9 @@ class SettingsPage
 						</div>
 					</header>
 					<p class="takopic-format__description"><?php echo wp_kses($format['fields'][$switch]['help'], ['strong' => [], 'code' => []]); ?></p>
-					<?php if (!$format['installed'] && $format['engine']) : ?>
+					<?php if (!Libraries::can_execute()) : ?>
+						<?php // Installing would not help: the overview says why. ?>
+					<?php elseif (!$format['installed'] && $format['engine']) : ?>
 						<details class="takopic-install takopic-install--advice">
 							<summary class="takopic-install__summary">
 								<?php
@@ -917,7 +939,7 @@ class SettingsPage
 	{
 		$labels = [
 			'on' => __('Active', 'takopic'),
-			'off' => __('Library missing', 'takopic'),
+			'off' => __('Library unavailable', 'takopic'),
 			'muted' => __('Disabled', 'takopic'),
 		];
 		return $labels[$state];
