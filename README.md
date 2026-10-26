@@ -221,13 +221,15 @@ Keep the `function_exists()` check: without it, the pages break while Takopic is
 | `wp takopic stats`   | Prints the bytes saved on the media library. `--rebuild` measures every image again. |
 | `wp takopic version` | Shows the version of Takopic.                                                            |
 
-`wp takopic run` takes these options:
+`wp takopic run` takes these options, listed by `wp help takopic run`:
 
 - `--force` optimises the images again, `--regenerate` first makes their thumbnails again from the originals,
   `--thumbnails-only` leaves the full size images out.
-- `--jpg=false`, `--png=false`, `--webp=false`, `--avif=false` turn a format off.
+- `--no-jpg`, `--no-png`, `--no-webp`, `--no-avif` turn a format off, `--jpg`, `--png`, `--webp`, `--avif` on.
 - `--quality=<0-100>` (JPG and WebP), `--avif-quality=<0-100>`, `--avif-speed=<0-10>` and `--optimization=o<0-7>`
   (PNG) override the settings.
+
+`wp takopic run` exits with an error when images fail, e.g. in a deployment script.
 
 `wp takopic stats` first measures the images optimised before Takopic counted the bytes saved, from the sizes of their files:
 nothing is encoded again.
