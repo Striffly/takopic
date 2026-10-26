@@ -1355,6 +1355,53 @@
 	color: inherit;
 }
 
+/* Copy buttons (admin.js): at the top right of a block, after a command. */
+.takopic-code-block {
+	position: relative;
+}
+
+.takopic-code-block .takopic-code {
+	padding-right: 88px;
+}
+
+.takopic-copy {
+	padding: 2px 12px;
+	border: 1px solid var(--takopic-violet);
+	border-radius: 999px;
+	background: var(--takopic-surface);
+	color: var(--takopic-violet-dark);
+	font-size: var(--takopic-size-small);
+	font-weight: 600;
+	line-height: 20px;
+	cursor: pointer;
+	transition: background-color var(--takopic-transition), color var(--takopic-transition);
+}
+
+.takopic-copy:hover,
+.takopic-copy:focus-visible {
+	background: var(--takopic-violet-soft);
+}
+
+.takopic-copy:focus-visible {
+	outline: 2px solid var(--takopic-violet);
+	outline-offset: 1px;
+}
+
+.takopic-code-block .takopic-copy {
+	position: absolute;
+	top: var(--takopic-space-2);
+	right: var(--takopic-space-2);
+	border-color: rgba(255, 255, 255, .3);
+	background: rgba(255, 255, 255, .08);
+	color: #e9e5f5;
+}
+
+.takopic-code-block .takopic-copy:hover,
+.takopic-code-block .takopic-copy:focus-visible {
+	background: rgba(255, 255, 255, .18);
+	color: #fff;
+}
+
 /* 14. Delivery: steps, methods, folds and test
    ========================================================================== */
 
@@ -1672,7 +1719,8 @@
 	color: var(--takopic-text-soft);
 }
 
-.takopic-fold__content .takopic-code + .takopic-fold__text {
+.takopic-fold__content .takopic-code + .takopic-fold__text,
+.takopic-fold__content .takopic-code-block + .takopic-fold__text {
 	margin: var(--takopic-space-3) 0 0;
 }
 
