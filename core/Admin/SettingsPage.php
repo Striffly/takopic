@@ -143,7 +143,8 @@ class SettingsPage
 				<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/icon-128x128.png'); ?>" alt="" width="64" height="64">
 				<div class="takopic-header__text">
 					<h1 class="takopic-header__title">Takopic</h1>
-					<p class="takopic-header__tagline"><?php esc_html_e('Squeezes images. Spills no ink, sends no bill.', 'takopic'); ?></p>
+					<?php // The tagline stays in English, as the name of Takopic. ?>
+					<p class="takopic-header__tagline">Squeezes images. Spills no ink, sends no bill.</p>
 				</div>
 				<span class="takopic-header__version">v<?php echo esc_html(TAKOPIC_VERSION); ?></span>
 			</header>
