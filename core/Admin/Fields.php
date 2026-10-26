@@ -151,7 +151,7 @@ class Fields
 	 */
 	public function add_page()
 	{
-		add_options_page('Takopic', 'Takopic', 'manage_options', self::PAGE, [$this, 'render_page']);
+		add_options_page('Takopic', 'Image Optimizer', 'manage_options', self::PAGE, [$this, 'render_page']);
 	}
 
 	/**

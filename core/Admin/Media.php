@@ -91,7 +91,7 @@ class Media
 	}
 
 	/**
-	 * Adds the Takopic column.
+	 * Adds the Optimisation column.
 	 *
 	 * @param array $columns
 	 * @return array
@@ -100,7 +100,7 @@ class Media
 	 */
 	public function columns($columns)
 	{
-		$columns['takopic'] = 'Takopic';
+		$columns['takopic'] = 'Optimisation';
 		return $columns;
 	}
 
