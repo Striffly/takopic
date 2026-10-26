@@ -73,6 +73,33 @@ class SettingsPage
 	];
 
 	/**
+	 * The scripts of the page: each class after the
+	 * ones it uses, then settings.js, which starts them.
+	 *
+	 * @var string[]
+	 */
+	const SCRIPTS = [
+		'utils/Api',
+		'utils/Confetti',
+		'views/Screen',
+		'components/Component',
+		'components/Tabs',
+		'components/Form',
+		'components/HelpToggle',
+		'components/DependentField',
+		'components/CopyButton',
+		'components/Wallet',
+		'components/Count',
+		'components/Job',
+		'components/JobStart',
+		'components/Savings',
+		'components/Cta',
+		'components/AllOptimised',
+		'components/DeliveryTest',
+		'settings',
+	];
+
+	/**
 	 * Registers the options page.
 	 *
 	 * @since 1.0.0
@@ -106,8 +133,8 @@ class SettingsPage
 			return;
 		}
 		Plugin::enqueue_chain(self::STYLES, 'style');
-		$script = Plugin::enqueue_script('settings', ['wp-i18n']);
-		wp_localize_script($script, 'takopicJob', [
+		$script = Plugin::enqueue_chain(self::SCRIPTS, 'script');
+		wp_localize_script($script, 'takopicSettings', [
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce(JobsAjax::NONCE),
 		]);
@@ -158,7 +185,7 @@ class SettingsPage
 		// The settings tab warns when a format has nothing to make it.
 		$missing = in_array('off', array_map([self::class, 'state'], $formats), true);
 		?>
-		<div class="wrap takopic-page">
+		<div class="wrap takopic-page js-takopic-page">
 			<header class="takopic-header">
 				<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.png'); ?>" alt="" width="64" height="64">
 				<div class="takopic-header__text">
@@ -171,9 +198,9 @@ class SettingsPage
 			<?php // WordPress puts its notices after the first heading of the page, or this marker. ?>
 			<hr class="wp-header-end">
 
-			<nav class="takopic-tabs" role="tablist" aria-label="Takopic">
+			<nav class="takopic-tabs js-takopic-tabs" role="tablist" aria-label="Takopic">
 				<?php foreach ($tabs as $id => $title) : ?>
-					<a href="#<?php echo esc_attr($id); ?>" class="takopic-tabs__tab" role="tab" data-tab="<?php echo esc_attr($id); ?>">
+					<a href="#<?php echo esc_attr($id); ?>" class="takopic-tabs__tab js-takopic-tab js-takopic-tab-link" role="tab" data-tab="<?php echo esc_attr($id); ?>">
 						<?php echo esc_html($title); ?>
 						<?php if ($id === 'settings' && $missing) : ?>
 							<span class="takopic-dot takopic-dot--off" title="<?php esc_attr_e('A format has no library', 'takopic'); ?>"></span>
@@ -186,31 +213,32 @@ class SettingsPage
 				<?php $this->render_job(); ?>
 			<?php endif; ?>
 
-			<form class="takopic-page__form" action="options.php" method="post">
+			<form class="takopic-page__form js-takopic-form" action="options.php" method="post">
 				<?php settings_fields(Settings::GROUP); ?>
 
-				<section class="takopic-panel" id="takopic-panel-overview" role="tabpanel" data-panel="overview">
+				<section class="takopic-panel js-takopic-panel" id="takopic-panel-overview" role="tabpanel" data-panel="overview">
 					<?php $this->render_overview($formats, $counts); ?>
 				</section>
 
-				<section class="takopic-panel" id="takopic-panel-optimise" role="tabpanel" data-panel="optimise">
+				<section class="takopic-panel js-takopic-panel" id="takopic-panel-optimise" role="tabpanel" data-panel="optimise">
 					<?php $this->render_optimise($counts, $jobs); ?>
 				</section>
 
-				<section class="takopic-panel" id="takopic-panel-delivery" role="tabpanel" data-panel="delivery">
+				<section class="takopic-panel js-takopic-panel" id="takopic-panel-delivery" role="tabpanel" data-panel="delivery">
 					<?php $this->render_delivery($sections['display'], $formats, $counts); ?>
 				</section>
 
-				<section class="takopic-panel" id="takopic-panel-settings" role="tabpanel" data-panel="settings">
+				<section class="takopic-panel js-takopic-panel" id="takopic-panel-settings" role="tabpanel" data-panel="settings">
 					<?php $this->render_settings($sections['general'], $formats); ?>
 				</section>
 
-				<section class="takopic-panel" id="takopic-panel-maintenance" role="tabpanel" data-panel="maintenance">
+				<section class="takopic-panel js-takopic-panel" id="takopic-panel-maintenance" role="tabpanel" data-panel="maintenance">
 					<?php $this->render_maintenance($jobs); ?>
 				</section>
 			</form>
 
 			<?php $this->render_support(); ?>
+			<span class="screen-reader-text js-takopic-announcer" aria-live="polite"></span>
 		</div>
 		<?php
 	}
@@ -218,7 +246,7 @@ class SettingsPage
 	/**
 	 * Renders how to buy a coffee to the author, at the
 	 * bottom of every tab: PayPal, or Bitcoin with its
-	 * address and QR code, behind its button (settings.js
+	 * address and QR code, behind its button (Wallet.js
 	 * hides them, shown without JS). No notice, nothing
 	 * elsewhere in the admin but a link on the plugins
 	 * page.
@@ -237,13 +265,13 @@ class SettingsPage
 				?>
 				<a href="<?php echo esc_url(self::PAYPAL); ?>" target="_blank" rel="noopener">PayPal</a>
 				<span aria-hidden="true">&middot;</span>
-				<button type="button" class="button-link takopic-support__toggle" aria-expanded="true" aria-controls="takopic-support-wallet">Bitcoin</button>
+				<button type="button" class="button-link takopic-support__toggle js-takopic-wallet-toggle" aria-expanded="true" aria-controls="takopic-support-wallet">Bitcoin</button>
 			</p>
-			<div class="takopic-support__wallet" id="takopic-support-wallet">
+			<div class="takopic-support__wallet js-takopic-wallet" id="takopic-support-wallet">
 				<a class="takopic-support__qr" href="<?php echo esc_url('bitcoin:' . self::BITCOIN, ['bitcoin']); ?>">
 					<img src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/bitcoin-qr.svg'); ?>" width="104" height="104" alt="<?php esc_attr_e('QR code of the Bitcoin address', 'takopic'); ?>">
 				</a>
-				<code class="takopic-support__address"><?php echo esc_html(self::BITCOIN); ?></code>
+				<?php $this->render_command(self::BITCOIN, 'takopic-support__address'); ?>
 			</div>
 		</footer>
 		<?php
@@ -313,24 +341,24 @@ class SettingsPage
 			</div>
 		<?php endif; ?>
 		<div class="takopic-card takopic-card--hero">
-			<div class="takopic-savings">
-				<div class="takopic-savings__main"<?php echo $savings['images'] ? '' : ' hidden'; ?>>
+			<div class="takopic-savings js-takopic-savings">
+				<div class="takopic-savings__main js-takopic-savings-main"<?php echo $savings['images'] ? '' : ' hidden'; ?>>
 					<p class="takopic-savings__value">
 						<?php
 						/* translators: %s: a size, e.g. 12.5 MB. */
-						$this->printf_html(__('%s saved', 'takopic'), '<span data-savings="saved">' . esc_html($savings['saved']) . '</span>');
+						$this->printf_html(__('%s saved', 'takopic'), '<span class="js-takopic-savings-value" data-savings="saved">' . esc_html($savings['saved']) . '</span>');
 						?>
 					</p>
 					<p class="takopic-savings__detail">
 						<?php
 						/* translators: %s: a reduction, e.g. −48 %. */
-						$this->printf_html(__('%s on what the site serves', 'takopic'), '<span class="takopic-savings__reduction" data-savings="reduction">' . esc_html($savings['reduction']) . '</span>');
+						$this->printf_html(__('%s on what the site serves', 'takopic'), '<span class="takopic-savings__reduction js-takopic-savings-value" data-savings="reduction">' . esc_html($savings['reduction']) . '</span>');
 						?>
-						<span class="takopic-savings__hint"<?php echo $savings['hint'] ? '' : ' hidden'; ?>>
-							&middot; <a href="#delivery" data-tab="delivery">
+						<span class="takopic-savings__hint js-takopic-savings-hint"<?php echo $savings['hint'] ? '' : ' hidden'; ?>>
+							&middot; <a class="js-takopic-tab-link" href="#delivery" data-tab="delivery">
 								<?php
 								/* translators: %s: a reduction, e.g. −62 %. */
-								$this->printf_html(__('%s with WebP and AVIF served', 'takopic'), '<span data-savings="modern">' . esc_html($savings['modern']) . '</span>');
+								$this->printf_html(__('%s with WebP and AVIF served', 'takopic'), '<span class="js-takopic-savings-value" data-savings="modern">' . esc_html($savings['modern']) . '</span>');
 								?>
 							</a>
 						</span>
@@ -343,23 +371,23 @@ class SettingsPage
 						<span class="takopic-disk__item">
 							<?php
 							/* translators: %s: the size of the original images, e.g. 4.2 MB. */
-							$this->printf_html(__('%s of originals kept', 'takopic'), '<strong data-savings="originals">' . esc_html($savings['originals']) . '</strong>');
+							$this->printf_html(__('%s of originals kept', 'takopic'), '<strong class="js-takopic-savings-value" data-savings="originals">' . esc_html($savings['originals']) . '</strong>');
 							?>
 						</span>
 						<span class="takopic-disk__item">
 							<?php
 							/* translators: %s: the size of the WebP and AVIF files, e.g. 916.6 KB. */
-							$this->printf_html(__('%s of WebP and AVIF', 'takopic'), '<strong data-savings="formats">' . esc_html($savings['formats']) . '</strong>');
+							$this->printf_html(__('%s of WebP and AVIF', 'takopic'), '<strong class="js-takopic-savings-value" data-savings="formats">' . esc_html($savings['formats']) . '</strong>');
 							?>
 						</span>
 					</p>
 				</div>
-				<div class="takopic-savings__empty"<?php echo $savings['images'] ? ' hidden' : ''; ?>>
+				<div class="takopic-savings__empty js-takopic-savings-empty"<?php echo $savings['images'] ? ' hidden' : ''; ?>>
 					<p class="takopic-savings__value"><?php esc_html_e('Ready to squeeze', 'takopic'); ?></p>
 					<p class="takopic-savings__detail"><?php esc_html_e('Takopic optimises your images on your own server: free, unlimited, and they never leave it.', 'takopic'); ?></p>
 				</div>
 				<?php // Filled while images wait for an optimisation. ?>
-				<a class="takopic-cta<?php echo $counts[Status::TO_OPTIMISE] + $counts[Status::ERROR] + $counts[Status::OUTDATED] ? ' takopic-cta--filled' : ''; ?>" href="#optimise" data-tab="optimise">
+				<a class="takopic-cta js-takopic-cta js-takopic-tab-link<?php echo $counts[Status::TO_OPTIMISE] + $counts[Status::ERROR] + $counts[Status::OUTDATED] ? ' takopic-cta--filled' : ''; ?>" href="#optimise" data-tab="optimise">
 					<?php esc_html_e('Optimise the media library', 'takopic'); ?>
 					<span class="takopic-cta__arrow dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
 				</a>
@@ -367,7 +395,7 @@ class SettingsPage
 			<ul class="takopic-counts">
 				<?php foreach (self::count_labels() as $status => $label) : ?>
 					<li class="takopic-counts__item takopic-counts__item--<?php echo esc_attr($status); ?>">
-						<span class="takopic-counts__value" data-count="<?php echo esc_attr($status); ?>"><?php echo esc_html(number_format_i18n($counts[$status])); ?></span>
+						<span class="takopic-counts__value js-takopic-count" data-count="<?php echo esc_attr($status); ?>"><?php echo esc_html(number_format_i18n($counts[$status])); ?></span>
 						<span class="takopic-counts__label"><?php echo esc_html($label); ?></span>
 					</li>
 				<?php endforeach; ?>
@@ -378,7 +406,7 @@ class SettingsPage
 		<div class="takopic-libraries">
 			<?php foreach ($formats as $id => $format) : ?>
 				<?php $state = self::state($format); ?>
-				<a class="takopic-library takopic-library--<?php echo esc_attr($state); ?>" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
+				<a class="takopic-library takopic-library--<?php echo esc_attr($state); ?> js-takopic-tab-link" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
 					<span class="takopic-library__head">
 						<span class="takopic-library__format"><?php echo esc_html($format['title']); ?></span>
 						<?php $this->render_badge($state, self::state_label($state)); ?>
@@ -453,8 +481,8 @@ class SettingsPage
 			</header>
 			<?php if ($jobs) : ?>
 				<?php $done = $counts['total'] > 0 && $counts[Status::OPTIMISED] === $counts['total']; ?>
-				<div class="takopic-done" data-done role="status"<?php echo $done ? '' : ' hidden'; ?>>
-					<span class="takopic-confetti" aria-hidden="true"></span>
+				<div class="takopic-done js-takopic-all-optimised" role="status"<?php echo $done ? '' : ' hidden'; ?>>
+					<span class="takopic-confetti js-takopic-confetti" aria-hidden="true"></span>
 					<span class="takopic-done__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
 					<p class="takopic-done__text"><strong><?php esc_html_e('All your images are optimised.', 'takopic'); ?></strong> <?php esc_html_e('Nothing left to do: the new ones are optimised on upload.', 'takopic'); ?></p>
 				</div>
@@ -462,23 +490,23 @@ class SettingsPage
 					<div class="takopic-action takopic-action--primary">
 						<span class="takopic-action__icon dashicons dashicons-format-image" aria-hidden="true"></span>
 						<h3 class="takopic-action__title"><?php esc_html_e('New images', 'takopic'); ?></h3>
-						<p class="takopic-action__count" data-count="new"><?php echo esc_html(number_format_i18n($counts[Status::TO_OPTIMISE] + $counts[Status::ERROR])); ?></p>
+						<p class="takopic-action__count js-takopic-count" data-count="new"><?php echo esc_html(number_format_i18n($counts[Status::TO_OPTIMISE] + $counts[Status::ERROR])); ?></p>
 						<p class="takopic-action__text"><?php esc_html_e('Not optimised yet, or their optimisation failed.', 'takopic'); ?></p>
-						<button type="button" class="button button-primary takopic-action__button" data-job="new"><?php esc_html_e('Optimise new images', 'takopic'); ?></button>
+						<button type="button" class="button button-primary takopic-action__button js-takopic-job-start" data-job="new"><?php esc_html_e('Optimise new images', 'takopic'); ?></button>
 					</div>
 					<div class="takopic-action">
 						<span class="takopic-action__icon dashicons dashicons-update" aria-hidden="true"></span>
 						<h3 class="takopic-action__title"><?php esc_html_e('Outdated images', 'takopic'); ?></h3>
-						<p class="takopic-action__count" data-count="outdated"><?php echo esc_html(number_format_i18n($counts[Status::OUTDATED])); ?></p>
+						<p class="takopic-action__count js-takopic-count" data-count="outdated"><?php echo esc_html(number_format_i18n($counts[Status::OUTDATED])); ?></p>
 						<p class="takopic-action__text"><?php esc_html_e('Optimised before a quality, a format, the maximum size or the thumbnail sizes changed. Optimised again from their originals.', 'takopic'); ?></p>
-						<button type="button" class="button takopic-action__button" data-job="outdated"><?php esc_html_e('Re-optimise outdated images', 'takopic'); ?></button>
+						<button type="button" class="button takopic-action__button js-takopic-job-start" data-job="outdated"><?php esc_html_e('Re-optimise outdated images', 'takopic'); ?></button>
 					</div>
 					<div class="takopic-action">
 						<span class="takopic-action__icon dashicons dashicons-images-alt" aria-hidden="true"></span>
 						<h3 class="takopic-action__title"><?php esc_html_e('All images', 'takopic'); ?></h3>
-						<p class="takopic-action__count" data-count="total"><?php echo esc_html(number_format_i18n($counts['total'])); ?></p>
+						<p class="takopic-action__count js-takopic-count" data-count="total"><?php echo esc_html(number_format_i18n($counts['total'])); ?></p>
 						<p class="takopic-action__text"><?php esc_html_e('Every image optimised again from its original, with its thumbnails made again.', 'takopic'); ?></p>
-						<button type="button" class="button takopic-action__button" data-job="all" data-confirm="<?php esc_attr_e('Re-optimise all images from their originals, with their thumbnails? This can take a while.', 'takopic'); ?>"><?php esc_html_e('Re-optimise all images', 'takopic'); ?></button>
+						<button type="button" class="button takopic-action__button js-takopic-job-start" data-job="all" data-confirm="<?php esc_attr_e('Re-optimise all images from their originals, with their thumbnails? This can take a while.', 'takopic'); ?>"><?php esc_html_e('Re-optimise all images', 'takopic'); ?></button>
 					</div>
 				</div>
 			<?php else : ?>
@@ -547,7 +575,7 @@ class SettingsPage
 						<?php foreach (['webp', 'avif'] as $id) : ?>
 							<?php $state = self::state($formats[$id]); ?>
 							<li>
-								<a class="takopic-chip" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
+								<a class="takopic-chip js-takopic-tab-link" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
 									<span class="takopic-dot takopic-dot--<?php echo esc_attr($state); ?>" aria-hidden="true"></span>
 									<span class="takopic-chip__name"><?php echo esc_html($formats[$id]['title']); ?></span>
 									<span class="takopic-chip__state"><?php echo esc_html(self::state_label($state)); ?></span>
@@ -556,7 +584,7 @@ class SettingsPage
 						<?php endforeach; ?>
 					</ul>
 					<?php if ($made < $total) : ?>
-						<a class="button takopic-generate__button" href="#optimise" data-tab="optimise"><?php esc_html_e('Optimise the media library', 'takopic'); ?></a>
+						<a class="button takopic-generate__button js-takopic-tab-link" href="#optimise" data-tab="optimise"><?php esc_html_e('Optimise the media library', 'takopic'); ?></a>
 					<?php endif; ?>
 				</div>
 			</li>
@@ -596,22 +624,30 @@ class SettingsPage
 						<li><?php esc_html_e('Does the server answer the image with them?', 'takopic'); ?></li>
 						<li><?php esc_html_e('Are the originals kept private?', 'takopic'); ?></li>
 					</ul>
-					<button type="button" class="button button-primary takopic-test__button" data-delivery-test><?php esc_html_e('Run the test', 'takopic'); ?></button>
-					<p class="takopic-test__summary" aria-live="polite" hidden></p>
+					<button type="button" class="button button-primary takopic-test__button js-takopic-delivery-test"><?php esc_html_e('Run the test', 'takopic'); ?></button>
+					<p class="takopic-test__summary js-takopic-test-summary" aria-live="polite" hidden></p>
 				</div>
 			</li>
 		</ol>
 
-		<div class="takopic-card takopic-test__result" hidden>
+		<div class="takopic-card takopic-test__result js-takopic-test-result" hidden>
 			<header class="takopic-card__header">
 				<span class="takopic-card__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
 				<div>
 					<h2 class="takopic-card__title"><?php esc_html_e('Test results', 'takopic'); ?></h2>
-					<p class="takopic-card__description takopic-test__sample"></p>
+					<p class="takopic-card__description takopic-test__sample js-takopic-test-sample"></p>
 				</div>
 			</header>
 			<div class="takopic-card__body">
-				<ul class="takopic-checks"></ul>
+				<ul class="takopic-checks js-takopic-test-checks"></ul>
+				<template class="js-takopic-check-template">
+					<li class="takopic-checks__item js-takopic-check">
+						<span class="takopic-checks__icon dashicons" aria-hidden="true"></span>
+						<span class="takopic-checks__label js-takopic-check-label"></span>
+						<span class="takopic-checks__detail js-takopic-check-detail"></span>
+						<span class="takopic-checks__advice js-takopic-check-advice"></span>
+					</li>
+				</template>
 			</div>
 		</div>
 
@@ -630,7 +666,7 @@ class SettingsPage
 							$this->printf_html(__('Takopic writes them in %s when the server option is on, and removes them when it is off.', 'takopic'), '<code>uploads/.htaccess</code>');
 							?>
 						</p>
-					<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Htaccess::apache_rules())); ?></code></pre>
+					<?php $this->render_code(implode("\n", Htaccess::apache_rules()), 'takopic-code-apache'); ?>
 				</div>
 			</details>
 		<?php else : ?>
@@ -644,7 +680,7 @@ class SettingsPage
 								$this->printf_html(__('In %s, written by Takopic when the server option is on.', 'takopic'), '<code>uploads/.htaccess</code>');
 								?>
 							</p>
-						<pre class="takopic-code"><code><?php echo esc_html(implode("\n", Htaccess::apache_rules())); ?></code></pre>
+						<?php $this->render_code(implode("\n", Htaccess::apache_rules()), 'takopic-code-apache'); ?>
 					</div>
 				</details>
 			<?php endif; ?>
@@ -652,7 +688,7 @@ class SettingsPage
 				<summary class="takopic-fold__summary"><span class="takopic-fold__title"><?php esc_html_e('Rewrite rules for nginx', 'takopic'); ?></span></summary>
 				<div class="takopic-fold__content">
 					<p class="takopic-fold__text"><?php esc_html_e('Add them to the configuration of the site, reload nginx, then tick the server option.', 'takopic'); ?></p>
-					<pre class="takopic-code"><code><?php echo esc_html(Htaccess::nginx_rules()); ?></code></pre>
+					<?php $this->render_code(Htaccess::nginx_rules(), 'takopic-code-nginx'); ?>
 				</div>
 			</details>
 		<?php endif; ?>
@@ -754,7 +790,7 @@ class SettingsPage
 							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
 						</details>
 					<?php endif; ?>
-					<details class="takopic-format__settings">
+					<details class="takopic-format__settings js-takopic-fold">
 						<summary class="takopic-format__summary"><?php esc_html_e('Settings', 'takopic'); ?></summary>
 						<div class="takopic-format__fields takopic-fields">
 							<?php foreach ($fields as $name => $field) : ?>
@@ -804,15 +840,15 @@ class SettingsPage
 					<p class="takopic-card__description">
 						<?php
 						/* translators: %s: the number of images. */
-						$this->printf_html(__('Deletes the WebP and AVIF files of the %s images processed. The JPG and PNG files stay compressed, and the originals kept.', 'takopic'), '<strong data-count="processed">' . esc_html(number_format_i18n(count(Cleaner::ids()))) . '</strong>');
+						$this->printf_html(__('Deletes the WebP and AVIF files of the %s images processed. The JPG and PNG files stay compressed, and the originals kept.', 'takopic'), '<strong class="js-takopic-count" data-count="processed">' . esc_html(number_format_i18n(count(Cleaner::ids()))) . '</strong>');
 						?>
 					</p>
 				</div>
 			</header>
 			<?php if ($jobs) : ?>
 				<div class="takopic-confirm">
-					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="remove_formats"> <?php esc_html_e('I understand the WebP and AVIF files will be deleted, until the images are optimised again.', 'takopic'); ?></label>
-					<button type="button" class="button takopic-confirm__button" data-job="remove_formats"><?php esc_html_e('Remove WebP and AVIF', 'takopic'); ?></button>
+					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input js-takopic-job-confirm" data-confirm-for="remove_formats"> <?php esc_html_e('I understand the WebP and AVIF files will be deleted, until the images are optimised again.', 'takopic'); ?></label>
+					<button type="button" class="button takopic-confirm__button js-takopic-job-start" data-job="remove_formats"><?php esc_html_e('Remove WebP and AVIF', 'takopic'); ?></button>
 				</div>
 			<?php else : ?>
 				<?php $this->render_no_jobs(); ?>
@@ -829,8 +865,8 @@ class SettingsPage
 			</header>
 			<?php if ($jobs) : ?>
 				<div class="takopic-confirm">
-					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input" data-confirm-for="restore"> <?php esc_html_e('I understand the images will no longer be optimised, and their WebP and AVIF files will be deleted.', 'takopic'); ?></label>
-					<button type="button" class="button takopic-confirm__button takopic-button--danger" data-job="restore"><?php esc_html_e('Restore original images', 'takopic'); ?></button>
+					<label class="takopic-confirm__label"><input type="checkbox" class="takopic-confirm__input js-takopic-job-confirm" data-confirm-for="restore"> <?php esc_html_e('I understand the images will no longer be optimised, and their WebP and AVIF files will be deleted.', 'takopic'); ?></label>
+					<button type="button" class="button takopic-confirm__button takopic-button--danger js-takopic-job-start" data-job="restore"><?php esc_html_e('Restore original images', 'takopic'); ?></button>
 				</div>
 			<?php else : ?>
 				<?php $this->render_no_jobs(); ?>
@@ -866,28 +902,35 @@ class SettingsPage
 	private function render_job()
 	{
 		?>
-		<div class="takopic-job" hidden>
+		<div class="takopic-job js-takopic-job" hidden>
 			<div class="takopic-job__progress">
 				<div class="takopic-job__head">
 					<span class="takopic-job__icon dashicons dashicons-update" aria-hidden="true"></span>
-					<p class="takopic-job__label" aria-live="polite"></p>
-					<span class="takopic-job__percent"></span>
+					<p class="takopic-job__label js-takopic-job-label" aria-live="polite"></p>
+					<span class="takopic-job__percent js-takopic-job-percent"></span>
 					<div class="takopic-job__controls">
-						<button type="button" class="button" data-control="pause"><?php esc_html_e('Pause', 'takopic'); ?></button>
-						<button type="button" class="button" data-control="resume"><?php esc_html_e('Resume', 'takopic'); ?></button>
-						<button type="button" class="button-link button-link-delete" data-control="cancel"><?php esc_html_e('Cancel', 'takopic'); ?></button>
+						<button type="button" class="button js-takopic-job-control" data-control="pause"><?php esc_html_e('Pause', 'takopic'); ?></button>
+						<button type="button" class="button js-takopic-job-control" data-control="resume"><?php esc_html_e('Resume', 'takopic'); ?></button>
+						<button type="button" class="button-link button-link-delete js-takopic-job-control" data-control="cancel"><?php esc_html_e('Cancel', 'takopic'); ?></button>
 					</div>
 				</div>
-				<progress class="takopic-job__bar" max="100" value="0"></progress>
+				<progress class="takopic-job__bar js-takopic-job-bar" max="100" value="0"></progress>
 			</div>
-			<div class="takopic-result" role="status" aria-live="polite">
-				<span class="takopic-confetti" aria-hidden="true"></span>
+			<div class="takopic-result js-takopic-job-result" role="status" aria-live="polite">
+				<span class="takopic-confetti js-takopic-confetti" aria-hidden="true"></span>
 				<span class="takopic-result__icon dashicons" aria-hidden="true"></span>
 				<div class="takopic-result__body">
-					<p class="takopic-result__title"></p>
-					<p class="takopic-result__detail"></p>
+					<p class="takopic-result__title js-takopic-job-title"></p>
+					<p class="takopic-result__detail">
+						<span class="js-takopic-job-detail"></span>
+						<span class="js-takopic-job-errors" hidden>
+							<span class="js-takopic-job-errors-count"></span>
+							<a href="<?php echo esc_url(admin_url('upload.php?mode=list')); ?>"><?php esc_html_e('see the errors in the Media library', 'takopic'); ?></a>.
+						</span>
+						<span class="js-takopic-job-missing" hidden></span>
+					</p>
 				</div>
-				<button type="button" class="takopic-result__close" data-control="dismiss">
+				<button type="button" class="takopic-result__close js-takopic-job-control" data-control="dismiss">
 					<span class="dashicons dashicons-no-alt" aria-hidden="true"></span>
 					<span class="screen-reader-text"><?php esc_html_e('Dismiss', 'takopic'); ?></span>
 				</button>
@@ -923,7 +966,7 @@ class SettingsPage
 					$this->printf_html(__('Images output with your own markup (e.g. from an ACF field) are not wrapped in a %1$s by the HTML option: serve them from the server, or use the %2$s helper, which returns their %1$s whatever the options.', 'takopic'), '<code>&lt;picture&gt;</code>', '<code>takopic_image()</code>');
 					?>
 				</p>
-				<pre class="takopic-code"><code><?php echo esc_html($code); ?></code></pre>
+				<?php $this->render_code($code, 'takopic-code-theme'); ?>
 				<p class="takopic-fold__text">
 					<?php
 					$this->printf_html(
@@ -1036,6 +1079,44 @@ class SettingsPage
 	}
 
 	/**
+	 * Renders a block of code, with its copy button
+	 * (CopyButton.js, hidden without JS).
+	 *
+	 * @param string $code
+	 * @param string $id Unique on the page.
+	 * @since 1.0.0
+	 */
+	private function render_code($code, $id)
+	{
+		?>
+		<div class="takopic-code-block">
+			<pre class="takopic-code" id="<?php echo esc_attr($id); ?>"><code><?php echo esc_html($code); ?></code></pre>
+			<button type="button" class="takopic-copy js-takopic-copy" aria-controls="<?php echo esc_attr($id); ?>"><?php esc_html_e('Copy', 'takopic'); ?></button>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Renders a command or an address on one line, with
+	 * its copy button after it.
+	 *
+	 * @param string $command
+	 * @param string $class Of the code.
+	 * @since 1.0.0
+	 */
+	private function render_command($command, $class = '')
+	{
+		$id = 'takopic-command-' . sanitize_title($command);
+		printf(
+			'<code class="%1$s" id="%2$s">%3$s</code> <button type="button" class="takopic-copy js-takopic-copy" aria-controls="%2$s">%4$s</button>',
+			esc_attr($class),
+			esc_attr($id),
+			esc_html($command),
+			esc_html__('Copy', 'takopic')
+		);
+	}
+
+	/**
 	 * Renders a status badge.
 	 *
 	 * @param string $variant on, off or muted.
@@ -1091,7 +1172,7 @@ class SettingsPage
 		$setting = Settings::FIELDS[$name];
 		$tags = ['strong' => [], 'code' => []];
 		$disabled = !empty($field['disabled']) ? ' disabled' : '';
-		// A field shown while another one has a value, e.g. the lossy quality (settings.js).
+		// A field shown while another one has a value, e.g. the lossy quality (DependentField.js).
 		$when = '';
 		if (!empty($field['when'])) {
 			$when = sprintf(' data-when="%s" data-when-value="%s"', esc_attr(Settings::OPTION . '[' . $field['when'][0] . ']'), esc_attr($field['when'][1]));
@@ -1099,9 +1180,10 @@ class SettingsPage
 
 		// The label names the control without being a <label>: hovering it would hover the control.
 		printf(
-			'<div class="takopic-field%s%s"%s><span class="takopic-field__label" id="%s-label">%s</span>',
+			'<div class="takopic-field%s%s%s"%s><span class="takopic-field__label" id="%s-label">%s</span>',
 			$field['type'] === 'checkbox' ? ' takopic-field--toggle' : '',
 			$disabled ? ' takopic-field--disabled' : '',
+			$when ? ' js-takopic-dependent' : '',
 			$when, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Escaped above.
 			esc_attr($id),
 			esc_html($field['label'])
@@ -1155,9 +1237,9 @@ class SettingsPage
 			printf('<p class="takopic-field__help">%s</p></div>', wp_kses($field['help'], $tags));
 			return;
 		}
-		// A short note, the full help behind a "?" button (settings.js hides it, shown without JS).
+		// A short note, the full help behind a "?" button (HelpToggle.js hides it, shown without JS).
 		printf(
-			'<p class="takopic-field__help">%s <button type="button" class="takopic-help__toggle" aria-expanded="false" aria-controls="%s-help"><span aria-hidden="true">?</span><span class="screen-reader-text">%s</span></button></p><p class="takopic-field__help takopic-help__text" id="%s-help">%s</p></div>',
+			'<p class="takopic-field__help">%s <button type="button" class="takopic-help__toggle js-takopic-help-toggle" aria-expanded="false" aria-controls="%s-help"><span aria-hidden="true">?</span><span class="screen-reader-text">%s</span></button></p><p class="takopic-field__help takopic-help__text" id="%s-help">%s</p></div>',
 			wp_kses($field['note'], $tags), esc_attr($id), /* translators: %s: the label of a setting. */ esc_html(sprintf(__('More about: %s', 'takopic'), $field['label'])), esc_attr($id), wp_kses($field['help'], $tags)
 		);
 	}

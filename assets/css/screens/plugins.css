@@ -2,7 +2,7 @@
  * screens/plugins.css
  *
  * The dialog of the plugins screen, warning before Takopic
- * is deactivated (see plugins.js).
+ * is deactivated (see DeactivationWarning.js).
  */
 
 .takopic-dialog {
