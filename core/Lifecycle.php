@@ -3,9 +3,9 @@
 /**
  * Lifecycle
  *
- * What Takopic does when it is activated and deactivated,
- * on a site or on every site of a network. Deleting
- * it is up to uninstall.php.
+ * What Takopic does when it is activated, deactivated
+ * and deleted (see uninstall.php), on a site or on
+ * every site of a network.
  *
  * @package     Takopic
  * @author      Clément Gayot
@@ -16,9 +16,12 @@
 
 namespace Takopic;
 
+use Takopic\Admin\PluginsScreen;
 use Takopic\Delivery\Htaccess;
+use Takopic\Log\Errors;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
+use Takopic\System\Process;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -50,19 +53,58 @@ class Lifecycle
 	 *
 	 * @param bool $network_wide Deactivated on every site of the network.
 	 * @since 1.0.0
-	 * @date 26/10/2026
 	 */
 	public static function deactivate($network_wide = false)
 	{
-		self::each_site($network_wide, function () {
+		self::each_site($network_wide, [self::class, 'stop']);
+	}
+
+	/**
+	 * Deletes the data of Takopic, on every site of a
+	 * network: what deactivating it stops, its
+	 * settings, the metas of the images, its recent
+	 * errors, progress and caches. Only its names: a
+	 * pattern as wide as takopic_% would also delete
+	 * the options of another plugin. The files are
+	 * kept: the compressed images, their WebP and AVIF
+	 * versions, and the originals.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function uninstall()
+	{
+		self::each_site(true, function () {
 			global $wpdb;
-			// The job of each site, see Job::__construct().
-			if (class_exists('Takopic_Vendor_WP_Background_Process')) {
-				(new Job())->stop();
+			self::stop();
+			foreach ([Settings::OPTION, Errors::OPTION, Job::PROGRESS] as $option) {
+				delete_option($option);
 			}
-			$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like(Lock::PREFIX) . '%'));
-			Htaccess::remove_rules(Htaccess::htaccess());
+			foreach ([Process::VERSIONS_TRANSIENT, PluginsScreen::THEME_TRANSIENT] as $transient) {
+				delete_transient($transient);
+			}
+			// Settings used, files made, errors and bytes of the images.
+			$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like('_takopic_') . '%'));
 		});
+		wp_cache_flush();
+	}
+
+	/**
+	 * Stops what Takopic runs on the current site: its
+	 * background job (without the request the library
+	 * sends to cancel it), the locks of the images, and
+	 * the rewrite rules of uploads/.htaccess.
+	 *
+	 * @since 1.0.0
+	 */
+	private static function stop()
+	{
+		global $wpdb;
+		// The job of each site, see Job::__construct().
+		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
+			(new Job())->stop();
+		}
+		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like(Lock::PREFIX) . '%'));
+		Htaccess::remove_rules(Htaccess::htaccess());
 	}
 
 	/**

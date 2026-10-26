@@ -80,10 +80,11 @@ class UninstallTest extends TestCase
 		Settings::set(array_map(function ($field) {
 			return $field['default'];
 		}, Settings::FIELDS));
-		foreach (['takopic_errors', 'takopic_job', 'takopic_theme_calls', 'takopic_lock_7'] as $option) {
+		foreach (['takopic_errors', 'takopic_job', 'takopic_lock_7'] as $option) {
 			update_option($option, ['data']);
 		}
 		set_transient('takopic_versions', ['cwebp' => '1.6.0']);
+		set_transient('takopic_theme_calls', ['functions.php']);
 		foreach (self::FOREIGN as $option) {
 			update_option($option, 'kept');
 		}
