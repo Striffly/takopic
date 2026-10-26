@@ -303,6 +303,6 @@ class MediaColumn
 		if ($hook !== 'upload.php') {
 			return;
 		}
-		wp_enqueue_style('takopic-media', TAKOPIC_URL . 'assets/media.css', [], filemtime(TAKOPIC_PATH . 'assets/media.css'));
+		wp_enqueue_style('takopic-media', TAKOPIC_URL . 'assets/css/media.css', [], filemtime(TAKOPIC_PATH . 'assets/css/media.css'));
 	}
 }

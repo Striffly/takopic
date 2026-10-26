@@ -1,5 +1,5 @@
 <p align="left">
-    <img alt="Takopic – Local Image Optimizer | Convert WebP & AVIF" src="assets/icon-256x256.png" width="200">
+    <img alt="Takopic – Local Image Optimizer | Convert WebP & AVIF" src="assets/images/icon-256x256.png" width="200">
 </p>
 
 # Takopic – Local Image Optimizer | Convert WebP & AVIF
@@ -295,7 +295,7 @@ Takopic is free, and will stay so. If it saves you time or bytes, you can buy me
 - **PayPal**: [paypal.me/striffly](https://paypal.me/striffly/5EUR)
 - **Bitcoin**: `bc1q3j7gxxykpu9zp3sgxyallw0hq0sr659zl35wre`
 
-<img src="assets/bitcoin.svg" alt="QR code of the Bitcoin address" width="160">
+<img src="assets/images/bitcoin-qr.svg" alt="QR code of the Bitcoin address" width="160">
 
 ## Credits
 

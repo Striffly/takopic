@@ -98,7 +98,7 @@ class PluginsScreen
 		if ($hook !== 'plugins.php' || !current_user_can('activate_plugins')) {
 			return;
 		}
-		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/plugins.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/plugins.js'), true);
+		wp_enqueue_script('takopic-plugins', TAKOPIC_URL . 'assets/js/plugins.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/js/plugins.js'), true);
 		wp_set_script_translations('takopic-plugins', 'takopic');
 		wp_localize_script('takopic-plugins', 'takopicPlugins', [
 			'plugin' => plugin_basename(TAKOPIC_FILE),
@@ -107,7 +107,7 @@ class PluginsScreen
 			'restoreUrl' => SettingsPage::page_url() . '#overview',
 			'themeCalls' => $this->theme_calls(),
 		]);
-		wp_enqueue_style('takopic-plugins', TAKOPIC_URL . 'assets/plugins.css', [], filemtime(TAKOPIC_PATH . 'assets/plugins.css'));
+		wp_enqueue_style('takopic-plugins', TAKOPIC_URL . 'assets/css/plugins.css', [], filemtime(TAKOPIC_PATH . 'assets/css/plugins.css'));
 	}
 
 	/**

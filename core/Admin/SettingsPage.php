@@ -84,8 +84,8 @@ class SettingsPage
 		if ($hook !== 'settings_page_' . self::PAGE) {
 			return;
 		}
-		wp_enqueue_style('takopic-settings', TAKOPIC_URL . 'assets/settings.css', [], filemtime(TAKOPIC_PATH . 'assets/settings.css'));
-		wp_enqueue_script('takopic-settings', TAKOPIC_URL . 'assets/settings.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/settings.js'), true);
+		wp_enqueue_style('takopic-settings', TAKOPIC_URL . 'assets/css/settings.css', [], filemtime(TAKOPIC_PATH . 'assets/css/settings.css'));
+		wp_enqueue_script('takopic-settings', TAKOPIC_URL . 'assets/js/settings.js', ['wp-i18n'], filemtime(TAKOPIC_PATH . 'assets/js/settings.js'), true);
 		wp_set_script_translations('takopic-settings', 'takopic');
 		wp_localize_script('takopic-settings', 'takopicJob', [
 			'ajaxurl' => admin_url('admin-ajax.php'),
@@ -140,7 +140,7 @@ class SettingsPage
 		?>
 		<div class="wrap takopic-page">
 			<header class="takopic-header">
-				<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/icon-128x128.png'); ?>" alt="" width="64" height="64">
+				<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.png'); ?>" alt="" width="64" height="64">
 				<div class="takopic-header__text">
 					<h1 class="takopic-header__title">Takopic</h1>
 					<?php // The tagline stays in English, as the name of Takopic. ?>
@@ -221,7 +221,7 @@ class SettingsPage
 			</p>
 			<div class="takopic-support__wallet" id="takopic-support-wallet">
 				<a class="takopic-support__qr" href="<?php echo esc_url('bitcoin:' . self::BITCOIN, ['bitcoin']); ?>">
-					<img src="<?php echo esc_url(TAKOPIC_URL . 'assets/bitcoin.svg'); ?>" width="104" height="104" alt="<?php esc_attr_e('QR code of the Bitcoin address', 'takopic'); ?>">
+					<img src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/bitcoin-qr.svg'); ?>" width="104" height="104" alt="<?php esc_attr_e('QR code of the Bitcoin address', 'takopic'); ?>">
 				</a>
 				<code class="takopic-support__address"><?php echo esc_html(self::BITCOIN); ?></code>
 			</div>
