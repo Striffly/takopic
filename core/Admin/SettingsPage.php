@@ -187,7 +187,11 @@ class SettingsPage
 		?>
 		<div class="wrap takopic-page js-takopic-page">
 			<header class="takopic-header">
-				<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.png'); ?>" alt="" width="64" height="64">
+				<?php // The octopus floats, unless the system asks for less motion. ?>
+				<picture class="takopic-header__picture">
+					<source srcset="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.png'); ?> 1x, <?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-256x256.png'); ?> 2x" media="(prefers-reduced-motion: reduce)">
+					<img class="takopic-header__logo" src="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-128x128.gif'); ?>" srcset="<?php echo esc_url(TAKOPIC_URL . 'assets/images/icon-256x256.gif'); ?> 2x" alt="" width="80" height="80">
+				</picture>
 				<div class="takopic-header__text">
 					<h1 class="takopic-header__title">Takopic</h1>
 					<?php // The tagline stays in English, as the name of Takopic. ?>

@@ -75,12 +75,16 @@
 	}
 }
 
-.takopic-header__logo {
+.takopic-header__picture {
 	flex: none;
-	width: 64px;
-	height: 64px;
+}
+
+.takopic-header__logo {
+	display: block;
+	width: 80px;
+	height: 80px;
 	border-radius: var(--takopic-radius);
-	box-shadow: var(--takopic-glow);
+	box-shadow: 0 0 0 1px rgba(255, 60, 172, .55), var(--takopic-glow);
 }
 
 .takopic-header__text {
