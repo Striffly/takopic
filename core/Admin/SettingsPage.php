@@ -568,7 +568,14 @@ class SettingsPage
 				<?php $this->render_no_jobs(); ?>
 			<?php endif; ?>
 			<p class="takopic-card__footer">
-				<?php esc_html_e('New uploads are optimised right away.', 'takopic'); ?>
+				<?php if (Settings::get('optimise_uploads')) : ?>
+					<span class="takopic-uploads takopic-uploads--on"><?php esc_html_e('New uploads are optimised right away.', 'takopic'); ?></span>
+				<?php else : ?>
+					<span class="takopic-uploads takopic-uploads--off">
+						<?php esc_html_e('New uploads wait here, as new images.', 'takopic'); ?>
+						<a class="js-takopic-tab-link" href="#settings" data-tab="settings" data-target="takopic-settings-general"><?php esc_html_e('Optimise them on upload', 'takopic'); ?></a>
+					</span>
+				<?php endif; ?>
 				<a href="<?php echo esc_url(admin_url('upload.php?mode=list')); ?>"><?php esc_html_e('See each image in the Media library', 'takopic'); ?></a>
 			</p>
 		</div>
@@ -788,7 +795,7 @@ class SettingsPage
 		?>
 		<div class="takopic-card" id="takopic-settings-general">
 			<header class="takopic-card__header">
-				<span class="takopic-card__icon dashicons dashicons-image-crop" aria-hidden="true"></span>
+				<span class="takopic-card__icon dashicons dashicons-upload" aria-hidden="true"></span>
 				<div>
 					<h2 class="takopic-card__title"><?php echo esc_html($general['title']); ?></h2>
 					<p class="takopic-card__description"><?php echo esc_html($general['description']); ?></p>
@@ -1422,14 +1429,19 @@ class SettingsPage
 				],
 			],
 			'general' => [
-				'title' => __('Image size', 'takopic'),
-				'description' => __('WordPress scales the big images down on upload, and keeps the image uploaded as their original.', 'takopic'),
+				'title' => __('Uploads', 'takopic'),
+				'description' => __('What happens to the images added to the media library.', 'takopic'),
 				'fields' => [
+					'optimise_uploads' => [
+						'type' => 'checkbox',
+						'label' => __('Optimise new uploads', 'takopic'),
+						'help' => __('Each image added to the media library is optimised right away. Unticked, they wait in the Optimise tab, as new images.', 'takopic'),
+					],
 					'max_size' => [
 						'type' => 'number',
 						'label' => __('Maximum image size', 'takopic'),
 						'unit' => 'px',
-						'help' => __('Longest side, 2560 by default. <strong>0 means no limit: huge images can exhaust the server.</strong>', 'takopic'),
+						'help' => __('WordPress scales the bigger images down on upload, and keeps them as their original. Longest side, 2560 by default. <strong>0 means no limit: huge images can exhaust the server.</strong>', 'takopic'),
 					],
 				],
 			],
