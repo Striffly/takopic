@@ -8,8 +8,8 @@
  * plugin before: its classes are loaded here.
  *
  * The files are kept: the compressed images, their WebP
- * and AVIF versions, and the originals in
- * uploads/takopic-originals/. A request may time out
+ * and AVIF versions, and the originals, in
+ * uploads/takopic/. A request may time out
  * before thousands of images are restored: use
  * "Restore original images" before deleting Takopic.
  *
