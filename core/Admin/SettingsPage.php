@@ -441,8 +441,8 @@ class SettingsPage
 					<p class="takopic-savings__value"><?php esc_html_e('Ready to squeeze', 'takopic'); ?></p>
 					<p class="takopic-savings__detail"><?php esc_html_e('Takopic optimises your images on your own server: free, unlimited, and they never leave it.', 'takopic'); ?></p>
 				</div>
-				<?php // Filled while images wait for an optimisation. ?>
-				<a class="takopic-cta js-takopic-cta js-takopic-tab-link<?php echo $counts[Status::TO_OPTIMISE] + $counts[Status::ERROR] + $counts[Status::OUTDATED] ? ' takopic-cta--filled' : ''; ?>" href="#optimise" data-tab="optimise">
+				<?php // Filled while new images wait for their optimisation, not those optimised with older settings. ?>
+				<a class="takopic-cta js-takopic-cta js-takopic-tab-link<?php echo $counts[Status::TO_OPTIMISE] ? ' takopic-cta--filled' : ''; ?>" href="#optimise" data-tab="optimise">
 					<?php esc_html_e('Optimise the media library', 'takopic'); ?>
 					<span class="takopic-cta__arrow dashicons dashicons-arrow-right-alt" aria-hidden="true"></span>
 				</a>
