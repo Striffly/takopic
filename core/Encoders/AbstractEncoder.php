@@ -24,6 +24,7 @@ use Takopic\Engines\Libraries;
 use Takopic\Log\Errors;
 use Takopic\Log\Logger;
 use Takopic\Media\Files;
+use Takopic\Media\Lock;
 use Takopic\Media\Optimiser;
 
 if (!defined('ABSPATH')) {
@@ -128,6 +129,8 @@ abstract class AbstractEncoder
 				Errors::add($id, static::FORMAT, $file, 'cannot make the folder of the ' . static::FORMAT . ' version');
 				continue;
 			}
+			// Still processing it: the lock of the image does not go stale.
+			Lock::touch($id);
 			static::convert($file, (string)wp_get_image_mime($file), $args);
 		}
 
