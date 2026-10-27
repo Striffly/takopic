@@ -15,6 +15,7 @@
 
 namespace Takopic\Tests\Integration;
 
+use Takopic\Engines\ImageEditor;
 use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
 use Takopic\Tests\TestCase;
@@ -150,6 +151,33 @@ class FilesTest extends TestCase
 		delete_option(Files::KEY_OPTION);
 
 		$this->assertSame($dir, Files::backup_dir());
+	}
+
+	public function test_a_cmyk_image_is_read_through_a_private_copy()
+	{
+		$this->require_libraries('cwebp');
+
+		// cwebp cannot read CMYK: it reads an RGB copy, made in the folder of the originals.
+		$id = $this->upload('cmyk.jpg');
+
+		$this->assertFileExists(Files::variant(get_attached_file($id), '.webp'));
+		$this->assertSame([], glob(Files::backup_dir() . '/takopic-*'), 'The copy is removed.');
+		$copy = ImageEditor::readable(self::fixture('cmyk.jpg'), 'image/jpeg');
+		$this->assertStringStartsWith(Files::backup_dir() . '/takopic-', $copy);
+		ImageEditor::release($copy, self::fixture('cmyk.jpg'));
+		$this->assertFileDoesNotExist($copy);
+		$this->assertSame([], array_merge(glob(get_temp_dir() . 'takopic*.png'), glob(get_temp_dir() . 'takopic*.tmp')), 'Nothing in the shared temporary folder.');
+	}
+
+	public function test_the_near_lossless_webp_leaves_no_temporary_file()
+	{
+		$this->require_libraries('cwebp');
+
+		// A graphic: its WebP is encoded again in near-lossless mode, to a temporary file.
+		$id = $this->upload('graphic.png');
+
+		$this->assertFileExists(Files::variant(get_attached_file($id), '.webp'));
+		$this->assertSame([], glob(dirname(Files::variant(get_attached_file($id), '.webp')) . '/takopic-*'));
 	}
 
 	public function test_the_originals_can_be_moved_out_of_the_uploads_folder()
