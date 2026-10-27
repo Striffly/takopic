@@ -21,8 +21,9 @@ unlimited, no API key, no quota: your images never leave your server.
 
 **Optimisation**
 
-- Compresses JPG and PNG images in place, and creates their WebP and AVIF versions next to them (`photo.jpg.webp`,
-  `photo.jpg.avif`), kept only when lighter than the compressed image.
+- Compresses JPG and PNG images in place, and creates their WebP and AVIF versions in `uploads/takopic/formats/`,
+  with the same tree (`2026/10/photo.jpg.webp`, `photo.jpg.avif`), kept only when lighter than the compressed image.
+  WordPress never writes there: no file added to the media library can pass for a version of an image.
 - Keeps the original images: every optimisation starts again from them, and they can be restored at any time.
 - Strips the metadata (camera, date, GPS position) from every optimised file.
 - Handles CMYK JPGs, which the WebP and AVIF encoders cannot read.
@@ -118,22 +119,25 @@ Once turned on, on the Delivery tab, in one of two ways:
 - **In the HTML**: the images of the content and the ones output by `wp_get_attachment_image()` (featured images,
   galleries, most themes) are wrapped in a `<picture>` element, with the JPG or PNG as fallback. Works everywhere,
   but may break a layout styling `img` directly. In a custom theme, use [`takopic_image()`](#theme-development).
-- **From the server**: the server answers `photo.jpg` with `photo.jpg.avif` or `photo.jpg.webp` when the browser
-  reads them. The HTML does not change and every image is served, CSS backgrounds included. Takopic writes the rules in
+- **From the server**: the server answers `photo.jpg` with `takopic/formats/…/photo.jpg.avif` or `.webp` when the
+  browser reads them. The HTML does not change and every image is served, CSS backgrounds included. Takopic writes the rules in
   `uploads/.htaccess` on Apache and LiteSpeed; on nginx, add these ones to the configuration of the site:
 
 ```nginx
 # In the http block:
-map $http_accept $takopic_suffix {
+map $http_accept $takopic_avif {
 	default "";
 	"~image/avif" ".avif";
+}
+map $http_accept $takopic_webp {
+	default "";
 	"~image/webp" ".webp";
 }
 
 # In the server block:
-location ~* ^/wp-content/uploads/.+\.(jpe?g|png)$ {
+location ~* ^/wp-content/uploads/(?<takopic_file>.+\.(?:jpe?g|png))$ {
 	add_header Vary Accept;
-	try_files $uri$takopic_suffix $uri =404;
+	try_files /wp-content/uploads/takopic/formats/$takopic_file$takopic_avif /wp-content/uploads/takopic/formats/$takopic_file$takopic_webp $uri =404;
 }
 ```
 
@@ -174,8 +178,8 @@ jpegoptim --strip-all --all-progressive --overwrite --max={quality} photo.jpg
 optipng -clobber -strip all -o {level} -out photo.png takopic-originals/photo.png
 oxipng -o {level} --strip safe --force --out photo.png takopic-originals/photo.png
 pngquant --quality={quality - 15}-{quality} --strip --skip-if-larger --force --output tmp.png -- takopic-originals/photo.png
-cwebp -q {quality} -mt photo.jpg -o photo.jpg.webp
-avifenc -q {quality} --speed 6 --ignore-exif --ignore-xmp photo.jpg photo.jpg.avif
+cwebp -q {quality} -mt photo.jpg -o takopic/formats/photo.jpg.webp
+avifenc -q {quality} --speed 6 --ignore-exif --ignore-xmp photo.jpg takopic/formats/photo.jpg.avif
 ```
 
 `avifenc` older than 1.0 gets the quality as `cq-level` instead of `-q`. `oxipng` runs instead of `optipng` when
@@ -230,8 +234,8 @@ if (function_exists('takopic_image')) {
 
 ```html
 <picture class="takopic-picture hero">
-	<source type="image/avif" srcset="photo.jpg.avif 2500w, photo-300x200.jpg.avif 300w" sizes="(max-width: 2500px) 100vw, 2500px">
-	<source type="image/webp" srcset="photo.jpg.webp 2500w, photo-300x200.jpg.webp 300w" sizes="(max-width: 2500px) 100vw, 2500px">
+	<source type="image/avif" srcset="takopic/formats/photo.jpg.avif 2500w, takopic/formats/photo-300x200.jpg.avif 300w" sizes="(max-width: 2500px) 100vw, 2500px">
+	<source type="image/webp" srcset="takopic/formats/photo.jpg.webp 2500w, takopic/formats/photo-300x200.jpg.webp 300w" sizes="(max-width: 2500px) 100vw, 2500px">
 	<img data-takopic src="photo.jpg" srcset="photo.jpg 2500w, photo-300x200.jpg 300w" sizes="(max-width: 2500px) 100vw, 2500px" width="2500" height="1667" alt="">
 </picture>
 ```
@@ -242,7 +246,8 @@ A size without a file in a format (deleted as heavier than its JPG or PNG) keeps
 
 ```php
 $sources = function_exists('takopic_image_sources') ? takopic_image_sources($srcset) : [];
-// ['image/avif' => 'photo.jpg.avif 2500w, photo-300x200.jpg 300w', 'image/webp' => 'photo.jpg.webp 2500w, photo-300x200.jpg.webp 300w']
+// ['image/avif' => 'takopic/formats/photo.jpg.avif 2500w, photo-300x200.jpg 300w',
+//  'image/webp' => 'takopic/formats/photo.jpg.webp 2500w, takopic/formats/photo-300x200.jpg.webp 300w']
 
 foreach ($sources as $type => $format_srcset) {
 	printf('<source type="%s" srcset="%s" sizes="%s">', esc_attr($type), esc_attr($format_srcset), esc_attr($sizes));

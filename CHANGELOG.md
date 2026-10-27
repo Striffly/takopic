@@ -7,8 +7,8 @@ The versions of Takopic, newest first. Before 1.0.0, it was
 
 - Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
 - The original images are kept in `uploads/takopic-originals/`, and every optimisation starts again from them.
-- WebP and AVIF files keep the extension of their source (`image.jpg.webp`), and can be served on the site with
-  `<picture>` or rewrite rules.
+- WebP and AVIF files keep the extension of their source (`image.jpg.webp`), in `uploads/takopic/formats/`, and can
+  be served on the site with `<picture>` or rewrite rules.
 - Background optimisation of the media library, with pause and cancel, and re-optimisation when the settings or the
   thumbnail sizes change.
 - Clean up: remove the WebP and AVIF files, or restore the original images.
