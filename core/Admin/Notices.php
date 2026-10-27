@@ -109,6 +109,7 @@ class Notices
 			'/permission denied|read-only|cannot (open|create|write)/i' => __('the file could not be written, check the permissions of the uploads folder.', 'takopic'),
 			'/cannot read the image/i' => __('the image file is damaged or incomplete, WordPress cannot read it.', 'takopic'),
 			'/premature end|corrupt|not a (jpeg|png)|recoverable errors|bad huffman|invalid|input file read error|cannot read input file/i' => __('the image file seems damaged or incomplete.', 'takopic'),
+			'/took longer than \d+ s, stopped/' => __('the library took too long on this image and was stopped: optimise it again, or lower the maximum image size.', 'takopic'),
 			'/not found|code 127/i' => __('the library does not work on the server, check its installation.', 'takopic'),
 		];
 	}
