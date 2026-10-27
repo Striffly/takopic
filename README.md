@@ -329,11 +329,13 @@ single site and on a network, at each push and before each release.
 ### Logo and banner
 
 `bun run brand` draws the logo and the banners from the pixel grids of `tools/brand/sprites/`, in `assets/images/`
-and `.wordpress-org/`, the assets of the page of Takopic on WordPress.org. The screenshots there are captures of the
-admin, 1408x880 at 2x, dressed by `tools/brand/screenshots.js` in the order of `readme.txt`:
+and `.wordpress-org/`, the assets of the page of Takopic on WordPress.org. `bun run screenshots` captures the
+screenshots there in the order of `readme.txt`, 1408x880 at 2x, with the Chromium of the system (`--chrome` sets
+another). It needs a test site with Takopic active, its media library optimised and the WebP and AVIF served by the
+rewrite rules; the second screen optimises every image again:
 
 ```bash
-bun tools/brand/screenshots.js overview.png optimise.png delivery.png settings.png media.png
+bun run screenshots -- --url=http://localhost:8086 --user=bench --password=bench
 ```
 
 ## Support
