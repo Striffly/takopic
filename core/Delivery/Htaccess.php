@@ -181,6 +181,9 @@ class Htaccess
 		$on = Settings::get('serve_rewrite') && self::server() !== 'nginx';
 		if (!$on) {
 			self::remove_rules(self::htaccess());
+			if (self::rules_written()) {
+				add_settings_error(Settings::OPTION, 'takopic_rewrite_rules', __('Takopic could not remove its rules from uploads/.htaccess: remove them by hand, between the lines with Takopic.', 'takopic'));
+			}
 			return;
 		}
 		require_once ABSPATH . 'wp-admin/includes/misc.php';

@@ -118,6 +118,15 @@
 	color: var(--takopic-muted);
 }
 
+/* Saved, but what follows it failed, e.g. the rules of uploads/.htaccess (Form.js). */
+.takopic-field__error {
+	grid-column: 1 / -1;
+	max-width: 680px;
+	margin: var(--takopic-space-1) 0 0;
+	color: var(--takopic-off);
+	font-weight: 600;
+}
+
 /* A setting nothing can use, e.g. without its library: greyed. */
 .takopic-field--disabled {
 	& :is(.takopic-field__label, .takopic-field__control, .takopic-field__help) {

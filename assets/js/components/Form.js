@@ -5,7 +5,10 @@
  * setting is saved as it changes (SettingsAjax): a box,
  * a choice or a list at once, a number once left or
  * entered, if the browser takes it. A mark by it tells
- * it saved, or not, its value then put back. What the
+ * it saved, or not, its value then put back. Saved, but
+ * what follows it failed (e.g. the rules of
+ * uploads/.htaccess not written), the error shows under
+ * it until it is saved again. What the
  * page shows of the settings follows, and of the
  * images once a job ended: its parts marked
  * .js-takopic-live are taken again from the page, as
@@ -98,7 +101,8 @@
 				return;
 			}
 			this.apply(input, response.data.value);
-			this.mark(input, true);
+			this.mark(input, !response.data.error, response.data.error ? __('Not applied', 'takopic') : '');
+			this.showError(input, response.data.error);
 			this.view.emit('settings:saved', {name, value: response.data.value});
 			this.refreshLater();
 		}
@@ -188,13 +192,14 @@
 		 *
 		 * @param {HTMLElement} input
 		 * @param {boolean} saved
+		 * @param {string} [failed] The text of a failure, other than not saved.
 		 */
-		mark(input, saved) {
+		mark(input, saved, failed = '') {
 			const place = input.closest('.takopic-toggle, .takopic-field__control');
 			if (!place) {
 				return;
 			}
-			const text = saved ? __('Saved', 'takopic') : __('Not saved', 'takopic');
+			const text = saved ? __('Saved', 'takopic') : (failed || __('Not saved', 'takopic'));
 			const mark = document.createElement('span');
 			mark.className = `takopic-autosave${saved ? '' : ' takopic-autosave--error'}`;
 			mark.textContent = text;
@@ -208,6 +213,26 @@
 			this.current = mark;
 			this.markTimer = setTimeout(() => place.append(mark), gap);
 			this.view.announce(text);
+		}
+
+		/**
+		 * Shows the error of what follows a setting under
+		 * it, or removes the one shown.
+		 *
+		 * @param {HTMLElement} input
+		 * @param {string} error
+		 */
+		showError(input, error) {
+			const field = input.closest('.takopic-field');
+			field?.querySelector('.takopic-field__error')?.remove();
+			if (!field || !error) {
+				return;
+			}
+			const notice = document.createElement('p');
+			notice.className = 'takopic-field__error';
+			notice.textContent = error;
+			field.append(notice);
+			this.view.announce(error);
 		}
 
 		/**
