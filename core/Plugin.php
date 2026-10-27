@@ -19,6 +19,7 @@ use Takopic\Admin\JobsAjax;
 use Takopic\Admin\MediaColumn;
 use Takopic\Admin\Notices;
 use Takopic\Admin\PluginsScreen;
+use Takopic\Admin\SettingsAjax;
 use Takopic\Admin\SettingsPage;
 use Takopic\Delivery\Display;
 use Takopic\Delivery\Htaccess;
@@ -71,6 +72,7 @@ final class Plugin
 		define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
 		add_action('init', [Settings::class, 'register']);
 		new SettingsPage();
+		new SettingsAjax();
 		new UploadHooks();
 		new Notices();
 		new MediaColumn();
