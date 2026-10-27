@@ -226,7 +226,7 @@ class SettingsPage
 						<?php echo esc_html($title); ?>
 						<?php if ($id === 'settings') : ?>
 							<?php // Follows the settings as they are saved (Form.js). ?>
-							<span class="js-takopic-live" id="takopic-tab-settings-dot">
+							<span class="takopic-tabs__dot js-takopic-live" id="takopic-tab-settings-dot">
 								<?php if ($missing) : ?>
 									<span class="takopic-dot takopic-dot--off" title="<?php esc_attr_e('A format has no library', 'takopic'); ?>"></span>
 								<?php endif; ?>
