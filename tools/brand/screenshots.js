@@ -1,26 +1,106 @@
 /**
  * tools/brand/screenshots.js
  *
- * Dresses the screenshots of WordPress.org: each capture of
- * the admin, 1408x880 at 2x, rounded and shadowed on the
- * night of the header of the page, written to
- * .wordpress-org/screenshot-1.png and on, in the order given.
+ * Captures the screenshots of WordPress.org on a test site,
+ * in the order of readme.txt: each screen of the admin,
+ * 1408x880 at 2x, rounded and shadowed on the night of the
+ * header of the page, written to .wordpress-org/screenshot-1.png
+ * and on.
  *
- * bun tools/brand/screenshots.js overview.png optimise.png ...
+ * The site has Takopic active, its media library optimised,
+ * and the WebP and AVIF served by the rewrite rules. The
+ * second screen optimises every image again.
+ *
+ * bun run screenshots -- --url=http://localhost:8086 --user=bench --password=bench
+ *
+ * --chrome sets the browser, chromium by default.
  */
 
 import {writeFileSync} from 'node:fs';
+import {parseArgs} from 'node:util';
 import {createCanvas, loadImage} from '@napi-rs/canvas';
+import puppeteer from 'puppeteer-core';
+
+// Of the page, where the functions given to evaluate() and waitForFunction() run.
+/* global document, scrollTo */
 
 const WORDPRESS_ORG = new URL('../../.wordpress-org/', import.meta.url);
 const WIDTH = 2400, HEIGHT = 1560, SHOT = 2160, RADIUS = 28;
+const VIEWPORT = {width: 1408, height: 880, deviceScaleFactor: 2};
+const SETTINGS = '/wp-admin/options-general.php?page=takopic';
+
+const {values: options} = parseArgs({
+	options: {
+		url: {type: 'string', default: 'http://localhost:8086'},
+		user: {type: 'string', default: 'bench'},
+		password: {type: 'string', default: 'bench'},
+		chrome: {type: 'string', default: 'chromium'},
+	},
+});
 
 /**
- * @param {string} path A capture.
+ * The screens, each with what to do on it before its capture.
+ *
+ * @type {{path: string, before?: function(import('puppeteer-core').Page): Promise<void>}[]}
+ */
+const SCREENS = [
+	// The overview: the bytes saved, the status of the images and the libraries of each format.
+	{path: `${SETTINGS}#overview`},
+	// The optimisation of the media library in the background, half way.
+	{
+		path: `${SETTINGS}#optimise`,
+		async before(page) {
+			await page.click('.js-takopic-job-start[data-job="all"]');
+			await page.waitForFunction(() => {
+				const percent = document.querySelector('.js-takopic-job')?.textContent.match(/(\d+)\s*%/);
+				return percent && +percent[1] >= 50;
+			}, {polling: 200, timeout: 0});
+		},
+	},
+	// The delivery of WebP and AVIF on the site, and its test. Once the job is done, so that it is not shown.
+	{
+		path: `${SETTINGS}#delivery`,
+		async before(page) {
+			await page.waitForFunction(() => !['running', 'pausing', 'cancelling'].includes(document.querySelector('.js-takopic-job')?.dataset.state), {polling: 500, timeout: 0});
+			await page.reload();
+			await settle(page);
+			await page.click('.js-takopic-delivery-test');
+			await page.waitForSelector('.js-takopic-test-summary:not([hidden])');
+		},
+	},
+	// The settings of each format, the first opened.
+	{
+		path: `${SETTINGS}#settings`,
+		async before(page) {
+			await page.$eval('[data-panel="settings"] details', (details) => {
+				details.open = true;
+			});
+			// The arrow of the fold turns.
+			await new Promise((resolve) => setTimeout(resolve, 400));
+		},
+	},
+	// The status and the bytes saved of each image, in the media library.
+	{path: '/wp-admin/upload.php?mode=list'},
+];
+
+/**
+ * Waits for the screen to be drawn: the counts filled, no scrollbar.
+ *
+ * @param {import('puppeteer-core').Page} page
+ */
+async function settle(page) {
+	await page.evaluate(() => {
+		document.documentElement.style.scrollbarWidth = 'none';
+	});
+	await new Promise((resolve) => setTimeout(resolve, 1800));
+}
+
+/**
+ * @param {Buffer} png A capture.
  * @return {Promise<Buffer>} The dressed PNG.
  */
-async function dress(path) {
-	const capture = await loadImage(path);
+async function dress(png) {
+	const capture = await loadImage(png);
 	const canvas = createCanvas(WIDTH, HEIGHT);
 	const ctx = canvas.getContext('2d');
 
@@ -65,8 +145,36 @@ async function dress(path) {
 	return canvas.encode('png');
 }
 
-for (const [i, path] of process.argv.slice(2).entries()) {
-	const name = `screenshot-${i + 1}.png`;
-	writeFileSync(new URL(name, WORDPRESS_ORG), await dress(path));
-	console.log(`.wordpress-org/${name}`);
+const browser = await puppeteer.launch({
+	executablePath: Bun.which(options.chrome) ?? options.chrome,
+	defaultViewport: VIEWPORT,
+	args: ['--hide-scrollbars'],
+	// The job of the second screen may take minutes.
+	protocolTimeout: 30 * 60 * 1000,
+});
+try {
+	const page = await browser.newPage();
+	await page.emulateMediaFeatures([{name: 'prefers-reduced-motion', value: 'reduce'}]);
+	// The confirmation of the job of every image.
+	page.on('dialog', (dialog) => dialog.accept());
+
+	await page.goto(`${options.url}/wp-login.php`);
+	await page.type('#user_login', options.user);
+	await page.type('#user_pass', options.password);
+	await Promise.all([page.waitForNavigation(), page.click('#wp-submit')]);
+
+	for (const [i, {path, before}] of SCREENS.entries()) {
+		// A query of its own, so that the page loads again when only the tab changes.
+		const url = new URL(path, options.url);
+		url.searchParams.set('screen', i + 1);
+		await page.goto(url.href);
+		await settle(page);
+		await before?.(page);
+		await page.evaluate(() => scrollTo(0, 0));
+		const name = `screenshot-${i + 1}.png`;
+		writeFileSync(new URL(name, WORDPRESS_ORG), await dress(await page.screenshot()));
+		console.log(`.wordpress-org/${name}`);
+	}
+} finally {
+	await browser.close();
 }
