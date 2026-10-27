@@ -34,7 +34,62 @@
 	font-weight: 600;
 }
 
+/* On the left of a control just saved, or that could not be (Form.js), for a moment: over the page, nothing moves. */
+.takopic-autosave {
+	position: absolute;
+	top: 50%;
+	right: calc(100% + var(--takopic-space-2));
+	z-index: 1;
+	display: inline-flex;
+	align-items: center;
+	gap: 2px;
+	padding: 1px var(--takopic-space-2) 1px var(--takopic-space-1);
+	border-radius: var(--takopic-radius-pill);
+	background: var(--takopic-on-bg);
+	color: var(--takopic-on);
+	font-size: var(--takopic-size-small);
+	font-weight: 600;
+	line-height: 20px;
+	white-space: nowrap;
+	pointer-events: none;
+	transform: translateY(-50%);
+	animation: takopic-autosave 1.6s ease-out forwards;
+
+	&::before {
+		content: "\f147"; /* Dashicon yes. */
+		font-family: dashicons;
+		font-size: 16px;
+		font-weight: 400;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		animation: none;
+	}
+}
+
+.takopic-autosave--error {
+	background: var(--takopic-off-bg);
+	color: var(--takopic-off);
+	animation: none;
+
+	&::before {
+		content: "\f335"; /* Dashicon no-alt. */
+	}
+}
+
+@keyframes takopic-autosave {
+	0%,
+	70% {
+		opacity: 1;
+	}
+
+	100% {
+		opacity: 0;
+	}
+}
+
 .takopic-field__control {
+	position: relative;
 	display: flex;
 	align-items: center;
 	gap: var(--takopic-space-2);
@@ -158,6 +213,7 @@
    ========================================================================== */
 
 .takopic-toggle {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	cursor: pointer;

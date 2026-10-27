@@ -42,6 +42,11 @@
 	margin-top: var(--takopic-space-4);
 }
 
+/* With JS, each setting is saved as it changes (Form.js): the buttons are for the form without it. */
+.takopic-page--js .takopic-save {
+	display: none;
+}
+
 /* The steps of the Delivery tab lay out on the width of the panel. */
 .takopic-panel {
 	margin-top: var(--takopic-space-5);

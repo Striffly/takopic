@@ -224,8 +224,13 @@ class SettingsPage
 				<?php foreach ($tabs as $id => $title) : ?>
 					<a href="#<?php echo esc_attr($id); ?>" class="takopic-tabs__tab js-takopic-tab js-takopic-tab-link" role="tab" data-tab="<?php echo esc_attr($id); ?>">
 						<?php echo esc_html($title); ?>
-						<?php if ($id === 'settings' && $missing) : ?>
-							<span class="takopic-dot takopic-dot--off" title="<?php esc_attr_e('A format has no library', 'takopic'); ?>"></span>
+						<?php if ($id === 'settings') : ?>
+							<?php // Follows the settings as they are saved (Form.js). ?>
+							<span class="js-takopic-live" id="takopic-tab-settings-dot">
+								<?php if ($missing) : ?>
+									<span class="takopic-dot takopic-dot--off" title="<?php esc_attr_e('A format has no library', 'takopic'); ?>"></span>
+								<?php endif; ?>
+							</span>
 						<?php endif; ?>
 					</a>
 				<?php endforeach; ?>
@@ -458,7 +463,7 @@ class SettingsPage
 		</div>
 
 		<h2 class="takopic-heading"><?php esc_html_e('Formats', 'takopic'); ?></h2>
-		<div class="takopic-libraries">
+		<div class="takopic-libraries js-takopic-live" id="takopic-overview-formats">
 			<?php foreach ($formats as $id => $format) : ?>
 				<?php $state = self::state($format); ?>
 				<a class="takopic-library takopic-library--<?php echo esc_attr($state); ?> js-takopic-tab-link" href="#settings-<?php echo esc_attr($id); ?>" data-tab="settings" data-target="takopic-settings-<?php echo esc_attr($id); ?>">
@@ -539,7 +544,14 @@ class SettingsPage
 				<div class="takopic-done js-takopic-all-optimised" role="status"<?php echo $done ? '' : ' hidden'; ?>>
 					<span class="takopic-confetti js-takopic-confetti" aria-hidden="true"></span>
 					<span class="takopic-done__icon dashicons dashicons-yes-alt" aria-hidden="true"></span>
-					<p class="takopic-done__text"><strong><?php esc_html_e('All your images are optimised.', 'takopic'); ?></strong> <?php esc_html_e('Nothing left to do: the new ones are optimised on upload.', 'takopic'); ?></p>
+					<p class="takopic-done__text js-takopic-live" id="takopic-optimise-done">
+						<strong><?php esc_html_e('All your images are optimised.', 'takopic'); ?></strong>
+						<?php if (Settings::get('optimise_uploads')) : ?>
+							<?php esc_html_e('Nothing left to do: the new ones are optimised on upload.', 'takopic'); ?>
+						<?php else : ?>
+							<?php esc_html_e('The new uploads will wait here, to optimise when you like.', 'takopic'); ?>
+						<?php endif; ?>
+					</p>
 				</div>
 				<div class="takopic-actions">
 					<div class="takopic-action takopic-action--primary">
@@ -567,7 +579,7 @@ class SettingsPage
 			<?php else : ?>
 				<?php $this->render_no_jobs(); ?>
 			<?php endif; ?>
-			<p class="takopic-card__footer">
+			<p class="takopic-card__footer js-takopic-live" id="takopic-optimise-footer">
 				<?php if (Settings::get('optimise_uploads')) : ?>
 					<span class="takopic-uploads takopic-uploads--on"><?php esc_html_e('New uploads are optimised right away.', 'takopic'); ?></span>
 				<?php else : ?>
@@ -624,7 +636,7 @@ class SettingsPage
 						<p class="takopic-step__description"><?php esc_html_e('The WebP and AVIF versions are made while the images are optimised.', 'takopic'); ?></p>
 					</div>
 				</header>
-				<div class="takopic-step__body takopic-generate">
+				<div class="takopic-step__body takopic-generate js-takopic-live" id="takopic-delivery-generate">
 					<p class="takopic-generate__value">
 						<strong><?php echo esc_html(number_format_i18n($made)); ?></strong>
 						<?php
@@ -667,7 +679,7 @@ class SettingsPage
 						<?php $this->render_field('serve_rewrite', $rewrite); ?>
 					</div>
 				</div>
-				<footer class="takopic-step__actions">
+				<footer class="takopic-step__actions takopic-save">
 					<?php submit_button(__('Save changes', 'takopic'), 'primary', 'submit', false, ['id' => 'takopic-save-delivery']); ?>
 				</footer>
 			</li>
@@ -677,7 +689,7 @@ class SettingsPage
 					<span class="takopic-step__number" aria-hidden="true">3</span>
 					<div class="takopic-step__heading">
 						<h2 class="takopic-step__title"><?php esc_html_e('Test', 'takopic'); ?></h2>
-						<p class="takopic-step__description"><?php esc_html_e('Requests an optimised image as a browser, after saving.', 'takopic'); ?></p>
+						<p class="takopic-step__description"><?php esc_html_e('Requests an optimised image as a browser would.', 'takopic'); ?></p>
 					</div>
 				</header>
 				<div class="takopic-step__body">
@@ -719,7 +731,7 @@ class SettingsPage
 			<details class="takopic-fold">
 				<summary class="takopic-fold__summary">
 					<span class="takopic-fold__title"><?php esc_html_e('Rewrite rules for Apache and LiteSpeed', 'takopic'); ?></span>
-					<?php $this->render_badge($written ? 'on' : 'muted', $written ? __('Written in uploads/.htaccess', 'takopic') : __('Not written', 'takopic')); ?>
+					<?php $this->render_badge($written ? 'on' : 'muted', $written ? __('Written in uploads/.htaccess', 'takopic') : __('Not written', 'takopic'), 'takopic-delivery-rules-state'); ?>
 				</summary>
 				<div class="takopic-fold__content">
 					<p class="takopic-fold__text">
@@ -816,11 +828,12 @@ class SettingsPage
 				$fields = $format['fields'];
 				unset($fields[$switch]);
 				?>
-				<section class="takopic-format takopic-format--<?php echo esc_attr($state); ?>" id="takopic-settings-<?php echo esc_attr($id); ?>">
+				<?php // Its state follows the settings as they are saved (Form.js): its class only, its fields kept. ?>
+				<section class="takopic-format takopic-format--<?php echo esc_attr($state); ?> js-takopic-live" id="takopic-settings-<?php echo esc_attr($id); ?>" data-live="class">
 					<header class="takopic-format__header">
 						<div class="takopic-format__top">
 							<h2 class="takopic-format__title"><?php echo esc_html($format['title']); ?></h2>
-							<?php $this->render_badge($state, self::state_label($state)); ?>
+							<?php $this->render_badge($state, self::state_label($state), 'takopic-settings-' . $id . '-state'); ?>
 							<?php $this->render_switch($switch, $format['fields'][$switch]); ?>
 						</div>
 						<div class="takopic-format__engines">
@@ -877,7 +890,7 @@ class SettingsPage
 			<?php endforeach; ?>
 		</div>
 
-		<div class="takopic-page__save">
+		<div class="takopic-page__save takopic-save">
 			<?php submit_button(__('Save changes', 'takopic'), 'primary', 'submit', false, ['id' => 'takopic-save-settings']); ?>
 		</div>
 		<?php
@@ -1183,10 +1196,16 @@ class SettingsPage
 	 *
 	 * @param string $variant on, off or muted.
 	 * @param string $label
+	 * @param string $id To follow the settings and the jobs.
 	 * @since 1.0.0
 	 */
-	private function render_badge($variant, $label)
+	private function render_badge($variant, $label, $id = '')
 	{
+		if ($id) {
+			// It follows the settings and the jobs (Form.js).
+			printf('<span class="takopic-badge takopic-badge--%s js-takopic-live" id="%s">%s</span>', esc_attr($variant), esc_attr($id), esc_html($label));
+			return;
+		}
 		printf('<span class="takopic-badge takopic-badge--%s">%s</span>', esc_attr($variant), esc_html($label));
 	}
 
