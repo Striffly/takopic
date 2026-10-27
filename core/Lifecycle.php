@@ -20,6 +20,7 @@ use Takopic\Admin\PluginsScreen;
 use Takopic\Delivery\Htaccess;
 use Takopic\Engines\Libraries;
 use Takopic\Log\Errors;
+use Takopic\Media\Files;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
 
@@ -75,7 +76,8 @@ class Lifecycle
 		self::each_site(true, function () {
 			global $wpdb;
 			self::stop();
-			foreach ([Settings::OPTION, Errors::OPTION, Job::PROGRESS] as $option) {
+			// The key of the folder of the originals: found again from the folder if Takopic comes back.
+			foreach ([Settings::OPTION, Errors::OPTION, Job::PROGRESS, Files::KEY_OPTION] as $option) {
 				delete_option($option);
 			}
 			foreach ([Libraries::VERSIONS_TRANSIENT, PluginsScreen::THEME_TRANSIENT] as $transient) {

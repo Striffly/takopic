@@ -15,6 +15,7 @@
 namespace Takopic\Tests\Integration;
 
 use Takopic\Delivery\Htaccess;
+use Takopic\Media\Files;
 use Takopic\Settings;
 use Takopic\Tests\TestCase;
 
@@ -83,6 +84,8 @@ class UninstallTest extends TestCase
 		foreach (['takopic_errors', 'takopic_job', 'takopic_lock_7'] as $option) {
 			update_option($option, ['data']);
 		}
+		// The key of the folder of the originals.
+		Files::backup_dir();
 		set_transient('takopic_versions', ['cwebp' => '1.6.0']);
 		set_transient('takopic_theme_calls', ['functions.php']);
 		foreach (self::FOREIGN as $option) {

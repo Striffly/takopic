@@ -108,7 +108,7 @@ Node.js 22 or later and `zip` needed): it makes `takopic.zip`.
 ### Does Takopic replace my images?
 
 By default, yes: the JPG and PNG files are replaced by their compressed version, so the whole site uses them right
-away, and their originals are kept in `uploads/takopic-originals/`. `Restore original images` on the settings page,
+away, and their originals are kept in `uploads/takopic/originals-{key}/`. `Restore original images` on the settings page,
 or `Restore original` on an image of the media library, puts them back. To leave the files as they are, untick
 `Compress JPG images` or `Compress PNG images` on the Settings tab: Takopic then only makes their WebP and AVIF versions.
 
@@ -175,9 +175,9 @@ Every optimisation starts from the original image:
 
 ```bash
 jpegoptim --strip-all --all-progressive --overwrite --max={quality} photo.jpg
-optipng -clobber -strip all -o {level} -out photo.png takopic-originals/photo.png
-oxipng -o {level} --strip safe --force --out photo.png takopic-originals/photo.png
-pngquant --quality={quality - 15}-{quality} --strip --skip-if-larger --force --output tmp.png -- takopic-originals/photo.png
+optipng -clobber -strip all -o {level} -out photo.png takopic/originals-{key}/photo.png
+oxipng -o {level} --strip safe --force --out photo.png takopic/originals-{key}/photo.png
+pngquant --quality={quality - 15}-{quality} --strip --skip-if-larger --force --output tmp.png -- takopic/originals-{key}/photo.png
 cwebp -q {quality} -mt photo.jpg -o takopic/formats/photo.jpg.webp
 avifenc -q {quality} --speed 6 --ignore-exif --ignore-xmp photo.jpg takopic/formats/photo.jpg.avif
 ```
@@ -196,12 +196,13 @@ tried in near-lossless.
 Takopic sends nothing out of your server: no API, no tracking, no external request. The delivery test only requests the
 site itself.
 
-The optimised images lose their metadata, but the originals keep them, GPS position included. Takopic writes a
-`.htaccess` denying the web access to `uploads/takopic-originals/`, which works with Apache and LiteSpeed. With nginx, add
-this rule to the `server` block of the site:
+The optimised images lose their metadata, but the originals keep them, GPS position included. They are kept in
+`uploads/takopic/originals-{key}/`, the key drawn at random for each site: their URL cannot be guessed from the one of
+an image. Takopic also writes a `.htaccess` denying the web access to that folder, which works with Apache and LiteSpeed.
+With nginx, add this rule to the `server` block of the site (it is in the rules of the Delivery tab):
 
 ```nginx
-location ^~ /wp-content/uploads/takopic-originals/ {
+location ^~ /wp-content/uploads/takopic/originals- {
 	deny all;
 }
 ```
@@ -284,7 +285,7 @@ nothing is encoded again.
 
 | Filter                                | Default                                        | Sets                                                   |
 |---------------------------------------|------------------------------------------------|--------------------------------------------------------|
-| `takopic_backup_dir`                  | `uploads/takopic-originals`                    | The folder of the original images.                     |
+| `takopic_backup_dir`                  | `uploads/takopic/originals-{key}`              | The folder of the original images.                     |
 | `takopic_nice`                        | `19` in background jobs, `0` otherwise         | The priority of the libraries, `0` (normal) to `19`.   |
 | `takopic_avif_jobs`                   | `4` on upload, `2` in background, `all` in CLI | The threads of `avifenc`.                              |
 | `takopic_webp_mt`                     | `false` in background jobs, `true` otherwise   | A second thread for `cwebp` (`-mt`).                   |

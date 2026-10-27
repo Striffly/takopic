@@ -147,7 +147,7 @@ class PluginsScreen
 								/* translators: 1: the number of images, 2: the folder of the originals and its size. */
 								esc_html__('Takopic has optimised %1$s. Deactivating or deleting Takopic keeps them as they are: compressed, with their WebP and AVIF versions, and their originals in %2$s.', 'takopic'),
 								'<strong class="js-takopic-deactivation-images"></strong>',
-								'<code>uploads/takopic-originals/</code><span class="js-takopic-deactivation-size"></span>'
+								'<code>uploads/takopic/</code><span class="js-takopic-deactivation-size"></span>'
 							),
 							['strong' => ['class' => true], 'code' => [], 'span' => ['class' => true]]
 						);

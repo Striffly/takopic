@@ -62,7 +62,7 @@ E.g. on Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`.
 
 = Does Takopic replace my images? =
 
-By default, yes: the JPG and PNG files are replaced by their compressed version, and their originals are kept in `uploads/takopic-originals/`. `Restore original images` on the settings page, or `Restore original` on an image of the media library, puts them back. To leave the files as they are, untick `Compress JPG images` or `Compress PNG images` on the Settings tab: Takopic then only makes their WebP and AVIF versions.
+By default, yes: the JPG and PNG files are replaced by their compressed version, and their originals are kept in `uploads/takopic/`. `Restore original images` on the settings page, or `Restore original` on an image of the media library, puts them back. To leave the files as they are, untick `Compress JPG images` or `Compress PNG images` on the Settings tab: Takopic then only makes their WebP and AVIF versions.
 
 = Does it serve WebP and AVIF automatically? =
 
@@ -82,7 +82,7 @@ Yes for the WebP and AVIF formats: without their libraries, or where PHP cannot 
 
 = Are the original images public? =
 
-Takopic writes a `.htaccess` denying the web access to `uploads/takopic-originals/`, which works with Apache and LiteSpeed. With nginx, add a `location ^~ /wp-content/uploads/takopic-originals/ { deny all; }` rule, or move the folder out of the web root with the `takopic_backup_dir` filter.
+They are kept in `uploads/takopic/originals-{key}/`, the key drawn at random for each site: their URL cannot be guessed from the one of an image. Takopic also writes a `.htaccess` denying the web access to that folder, which works with Apache and LiteSpeed. With nginx, add a `location ^~ /wp-content/uploads/takopic/originals- { deny all; }` rule, or move the folder out of the web root with the `takopic_backup_dir` filter.
 
 = What happens when I deactivate or delete Takopic? =
 
@@ -106,7 +106,7 @@ Takopic sends nothing out of your server: no API, no tracking, no external reque
 
 = 1.0.0 =
 * Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
-* The original images are kept in `uploads/takopic-originals/`, and every optimisation starts again from them.
+* The original images are kept in `uploads/takopic/originals-{key}/`, a folder whose URL cannot be guessed, and every optimisation starts again from them.
 * WebP and AVIF files keep the extension of their source (`image.jpg.webp`), in `uploads/takopic/formats/`, and can be served on the site with `<picture>` or rewrite rules.
 * Background optimisation of the media library, with pause and cancel, and re-optimisation when the settings or the thumbnail sizes change.
 * Clean up: remove the WebP and AVIF files, or restore the original images.
