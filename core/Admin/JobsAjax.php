@@ -28,11 +28,16 @@ if (!defined('ABSPATH')) {
 class JobsAjax
 {
 	/**
-	 * Nonce action of the requests.
+	 * Nonce action of the requests of the options page:
+	 * the jobs, the settings and the delivery test. Not
+	 * takopic_job, the action of the background library
+	 * (Job): its nonce, made for the same user, goes in
+	 * the URL of its requests, and so in the logs of the
+	 * server.
 	 *
 	 * @var string
 	 */
-	const NONCE = 'takopic_job';
+	const NONCE = 'takopic_admin';
 
 	/**
 	 * The jobs that can be started: their action, their
