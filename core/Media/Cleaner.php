@@ -17,10 +17,7 @@
 
 namespace Takopic\Media;
 
-use Takopic\Encoders\AVIF;
-use Takopic\Encoders\JPG;
-use Takopic\Encoders\PNG;
-use Takopic\Encoders\WebP;
+use Takopic\Encoders\Formats;
 use Takopic\Log\Errors;
 
 if (!defined('ABSPATH')) {
@@ -119,7 +116,7 @@ class Cleaner
 				return file_exists(Files::backup_path($file));
 			}));
 			delete_post_meta($id, Optimiser::HEAVIER_KEY);
-			foreach ([WebP::class, AVIF::class] as $service) {
+			foreach (Formats::variants() as $service) {
 				delete_post_meta($id, $service::meta_key());
 				Errors::clear_attachment($id, $service::FORMAT);
 			}
@@ -229,7 +226,10 @@ class Cleaner
 	{
 		return Lock::run($id, function () use ($id) {
 			$restored = true;
-			$compressed = get_post_meta($id, JPG::meta_key(), true) !== '' || get_post_meta($id, PNG::meta_key(), true) !== '';
+			$compressed = false;
+			foreach (Formats::compressions() as $service) {
+				$compressed = $compressed || $service::has_compressed($id);
+			}
 			foreach (Files::of($id) as $index => $file) {
 				$backup = Files::backup_path($file);
 				if (file_exists($backup) && Files::contained($file) && Files::contained($backup)) {

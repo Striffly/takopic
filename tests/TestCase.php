@@ -15,9 +15,10 @@
 
 namespace Takopic\Tests;
 
-use Takopic\Media\Files;
+use Takopic\Encoders\Formats;
 use Takopic\Engines\ImageEditor;
 use Takopic\Engines\Libraries;
+use Takopic\Media\Files;
 use Takopic\Media\Optimiser;
 use Takopic\Settings;
 use ReflectionProperty;
@@ -127,7 +128,7 @@ abstract class TestCase extends WP_UnitTestCase
 	 */
 	protected function upload_unoptimised($name)
 	{
-		$settings = Optimiser::SERVICES;
+		$settings = Formats::ENCODERS;
 		foreach (array_keys($settings) as $format) {
 			self::set($format . '_enable', false);
 		}
