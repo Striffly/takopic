@@ -16,6 +16,7 @@
 
 namespace Takopic\Media;
 
+use Takopic\Encoders\Formats;
 use Takopic\Log\Errors;
 use Takopic\Settings;
 use WP_Query;
@@ -134,8 +135,8 @@ class Status
 	public static function expected()
 	{
 		$expected = [];
-		foreach (Optimiser::settings() as $format => $args) {
-			$service = Optimiser::SERVICES[$format];
+		foreach (Formats::settings() as $format => $args) {
+			$service = Formats::ENCODERS[$format];
 			if ($service::available()) {
 				$expected[$service::meta_key()] = $service::signature($args);
 			}
@@ -154,7 +155,7 @@ class Status
 	 */
 	public static function processed($id)
 	{
-		foreach (Optimiser::SERVICES as $service) {
+		foreach (Formats::ENCODERS as $service) {
 			if ($service::has_compressed($id)) {
 				return true;
 			}

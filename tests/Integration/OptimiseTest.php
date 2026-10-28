@@ -16,6 +16,7 @@
 namespace Takopic\Tests\Integration;
 
 use Takopic\Encoders\AVIF;
+use Takopic\Encoders\Formats;
 use Takopic\Encoders\JPG;
 use Takopic\Encoders\PNG;
 use Takopic\Encoders\WebP;
@@ -209,7 +210,7 @@ class OptimiseTest extends TestCase
 		$this->assertSame(Status::OPTIMISED, Status::of($id));
 
 		// Done: not made again by the next optimisation.
-		Optimiser::attachment($id, null, Optimiser::settings());
+		Optimiser::attachment($id, null, Formats::settings());
 		$this->assertFileDoesNotExist(Files::variant($file, '.avif'));
 	}
 

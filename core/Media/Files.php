@@ -18,8 +18,7 @@
 
 namespace Takopic\Media;
 
-use Takopic\Encoders\AVIF;
-use Takopic\Encoders\WebP;
+use Takopic\Encoders\Formats;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -190,8 +189,8 @@ class Files
 	public static function variants($path)
 	{
 		$variants = [];
-		foreach ([WebP::extension(), AVIF::extension()] as $extension) {
-			$variants[$extension] = self::variant($path, $extension);
+		foreach (Formats::variants() as $encoder) {
+			$variants[$encoder::extension()] = self::variant($path, $encoder::extension());
 		}
 		return $variants;
 	}

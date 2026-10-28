@@ -14,8 +14,8 @@
 
 namespace Takopic\Tests\Integration;
 
+use Takopic\Encoders\Formats;
 use Takopic\Encoders\PNG;
-use Takopic\Media\Optimiser;
 use Takopic\Settings;
 use Takopic\Tests\TestCase;
 
@@ -71,7 +71,7 @@ class SettingsTest extends TestCase
 		self::set('png_lossy_quality', 65);
 		self::set('png_compression', 'lossy');
 
-		$args = Optimiser::settings()['png'];
+		$args = Formats::settings()['png'];
 		$this->assertSame('level:4', PNG::signature(['lossy' => false] + $args));
 		if (PNG::installed('pngquant')) {
 			$this->assertSame('level:4,lossy:65', PNG::signature($args));
