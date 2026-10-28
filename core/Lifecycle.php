@@ -20,6 +20,7 @@ use Takopic\Admin\PluginsScreen;
 use Takopic\Delivery\Htaccess;
 use Takopic\Engines\Libraries;
 use Takopic\Log\Errors;
+use Takopic\Media\Cleaner;
 use Takopic\Media\Files;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
@@ -86,7 +87,7 @@ class Lifecycle
 			}
 			// Settings used, files made, errors and bytes of the images.
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- Deletes the metas of Takopic on every image at once, the cache flushed after.
-			$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like('_takopic_') . '%'));
+			$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s", $wpdb->esc_like(Cleaner::META_PREFIX) . '%'));
 		});
 		wp_cache_flush();
 	}
