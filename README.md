@@ -7,7 +7,7 @@
 🐙 **Squeezes images. Spills no ink, sends no bill.**
 
 [![GNU General Public License 3.0](https://img.shields.io/github/license/Striffly/takopic.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![WordPress 6.0 or later](https://img.shields.io/badge/WordPress-6.0%2B-3858e9)
+![WordPress 6.2 or later](https://img.shields.io/badge/WordPress-6.2%2B-3858e9)
 ![PHP 8.2 or later](https://img.shields.io/badge/PHP-8.2%2B-777bb4)
 
 [Features](#features) · [Screenshots](#screenshots) · [Requirements](#requirements) · [Installation](#installation) ·
@@ -67,7 +67,7 @@ For themes, `takopic_image()` and `takopic_image_sources()` give the `<picture>`
 
 ## Requirements
 
-- WordPress 6.0 and PHP 8.2 or later.
+- WordPress 6.2 and PHP 8.2 or later.
 - The JPG and PNG compression needs `jpegoptim` and `optipng` or `oxipng` installed on the server, and PHP allowed to
   run them (`proc_open()` or `exec()`). Linux and macOS have them; Windows has no official build of `jpegoptim` and
   `optipng`.
