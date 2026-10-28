@@ -26,6 +26,7 @@ use Takopic\Log\Logger;
 use Takopic\Media\Files;
 use Takopic\Media\Lock;
 use Takopic\Media\Optimiser;
+use Takopic\Settings;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -469,8 +470,21 @@ abstract class AbstractEncoder
 	 */
 	public static function signature($args)
 	{
-		$quality = isset($args['quality']) && is_numeric($args['quality']) ? (int)$args['quality'] : static::DEFAULT_QUALITY;
-		return 'quality:' . $quality;
+		return 'quality:' . static::quality($args);
+	}
+
+	/**
+	 * Returns the quality of a run: the one given, within
+	 * the bounds of the quality setting of the format,
+	 * otherwise its default (see Settings::FIELDS).
+	 *
+	 * @param array $args
+	 * @return int
+	 * @since 1.0.0
+	 */
+	protected static function quality($args)
+	{
+		return Settings::clean(static::FORMAT . '_quality', $args['quality'] ?? null);
 	}
 
 	/**
