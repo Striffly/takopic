@@ -189,7 +189,7 @@ class SettingsPage
 		$sections = self::sections();
 		$formats = self::formats($sections);
 		$counts = Status::counts();
-		$jobs = class_exists('Takopic_Vendor_WP_Background_Process');
+		$jobs = Plugin::has_background();
 		$tabs = [
 			'overview' => __('Overview', 'takopic'),
 			'optimise' => __('Optimise', 'takopic'),
