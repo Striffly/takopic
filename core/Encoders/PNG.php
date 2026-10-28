@@ -18,6 +18,7 @@
 
 namespace Takopic\Encoders;
 
+use Takopic\Engines\ImageHeader;
 use Takopic\Engines\Libraries;
 use Takopic\Log\Logger;
 use Takopic\Media\Files;
@@ -88,7 +89,10 @@ class PNG extends AbstractEncoder
 			$threads = Libraries::threads();
 			$arguments = ['-o', min(6, $level), '--strip', 'safe', '--force', '--threads', $threads, '--out', $filepath, $source];
 		} else {
-			$arguments = ['-clobber', '-strip', 'all', '-o', $level, '-out', $filepath, $source];
+			// -strip all takes the colour profile too: kept when the colours need it
+			// (see ImageHeader::profile()), as oxipng does.
+			$strip = ImageHeader::profile($source) === null ? ['-strip', 'all'] : [];
+			$arguments = array_merge(['-clobber'], $strip, ['-o', $level, '-out', $filepath, $source]);
 		}
 		$compressed = yield from self::run($arguments, $filepath, $args, $threads);
 		if ($quantized) {
