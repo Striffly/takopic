@@ -25,6 +25,7 @@ use Takopic\Delivery\Display;
 use Takopic\Delivery\Htaccess;
 use Takopic\Delivery\Test;
 use Takopic\Media\Job;
+use Takopic\Media\Lock;
 use Takopic\Media\Queue;
 use Takopic\Media\UploadHooks;
 
@@ -72,6 +73,7 @@ final class Plugin
 		define('TAKOPIC_PATH', plugin_dir_path($base));
 		define('TAKOPIC_TEMPLATE_PATH', dirname($base) . DIRECTORY_SEPARATOR . 'templates');
 		add_action('init', [Settings::class, 'register']);
+		add_action('takopic_working', [Lock::class, 'beat']);
 		new SettingsPage();
 		new SettingsAjax();
 		new UploadHooks();

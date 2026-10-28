@@ -16,6 +16,7 @@ namespace Takopic\Tests\Integration;
 
 use Takopic\Delivery\Htaccess;
 use Takopic\Media\Files;
+use Takopic\Media\Lock;
 use Takopic\Settings;
 use Takopic\Tests\TestCase;
 
@@ -116,7 +117,8 @@ class UninstallTest extends TestCase
 	{
 		update_site_option($identifier . '_batch_' . md5($identifier), [1, 2, 3]);
 		update_site_option($identifier . '_status', 1);
-		set_site_transient($identifier . '_process_lock', microtime(), 60);
+		// The lock of its worker, see Background::handle().
+		Lock::take(Lock::PREFIX . 'worker_job', 60);
 		wp_schedule_event(time(), 'hourly', $identifier . '_cron');
 	}
 
