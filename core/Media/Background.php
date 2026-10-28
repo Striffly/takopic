@@ -201,7 +201,6 @@ abstract class Background extends Takopic_Vendor_WP_Background_Process
 			$this->unlock_process();
 			return $this->maybe_wp_die();
 		}
-		Optimiser::$context = 'background';
 		add_action('takopic_working', [$this, 'beat']);
 		try {
 			return parent::handle();
