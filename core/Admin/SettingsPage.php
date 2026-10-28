@@ -844,37 +844,20 @@ class SettingsPage
 					<?php if (!Libraries::can_execute()) : ?>
 						<?php // Installing would not help: the overview says why. ?>
 					<?php elseif (!$format['installed'] && $format['engine']) : ?>
-						<details class="takopic-install takopic-install--advice">
-							<summary class="takopic-install__summary">
-								<?php
-								/* translators: %s: a library, e.g. cwebp. */
-								echo esc_html(sprintf(__('Recommended: install %s', 'takopic'), $format['library']));
-								?>
-							</summary>
-							<p class="takopic-install__text"><?php echo esc_html(sprintf($format['recommendation'], $format['engine'])); ?></p>
-							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
-						</details>
+						<?php
+						/* translators: %s: a library, e.g. cwebp. */
+						$this->render_install($id, sprintf(__('Recommended: install %s', 'takopic'), $format['library']), sprintf($format['recommendation'], $format['engine']));
+						?>
 					<?php elseif (!$format['installed']) : ?>
-						<details class="takopic-install">
-							<summary class="takopic-install__summary">
-								<?php
-								/* translators: %s: a library, e.g. cwebp. */
-								echo esc_html(sprintf(__('How to install %s', 'takopic'), $format['library']));
-								?>
-							</summary>
-							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
-						</details>
+						<?php
+						/* translators: %s: a library, e.g. cwebp. */
+						$this->render_install($id, sprintf(__('How to install %s', 'takopic'), $format['library']));
+						?>
 					<?php elseif ($format['upgrade']) : ?>
-						<details class="takopic-install takopic-install--advice">
-							<summary class="takopic-install__summary">
-								<?php
-								/* translators: %s: a library, e.g. cwebp. */
-								echo esc_html(sprintf(__('Recommended: install %s', 'takopic'), $format['preferred']));
-								?>
-							</summary>
-							<p class="takopic-install__text"><?php echo esc_html($format['preference']); ?></p>
-							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['preferred'] . '.php'); ?>
-						</details>
+						<?php
+						/* translators: %s: a library, e.g. cwebp. */
+						$this->render_install($format['preferred'], sprintf(__('Recommended: install %s', 'takopic'), $format['preferred']), $format['preference']);
+						?>
 					<?php endif; ?>
 					<details class="takopic-format__settings js-takopic-fold">
 						<summary class="takopic-format__summary"><?php esc_html_e('Settings', 'takopic'); ?></summary>
@@ -884,15 +867,10 @@ class SettingsPage
 							<?php endforeach; ?>
 							<?php foreach ($format['optional'] as $name => $use) : ?>
 								<?php if ($format['installed'] && !$format['extras'][$name]) : ?>
-									<details class="takopic-install takopic-install--advice">
-										<summary class="takopic-install__summary">
-											<?php
-											/* translators: 1: a library, e.g. pngquant, 2: what it is for, e.g. lossy compression. */
-											echo esc_html(sprintf(__('How to install %1$s, for the %2$s', 'takopic'), $name, $use));
-											?>
-										</summary>
-										<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
-									</details>
+									<?php
+									/* translators: 1: a library, e.g. pngquant, 2: what it is for, e.g. lossy compression. */
+									$this->render_install($id, sprintf(__('How to install %1$s, for the %2$s', 'takopic'), $name, $use), '', true);
+									?>
 								<?php endif; ?>
 							<?php endforeach; ?>
 						</div>
@@ -1396,7 +1374,6 @@ class SettingsPage
 			'jpg' => [
 				'title' => 'JPG',
 				'service' => JPG::class,
-				'template' => 'jpg.php',
 				'fields' => [
 					'jpg_enable' => [
 						'type' => 'checkbox',
@@ -1413,7 +1390,6 @@ class SettingsPage
 			'png' => [
 				'title' => 'PNG',
 				'service' => PNG::class,
-				'template' => 'png.php',
 				'optional' => ['pngquant' => __('lossy compression', 'takopic')],
 				'preferred' => 'oxipng',
 				'preference' => __('optipng compresses the PNG images for now. Once installed, oxipng replaces it on its own: the files are lighter at the same level, and it is a little faster.', 'takopic'),
@@ -1451,7 +1427,6 @@ class SettingsPage
 			'webp' => [
 				'title' => 'WebP',
 				'service' => WebP::class,
-				'template' => 'webp.php',
 				/* translators: %s: GD or Imagick. */
 				'recommendation' => __('%s makes the WebP files for now, in the PHP process. cwebp runs apart from PHP, and makes the PNG graphics and screenshots much lighter.', 'takopic'),
 				'fields' => [
@@ -1470,7 +1445,6 @@ class SettingsPage
 			'avif' => [
 				'title' => 'AVIF',
 				'service' => AVIF::class,
-				'template' => 'avif.php',
 				/* translators: %s: GD or Imagick. */
 				'recommendation' => __('%s makes the AVIF files for now, in the PHP process. avifenc runs apart from PHP, on several threads, and keeps the colours of the PNG images sharper.', 'takopic'),
 				'fields' => [
@@ -1531,14 +1505,26 @@ class SettingsPage
 	}
 
 	/**
-	 * Renders an Takopic template in the /templates
-	 * folder.
+	 * Renders how to install a library, folded: a
+	 * missing one, or a better one recommended (advice),
+	 * with why, see templates/install.php.
 	 *
-	 * @param $name
+	 * @param string $takopic_install The format of the library, or oxipng.
+	 * @param string $summary
+	 * @param string $text Why to install it, if recommended.
+	 * @param bool $advice Recommended, the format working without it.
 	 * @since 1.0.0
 	 */
-	private function render_template($name)
+	private function render_install($takopic_install, $summary, $text = '', $advice = false)
 	{
-		include TAKOPIC_TEMPLATE_PATH . DIRECTORY_SEPARATOR . $name;
+		?>
+		<details class="takopic-install<?php echo $advice || $text ? ' takopic-install--advice' : ''; ?>">
+			<summary class="takopic-install__summary"><?php echo esc_html($summary); ?></summary>
+			<?php if ($text) : ?>
+				<p class="takopic-install__text"><?php echo esc_html($text); ?></p>
+			<?php endif; ?>
+			<?php include TAKOPIC_TEMPLATE_PATH . DIRECTORY_SEPARATOR . 'install.php'; ?>
+		</details>
+		<?php
 	}
 }
