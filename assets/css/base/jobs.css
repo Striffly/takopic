@@ -361,6 +361,12 @@
 .takopic-result__detail {
 	margin: 0;
 	color: var(--takopic-text-soft);
+
+	/* The numbers of the result. */
+	strong {
+		color: var(--takopic-text);
+		font-weight: 600;
+	}
 }
 
 .takopic-result__close {

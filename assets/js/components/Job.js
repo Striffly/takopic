@@ -50,21 +50,21 @@
 				done: __('Optimisation complete', 'takopic'),
 				cancelled: __('Optimisation cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => sprintf(_n('%s image optimised', '%s images optimised', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image optimised', '%s images optimised', count, 'takopic'), count.toLocaleString()),
 			},
 			remove_formats: {
 				label: __('Removing WebP and AVIF', 'takopic'),
 				done: __('WebP and AVIF files removed', 'takopic'),
 				cancelled: __('Removal cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => sprintf(_n('%s image cleaned up', '%s images cleaned up', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image cleaned up', '%s images cleaned up', count, 'takopic'), count.toLocaleString()),
 			},
 			restore: {
 				label: __('Restoring the originals', 'takopic'),
 				done: __('Original images restored', 'takopic'),
 				cancelled: __('Restore cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => sprintf(_n('%s image restored', '%s images restored', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image restored', '%s images restored', count, 'takopic'), count.toLocaleString()),
 			},
 		};
 
@@ -324,7 +324,7 @@
 			const cancelled = job.state === 'cancelled';
 
 			this.title.textContent = cancelled ? texts.cancelled : texts.done;
-			this.detail.textContent = cancelled ? Job.stopped(job) : `${Job.took(texts.processed(job.done - job.failed - job.missing), job)}.`;
+			this.detail.replaceChildren(...(cancelled ? Job.stopped(job) : [...Job.took(texts.processed(job.done - job.failed - job.missing), job), '.']));
 			/* translators: %s: the number of images. */
 			this.errorsCount.textContent = sprintf(_n('%s could not be optimised:', '%s could not be optimised:', job.failed, 'takopic'), job.failed.toLocaleString());
 			this.errors.hidden = !job.failed;
@@ -348,27 +348,54 @@
 
 		/**
 		 * @param {Object} job
-		 * @returns {string}
+		 * @returns {Array<Node|string>} See emphasise().
 		 */
 		static stopped(job) {
 			/* translators: 1: the number of images processed, 2: the number of images. */
-			const stopped = sprintf(_n('Stopped after %1$s of %2$s image', 'Stopped after %1$s of %2$s images', job.total, 'takopic'), job.done.toLocaleString(), job.total.toLocaleString());
-			return `${Job.took(stopped, job)}. ${__('The images already processed stay processed.', 'takopic')}`;
+			const stopped = Job.emphasise(_n('Stopped after %1$s of %2$s image', 'Stopped after %1$s of %2$s images', job.total, 'takopic'), job.done.toLocaleString(), job.total.toLocaleString());
+			return [...Job.took(stopped, job), `. ${__('The images already processed stay processed.', 'takopic')}`];
 		}
 
 		/**
 		 * What was done, and how long it took if known.
 		 *
-		 * @param {string} text
+		 * @param {Array<Node|string>} text See emphasise().
 		 * @param {Object} job
-		 * @returns {string}
+		 * @returns {Array<Node|string>}
 		 */
 		static took(text, job) {
 			if (!job.finished || !job.started) {
 				return text;
 			}
 			/* translators: 1: what was done, e.g. 12 images optimised, 2: a duration, e.g. 2 min 5 s. */
-			return sprintf(__('%1$s in %2$s', 'takopic'), text, Job.duration(job.finished - job.started));
+			return Job.emphasise(__('%1$s in %2$s', 'takopic'), text, Job.duration(job.finished - job.started));
+		}
+
+		/**
+		 * Returns the nodes of a translated text with its
+		 * placeholders (%s, %1$s, as sprintf()) replaced:
+		 * a string in bold, nodes as they are. Never read
+		 * as HTML.
+		 *
+		 * @param {string} format
+		 * @param {...(string|Array<Node|string>)} values
+		 * @returns {Array<Node|string>}
+		 */
+		static emphasise(format, ...values) {
+			let next = 0;
+			return format.split(/(%(?:\d+\$)?[sd])/).filter(Boolean).flatMap((part) => {
+				const placeholder = part.match(/^%(?:(\d+)\$)?[sd]$/);
+				if (!placeholder) {
+					return [part];
+				}
+				const value = values[placeholder[1] ? placeholder[1] - 1 : next++];
+				if (Array.isArray(value)) {
+					return value;
+				}
+				const strong = document.createElement('strong');
+				strong.textContent = value;
+				return [strong];
+			});
 		}
 
 		/**
