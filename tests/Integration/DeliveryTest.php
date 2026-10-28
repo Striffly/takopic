@@ -14,7 +14,7 @@
 
 namespace Takopic\Tests\Integration;
 
-use Takopic\Admin\JobsAjax;
+use Takopic\Admin\Ajax;
 use Takopic\Delivery\Htaccess;
 use Takopic\Delivery\Test;
 use Takopic\Encoders\AVIF;
@@ -284,7 +284,7 @@ class DeliveryTest extends TestCase
 		if (is_multisite()) {
 			grant_super_admin(get_current_user_id());
 		}
-		$_REQUEST['_ajax_nonce'] = wp_create_nonce(JobsAjax::NONCE);
+		$_REQUEST['_ajax_nonce'] = wp_create_nonce(Ajax::NONCE);
 		add_filter('wp_doing_ajax', '__return_true');
 		add_filter('wp_die_ajax_handler', function () {
 			return function () {

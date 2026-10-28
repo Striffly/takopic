@@ -15,7 +15,7 @@
 
 namespace Takopic\Tests\Integration;
 
-use Takopic\Admin\JobsAjax;
+use Takopic\Admin\Ajax;
 use Takopic\Admin\SettingsAjax;
 use Takopic\Delivery\Htaccess;
 use Takopic\Settings;
@@ -94,7 +94,7 @@ class SettingsAjaxTest extends TestCase
 	 * @param string $nonce The nonce action.
 	 * @return array The JSON response.
 	 */
-	private function save($name, $value, $nonce = JobsAjax::NONCE)
+	private function save($name, $value, $nonce = Ajax::NONCE)
 	{
 		wp_set_current_user(self::factory()->user->create(['role' => 'administrator']));
 		if (is_multisite()) {
