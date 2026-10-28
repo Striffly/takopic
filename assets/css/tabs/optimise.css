@@ -40,20 +40,25 @@
 	color: var(--takopic-text);
 }
 
-/* Whether the uploads are optimised (settings), in the footer of the tab: a check, or a cross, as the libraries. */
+/* Whether the uploads are optimised (settings), in the footer of the tab: a check, or a cross, as the libraries,
+   before the first line of the text, which wraps after it on a phone. */
 .takopic-uploads {
-	display: inline-flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: var(--takopic-space-1) var(--takopic-space-2);
+	position: relative;
+	padding-left: calc(18px + var(--takopic-space-2));
 	color: var(--takopic-text);
 
 	&::before {
 		content: "\f147"; /* Dashicon yes. */
+		position: absolute;
+		top: 0;
+		left: 0;
 		color: var(--takopic-on);
 		font-family: dashicons;
 		font-size: 18px;
-		line-height: 1;
+	}
+
+	& a {
+		margin-left: var(--takopic-space-1);
 	}
 }
 

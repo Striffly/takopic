@@ -368,12 +368,24 @@
 	padding-top: var(--takopic-space-3);
 	border-top: 1px solid var(--takopic-border);
 	text-align: right;
+
+	@media (width <= 782px) {
+		text-align: center;
+	}
 }
 
 .takopic-support__links {
 	margin: 0;
 	color: var(--takopic-muted);
 	font-size: var(--takopic-size-small);
+}
+
+/* On a phone, on their own line, rather than cut from the text. */
+.takopic-support__methods {
+	@media (width <= 782px) {
+		display: block;
+		margin-top: var(--takopic-space-1);
+	}
 }
 
 .takopic-support__links a,
