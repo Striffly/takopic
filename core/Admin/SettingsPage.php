@@ -334,9 +334,9 @@ class SettingsPage extends View
 					<p class="takopic-job__label js-takopic-job-label" aria-live="polite"></p>
 					<span class="takopic-job__percent js-takopic-job-percent"></span>
 					<div class="takopic-job__controls">
-						<button type="button" class="button js-takopic-job-control" data-control="pause"><?php esc_html_e('Pause', 'takopic'); ?></button>
+						<button type="button" class="button js-takopic-job-control" data-control="pause" data-label-busy="<?php esc_attr_e('Pausing…', 'takopic'); ?>"><?php esc_html_e('Pause', 'takopic'); ?></button>
 						<button type="button" class="button js-takopic-job-control" data-control="resume"><?php esc_html_e('Resume', 'takopic'); ?></button>
-						<button type="button" class="button-link button-link-delete js-takopic-job-control" data-control="cancel"><?php esc_html_e('Cancel', 'takopic'); ?></button>
+						<button type="button" class="button-link button-link-delete js-takopic-job-control" data-control="cancel" data-label-busy="<?php esc_attr_e('Cancelling…', 'takopic'); ?>"><?php esc_html_e('Cancel', 'takopic'); ?></button>
 					</div>
 				</div>
 				<progress class="takopic-job__bar js-takopic-job-bar" max="100" value="0"></progress>
