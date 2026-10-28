@@ -194,7 +194,7 @@ tried in near-lossless.
 ## Privacy
 
 Takopic sends nothing out of your server: no API, no tracking, no external request. The delivery test only requests the
-site itself.
+images of the site, from its CDN if they are served by one.
 
 The optimised images lose their metadata, but the originals keep them, GPS position included. They are kept in
 `uploads/takopic/originals-{key}/`, the key drawn at random for each site: their URL cannot be guessed from the one of
