@@ -99,11 +99,22 @@
 	height: 80px;
 	border-radius: var(--takopic-radius);
 	box-shadow: 0 0 0 1px rgb(255 60 172 / 55%), var(--takopic-glow);
+
+	@media (width <= 480px) {
+		width: 64px;
+		height: 64px;
+	}
 }
 
 .takopic-header__text {
 	flex: 1;
 	min-width: 0;
+
+	/* A phone: under the logo and the version, on the whole width, not a word a line. */
+	@media (width <= 480px) {
+		flex-basis: 100%;
+		order: 1;
+	}
 }
 
 .takopic-page .takopic-header__title {
@@ -135,6 +146,10 @@
 	border-radius: var(--takopic-radius-pill);
 	color: rgb(255 255 255 / 80%);
 	font-size: var(--takopic-size-small);
+
+	@media (width <= 480px) {
+		margin-left: auto;
+	}
 }
 
 /* Tabs: without JS, every panel shows one after another
