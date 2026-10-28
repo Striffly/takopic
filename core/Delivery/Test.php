@@ -17,7 +17,7 @@
 
 namespace Takopic\Delivery;
 
-use Takopic\Admin\JobsAjax;
+use Takopic\Admin\Ajax;
 use Takopic\Encoders\AVIF;
 use Takopic\Encoders\WebP;
 use Takopic\Media\Files;
@@ -57,10 +57,8 @@ class Test
 	 */
 	public function test()
 	{
-		check_ajax_referer(JobsAjax::NONCE);
-		if (!current_user_can('manage_options')) {
-			wp_send_json_error(null, 403);
-		}
+		check_ajax_referer(Ajax::NONCE);
+		Ajax::authorize();
 		$sample = self::sample();
 		if (!$sample) {
 			wp_send_json_error(['message' => __('Optimise at least one image with its WebP or AVIF version first.', 'takopic')]);
