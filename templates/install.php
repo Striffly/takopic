@@ -25,7 +25,7 @@ $takopic_more = __('More information', 'takopic');
 $takopic_windows = __('Download for Windows', 'takopic');
 $takopic_steps = [
 	'jpg' => [
-		['os' => 'Linux', 'command' => 'sudo apt-get install jpegoptim', 'link' => ['https://vitux.com/optimize-jpeg-jpg-images-in-ubuntu-with-jpegoptim/', $takopic_more]],
+		['os' => 'Linux', 'command' => 'sudo apt install jpegoptim', 'link' => ['https://vitux.com/optimize-jpeg-jpg-images-in-ubuntu-with-jpegoptim/', $takopic_more]],
 		['os' => 'Mac', 'command' => 'brew install jpegoptim', 'link' => ['https://formulae.brew.sh/formula/jpegoptim', $takopic_more]],
 		['os' => 'Windows', 'link' => ['https://github.com/XhmikosR/jpegoptim-windows', $takopic_windows]],
 	],
@@ -47,12 +47,12 @@ $takopic_steps = [
 		['os' => 'Mac', 'command' => 'brew install oxipng', 'link' => ['https://formulae.brew.sh/formula/oxipng', $takopic_more]],
 	],
 	'webp' => [
-		['os' => 'Linux', 'command' => 'sudo apt-get install webp', 'link' => ['https://www.interserver.net/tips/kb/install-and-serve-webp-images-on-ubuntu/', $takopic_more]],
+		['os' => 'Linux', 'command' => 'sudo apt install webp', 'link' => ['https://www.interserver.net/tips/kb/install-and-serve-webp-images-on-ubuntu/', $takopic_more]],
 		['os' => 'Mac', 'command' => 'brew install webp', 'link' => ['https://formulae.brew.sh/formula/webp', $takopic_more]],
 		['os' => 'Windows', 'link' => ['https://developers.google.com/speed/webp/download', $takopic_windows]],
 	],
 	'avif' => [
-		['os' => 'Linux', 'text' => __('Depending on your distribution, you may need to build it from source.', 'takopic'), 'link' => ['https://aomediacodec.github.io/av1-avif/', $takopic_more]],
+		['os' => 'Linux', 'command' => 'sudo apt install libavif-bin', 'link' => ['https://packages.debian.org/search?keywords=libavif-bin', $takopic_more]],
 		['os' => 'Mac', 'command' => 'brew install libavif', 'link' => ['https://formulae.brew.sh/formula/libavif', $takopic_more]],
 		['os' => 'Windows', 'link' => ['https://github.com/AOMediaCodec/libavif/releases', $takopic_windows]],
 	],
@@ -65,9 +65,6 @@ $takopic_steps = [
 			<span class="takopic-install__os"><?php echo esc_html($takopic_step['os']); ?></span>
 			<?php if (isset($takopic_step['command'])) : ?>
 				<?php $this->render_command($takopic_step['command']); ?>
-			<?php endif; ?>
-			<?php if (isset($takopic_step['text'])) : ?>
-				<?php echo esc_html($takopic_step['text']); ?>
 			<?php endif; ?>
 			<?php if (isset($takopic_step['html'])) : ?>
 				<span><?php echo wp_kses($takopic_step['html'], ['a' => ['href' => true, 'target' => true, 'rel' => true]]); ?></span>
