@@ -17,6 +17,7 @@
 
 namespace Takopic\Admin;
 
+use Takopic\Encoders\Formats;
 use Takopic\Log\Errors;
 use Takopic\Media\Optimiser;
 use Takopic\Plugin;
@@ -81,13 +82,15 @@ class Notices
 	 */
 	private static function actions()
 	{
-		return [
-			Optimiser::READER => __('Optimisation', 'takopic'),
-			'jpg' => __('JPG compression', 'takopic'),
-			'png' => __('PNG compression', 'takopic'),
-			'webp' => __('WebP conversion', 'takopic'),
-			'avif' => __('AVIF conversion', 'takopic'),
-		];
+		$actions = [Optimiser::READER => __('Optimisation', 'takopic')];
+		foreach (Formats::ENCODERS as $format => $encoder) {
+			$actions[$format] = $encoder::extension() === ''
+				/* translators: %s: a format, e.g. JPG. */
+				? sprintf(__('%s compression', 'takopic'), $encoder::TITLE)
+				/* translators: %s: a format, e.g. WebP. */
+				: sprintf(__('%s conversion', 'takopic'), $encoder::TITLE);
+		}
+		return $actions;
 	}
 
 	/**
