@@ -41,7 +41,7 @@ abstract class View
 
 	/**
 	 * Renders a block of code, with its copy button
-	 * (CopyButton.js, hidden without JS).
+	 * above it (CopyButton.js, hidden without JS).
 	 *
 	 * @param string $code
 	 * @param string $id Unique on the page.
@@ -51,8 +51,10 @@ abstract class View
 	{
 		?>
 		<div class="takopic-code-block">
+			<div class="takopic-code-block__head">
+				<button type="button" class="takopic-copy js-takopic-copy" aria-controls="<?php echo esc_attr($id); ?>"><?php esc_html_e('Copy', 'takopic'); ?></button>
+			</div>
 			<pre class="takopic-code" id="<?php echo esc_attr($id); ?>"><code><?php echo esc_html($code); ?></code></pre>
-			<button type="button" class="takopic-copy js-takopic-copy" aria-controls="<?php echo esc_attr($id); ?>"><?php esc_html_e('Copy', 'takopic'); ?></button>
 		</div>
 		<?php
 	}
