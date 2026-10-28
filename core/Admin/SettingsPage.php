@@ -327,8 +327,10 @@ class SettingsPage
 	 * AVIF) with the state of their library: installed,
 	 * version, the engine making the format (the
 	 * library, or GD or Imagick for WebP and AVIF
-	 * without it, null if none) and the optional
-	 * libraries (e.g. pngquant).
+	 * without it, null if none), the optional
+	 * libraries (e.g. pngquant), and whether the
+	 * better library replacing the one installed is
+	 * missing (oxipng, for optipng).
 	 *
 	 * @param array $sections
 	 * @return array
@@ -347,6 +349,7 @@ class SettingsPage
 			$section['enabled'] = Settings::get($id . '_enable');
 			$section['library'] = $service::library();
 			$section['engine'] = $service::engine();
+			$section['upgrade'] = $section['installed'] && isset($section['preferred']) && !$service::installed($section['preferred']);
 			$section['optional'] = isset($section['optional']) ? $section['optional'] : [];
 			$section['extras'] = [];
 			foreach (array_keys($section['optional']) as $name) {
@@ -860,6 +863,17 @@ class SettingsPage
 								?>
 							</summary>
 							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['template']); ?>
+						</details>
+					<?php elseif ($format['upgrade']) : ?>
+						<details class="takopic-install takopic-install--advice">
+							<summary class="takopic-install__summary">
+								<?php
+								/* translators: %s: a library, e.g. cwebp. */
+								echo esc_html(sprintf(__('Recommended: install %s', 'takopic'), $format['preferred']));
+								?>
+							</summary>
+							<p class="takopic-install__text"><?php echo esc_html($format['preference']); ?></p>
+							<?php $this->render_template('health' . DIRECTORY_SEPARATOR . $format['preferred'] . '.php'); ?>
 						</details>
 					<?php endif; ?>
 					<details class="takopic-format__settings js-takopic-fold">
@@ -1399,6 +1413,8 @@ class SettingsPage
 				'service' => PNG::class,
 				'template' => 'png.php',
 				'optional' => ['pngquant' => __('lossy compression', 'takopic')],
+				'preferred' => 'oxipng',
+				'preference' => __('optipng compresses the PNG images for now. Once installed, oxipng replaces it on its own: the files are lighter at the same level, and it is a little faster.', 'takopic'),
 				'fields' => [
 					'png_enable' => [
 						'type' => 'checkbox',
