@@ -19,6 +19,7 @@ namespace Takopic\Admin;
 use Takopic\Media\Cleaner;
 use Takopic\Media\Job;
 use Takopic\Media\Optimiser;
+use Takopic\Media\Stats;
 use Takopic\Media\Status;
 
 if (!defined('ABSPATH')) {
@@ -116,7 +117,7 @@ class JobsAjax
 		wp_send_json_success([
 			'job' => Job::instance()->progress(),
 			'counts' => array_merge(Status::counts(), ['processed' => count(Cleaner::ids())]),
-			'savings' => SettingsPage::savings(),
+			'savings' => Stats::savings(),
 		]);
 	}
 }
