@@ -222,7 +222,7 @@ class MediaColumn
 	 */
 	private static function queue()
 	{
-		return class_exists('Takopic_Vendor_WP_Background_Process') ? Queue::instance() : null;
+		return Plugin::has_background() ? Queue::instance() : null;
 	}
 
 	/**
