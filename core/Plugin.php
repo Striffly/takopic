@@ -25,6 +25,7 @@ use Takopic\Delivery\Display;
 use Takopic\Delivery\Htaccess;
 use Takopic\Delivery\Test;
 use Takopic\Media\Job;
+use Takopic\Media\Queue;
 use Takopic\Media\UploadHooks;
 
 if (!defined('ABSPATH')) {
@@ -82,6 +83,7 @@ final class Plugin
 		// The background jobs need the dependencies of composer install.
 		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
 			Job::instance();
+			Queue::instance();
 			new JobsAjax();
 		}
 		new Display();
