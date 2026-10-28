@@ -3,7 +3,9 @@
  *
  * The Optimisation column of the media library: the
  * status of each image, a dot of its colour, and the
- * bytes saved.
+ * bytes saved. An image in the queue waits with a grey
+ * dot, then pulses while it is optimised, as from the
+ * click on its action (MediaQueue.js).
  */
 
 .column-takopic {
@@ -38,4 +40,50 @@
 
 .takopic-status-label--error {
 	--takopic-status: #d63638;
+}
+
+.takopic-status-label--waiting {
+	--takopic-status: #a7aaad;
+}
+
+.takopic-status-label--processing,
+.takopic-media-cell[data-busy] .takopic-status-label {
+	--takopic-status: #2271b1;
+
+	&::before {
+		animation: takopic-media-pulse 1s ease-in-out infinite alternate;
+
+		@media (prefers-reduced-motion: reduce) {
+			animation: none;
+		}
+	}
+}
+
+@keyframes takopic-media-pulse {
+	to {
+		opacity: .3;
+	}
+}
+
+/* After an action that could not be done, e.g. the original missing. */
+.takopic-media-cell__message {
+	display: block;
+	margin-top: 2px;
+	color: #d63638;
+}
+
+/* The actions of Takopic in the row: greyed while one runs, the one done in green for a moment (MediaQueue.js). */
+.takopic-media-actions {
+	&[data-busy] a {
+		opacity: .6;
+		pointer-events: none;
+	}
+
+	&[data-done] a {
+		pointer-events: none;
+	}
+
+	a[data-done] {
+		color: #00a32a;
+	}
 }

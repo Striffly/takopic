@@ -23,6 +23,7 @@ use Takopic\Log\Errors;
 use Takopic\Media\Files;
 use Takopic\Media\Job;
 use Takopic\Media\Lock;
+use Takopic\Media\Queue;
 
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
@@ -92,18 +93,20 @@ class Lifecycle
 
 	/**
 	 * Stops what Takopic runs on the current site: its
-	 * background job (without the request the library
-	 * sends to cancel it), the locks of the images, and
-	 * the rewrite rules of uploads/.htaccess.
+	 * background job and the queue of the media library
+	 * (without the request the library sends to cancel
+	 * them), the locks of the images, and the rewrite
+	 * rules of uploads/.htaccess.
 	 *
 	 * @since 1.0.0
 	 */
 	private static function stop()
 	{
 		global $wpdb;
-		// The job of each site, see Job::__construct().
+		// The job and the queue of each site, see Background::__construct().
 		if (class_exists('Takopic_Vendor_WP_Background_Process')) {
 			(new Job())->stop();
+			(new Queue())->stop();
 		}
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery -- The locks of the images, written in the database by Lock and never cached.
 		$wpdb->query($wpdb->prepare("DELETE FROM {$wpdb->options} WHERE option_name LIKE %s", $wpdb->esc_like(Lock::PREFIX) . '%'));
