@@ -8,6 +8,13 @@ changes to a pull request.
 Follow the conventions of [CLAUDE.md](CLAUDE.md), e.g. for the commits: in English, the subject starting with a
 [gitmoji](https://gitmoji.dev/) shortcode, then a verb in the imperative.
 
+## Branches
+
+- `main`: the work in progress. Every change lands there, and each release is a tag on it.
+- `hotfix/x.y.z`: an urgent fix of the last release, when `main` holds changes not ready to go: from the tag of the
+  release (`git switch -c hotfix/1.0.1 1.0.0`), released the same way, then merged into `main`. Only for the last
+  release: WordPress.org serves a single version.
+
 ## Tests
 
 The integration tests run on the test suite of WordPress: they upload images and check the files on the disk.
@@ -55,8 +62,9 @@ bun run screenshots -- --url=http://localhost:8086 --user=bench --password=bench
 Needed: [Composer](https://getcomposer.org/), [Bun](https://bun.sh/), [Node.js](https://nodejs.org/) 22 or later and
 `zip`.
 
-Write the notes under `Unreleased` in `CHANGELOG.md` and `readme.txt` as the changes come. When a new major WordPress
-is out, test Takopic on it and update `Tested up to:` in `readme.txt`. Then, once CI passed on `main`:
+Write the notes under `Unreleased` in `CHANGELOG.md` as the changes come: the release writes them in `readme.txt`.
+When a new major WordPress is out, test Takopic on it and update `Tested up to:` in `readme.txt`. Then, on `main` or a
+hotfix branch, once CI passed on it:
 
 ```bash
 bun run release:dry    # What it would do.
@@ -65,7 +73,7 @@ bun run release 1.2.0  # A given version, or 1.2.0-beta.1 for a pre-release.
 ```
 
 release-it checks CI, the notes and `Tested up to:`, sets the version everywhere (never by hand),
-dates the notes, commits, tags and pushes, then opens empty `Unreleased` notes for the next release. The tag runs CI
-again, then publishes the zip on GitHub and WordPress.org.
+dates the notes, copies them to `readme.txt` and opens an empty `Unreleased` above them for the next ones, commits,
+tags and pushes. The tag runs CI again, then publishes the zip on GitHub and WordPress.org.
 
 To build the zip only: `bun install && bun run release:zip`.

@@ -8,6 +8,7 @@
     "tagName": null,
     "tagMatch": null,
     "tagAnnotation": "Release ${version}",
+    "requireBranch": ["main", "hotfix/*"],
     "pushArgs": [],
     "releaseNotes": null
   },
@@ -31,13 +32,11 @@
       "bash tools/release/check-ci.sh",
       "bash tools/release/check-notes.sh"
     ],
-    "after:release": [
-      "git push origin ${version}",
-      "bash tools/release/open-notes.sh"
-    ],
+    "after:release": "git push origin ${version}",
     "after:bump": [
-      "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/; s/^= Unreleased =$/= ${version} =/' readme.txt",
-      "perl -pi -e \"s/^## Unreleased\\$/## ${version} – $(date +%F)/\" CHANGELOG.md"
+      "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/' readme.txt",
+      "perl -pi -e \"s/^## Unreleased\\$/## Unreleased\\n\\n## ${version} – $(date +%F)/\" CHANGELOG.md",
+      "bash tools/release/sync-changelog.sh"
     ]
   }
 }
