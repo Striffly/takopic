@@ -8,35 +8,6 @@ changes to a pull request.
 Follow the conventions of [CLAUDE.md](CLAUDE.md), e.g. for the commits: in English, the subject starting with a
 [gitmoji](https://gitmoji.dev/) shortcode, then a verb in the imperative.
 
-## Release
-
-Needed: [Composer](https://getcomposer.org/), [Bun](https://bun.sh/), [Node.js](https://nodejs.org/) 22 or later and
-`zip`.
-
-1. Write the notes of the version in `CHANGELOG.md` and in the Changelog of `readme.txt`, under `Unreleased`, as
-   the changes come. When a new WordPress is out, update `Tested up to:` in `readme.txt`. Commit them.
-2. Push, and wait for the CI workflow to pass on GitHub: the tests, Plugin Check and the Windows run.
-3. Run release-it:
-
-   ```bash
-   bun run release:dry    # What it would do.
-   bun run release        # Asks patch, minor or major.
-   bun run release 1.2.0  # A given version, or 1.2.0-beta.1 for a pre-release.
-   ```
-
-   It stops unless CI passed on the commit pushed, writes the version in `package.json`, the header of the plugin,
-   `TAKOPIC_VERSION` and the `Stable tag:` of `readme.txt`, turns the `Unreleased` titles into the version (dated in
-   `CHANGELOG.md`), commits `:bookmark: Release x.y.z`, tags it and pushes. Never change these numbers by hand.
-4. The tag runs the Release workflow: CI again, then the zip, the GitHub release, and the deploy to
-   WordPress.org, except for the pre-releases.
-
-To build the zip without releasing:
-
-```bash
-bun install
-bun run release:zip # takopic.zip
-```
-
 ## Tests
 
 The integration tests run on the test suite of WordPress: they upload images and check the files on the disk.
@@ -78,3 +49,22 @@ bun run brand
 # WebP and AVIF served by the rewrite rules: the second screen optimises every image again.
 bun run screenshots -- --url=http://localhost:8086 --user=bench --password=bench
 ```
+
+## Release
+
+Needed: [Composer](https://getcomposer.org/), [Bun](https://bun.sh/), [Node.js](https://nodejs.org/) 22 or later and
+`zip`.
+
+Write the notes under `Unreleased` in `CHANGELOG.md` and `readme.txt` as the changes come. When a new major WordPress
+is out, test Takopic on it and update `Tested up to:` in `readme.txt`. Then, once CI passed on `main`:
+
+```bash
+bun run release:dry    # What it would do.
+bun run release        # Patch, minor or major.
+bun run release 1.2.0  # A given version, or 1.2.0-beta.1 for a pre-release.
+```
+
+release-it checks CI, sets the version everywhere (never by hand), dates the notes, commits,
+tags and pushes. The tag runs CI again, then publishes the zip on GitHub and WordPress.org.
+
+To build the zip only: `bun install && bun run release:zip`.
