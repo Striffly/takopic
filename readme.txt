@@ -119,18 +119,6 @@ Before deactivating, a dialog shows how many images Takopic has optimised and th
 
 == Changelog ==
 
-= Unreleased =
-* Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
-* The original images are kept in `uploads/takopic/originals-{key}/`, a folder whose URL cannot be guessed, and every optimisation starts again from them.
-* WebP and AVIF files keep the extension of their source (`image.jpg.webp`), in `uploads/takopic/formats/`, and can be served on the site with `<picture>` or rewrite rules.
-* Background optimisation of the media library, with pause and cancel, and re-optimisation when the settings or the thumbnail sizes change.
-* Clean up: remove the WebP and AVIF files, or restore the original images.
-* Status column in the media library and readable error notices.
-* CMYK JPG images, AVIF quality settings, CPU limits adjustable by filters.
-* Colour profiles kept in every format when the colours need them (Display P3, Adobe RGB).
-* WebP and AVIF versions of the photos stored sideways turned the right way up, even where WordPress did not turn them.
-* Requires WordPress 6.2 and PHP 8.2.
-
 The versions of Squidge, before Takopic, are in the [full changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md).
 
 == Credits ==
