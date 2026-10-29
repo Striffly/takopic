@@ -2,7 +2,7 @@
   "git": {
     "changelog": null,
     "commit": true,
-    "commitMessage": "Release ${version}",
+    "commitMessage": ":bookmark: Release ${version}",
     "commitArgs": [],
     "tag": true,
     "tagName": null,
@@ -26,6 +26,9 @@
     }
   },
   "hooks": {
-    "after:bump": "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/' readme.txt"
+    "after:bump": [
+      "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/; s/^= Unreleased =$/= ${version} =/' readme.txt",
+      "perl -pi -e \"s/^## Unreleased\\$/## ${version} – $(date +%F)/\" CHANGELOG.md"
+    ]
   }
 }

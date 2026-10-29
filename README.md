@@ -338,8 +338,7 @@ add_filter('takopic_binary_path', function ($path, $name) {
 
 ### Contributing
 
-To build a release zip, run the tests of Takopic or draw its logo, see
-[CONTRIBUTING.md](CONTRIBUTING.md).
+To release Takopic, run its tests or draw its logo, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## ☕ Support
 
