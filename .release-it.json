@@ -33,11 +33,7 @@
       "bash tools/release/check-notes.sh",
       "bash tools/release/check-wordpress.sh"
     ],
-    "after:release": "git push origin ${version}",
-    "after:bump": [
-      "perl -pi -e 's/^Stable tag:.*/Stable tag: ${version}/' readme.txt",
-      "perl -pi -e \"s/^## Unreleased\\$/## Unreleased\\n\\n## ${version} – $(date +%F)/\" CHANGELOG.md",
-      "bash tools/release/sync-changelog.sh"
-    ]
+    "after:bump": "bash tools/release/bump.sh ${version}",
+    "after:release": "git push origin ${version}"
   }
 }
