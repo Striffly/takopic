@@ -30,7 +30,8 @@
   "hooks": {
     "before:init": [
       "bash tools/release/check-ci.sh",
-      "bash tools/release/check-notes.sh"
+      "bash tools/release/check-notes.sh",
+      "bash tools/release/check-wordpress.sh"
     ],
     "after:release": [
       "git push origin ${version}",
