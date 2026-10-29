@@ -311,30 +311,97 @@ nothing is encoded again.
 
 ### Filters
 
-| Filter                                | Default                                                                                                  | Sets                                                   | 2nd argument                                  |
-|---------------------------------------|----------------------------------------------------------------------------------------------------------|--------------------------------------------------------|-----------------------------------------------|
-| `takopic_backup_dir`                  | `uploads/takopic/originals-{key}`                                                                        | The folder of the original images.                     |                                               |
-| `takopic_nice`                        | `19` in background jobs, `0` otherwise                                                                   | The priority of the libraries, `0` (normal) to `19`.   | Context: `upload`, `background` or `cli`      |
-| `takopic_threads`                     | `4` on upload, `2` in background, `all` in CLI                                                           | The threads of the libraries at once, all together.    | Context: `upload`, `background` or `cli`      |
-| `takopic_timeout`                     | `120`                                                                                                    | Seconds a library may take on a file, then stopped.    |                                               |
-| `takopic_job_seconds_between_batches` | `0`                                                                                                      | A pause after each image of a background job, seconds. |                                               |
-| `takopic_job_default_time_limit`      | `20`                                                                                                     | The duration of a batch of a background job, seconds.  |                                               |
-| `takopic_binary_path`                 | Found in the `PATH`, then `/usr/bin`, `/usr/local/bin`, `/bin`, `/opt/homebrew/bin` and `/opt/local/bin` | The path of a library, or `false` to turn it off.      | Name of the library, e.g. `avifenc` or `nice` |
+#### `takopic_backup_dir`
 
-Takopic looks the libraries up in the usual folders because PHP-FPM often passes an empty `PATH`. On multisite, the two
-job filters carry the ID of the site: `takopic_2_job_default_time_limit` on the site 2.
+The folder of the original images. Set it before optimising any image: Takopic does not move the originals already
+kept. See [Privacy](#-privacy) to keep them out of the web root.
+
+```php
+apply_filters('takopic_backup_dir', string $dir)
+```
+
+- `$dir`: the absolute path of `uploads/takopic/originals-{key}`.
+
+#### `takopic_nice`
+
+The priority of the libraries, from `0` (normal) to `19` (lowest). Windows has none.
+
+```php
+apply_filters('takopic_nice', int $level, string $context)
+```
+
+- `$level`: `19` in background jobs, `0` otherwise.
+- `$context`: `'upload'`, `'background'` or `'cli'`.
+
+#### `takopic_threads`
+
+The threads the libraries run on at once, all together: `cwebp`, `jpegoptim`, `optipng` and `pngquant` take one each,
+`avifenc` and `oxipng` the threads left.
+
+```php
+apply_filters('takopic_threads', int|string $threads, string $context)
+```
+
+- `$threads`: `4` on upload, `2` in background jobs, `'all'` (every core) in WP-CLI.
+- `$context`: `'upload'`, `'background'` or `'cli'`.
 
 ```php
 // In a mu-plugin: lighter background jobs on a small server.
 add_filter('takopic_threads', function ($threads, $context) {
 	return $context === 'background' ? 1 : $threads;
 }, 10, 2);
+```
 
+#### `takopic_timeout`
+
+The seconds a library may take on a file, then it is stopped.
+
+```php
+apply_filters('takopic_timeout', int $seconds)
+```
+
+- `$seconds`: `120`.
+
+#### `takopic_binary_path`
+
+The path of a library, or `false` to turn it off. Without `cwebp` or `avifenc`, GD or Imagick make the format.
+
+```php
+apply_filters('takopic_binary_path', string|null $path, string $name)
+```
+
+- `$path`: the one found in the folders of the `PATH`, then in `/usr/bin`, `/usr/local/bin`, `/bin`,
+  `/opt/homebrew/bin` and `/opt/local/bin` (PHP-FPM often passes an empty `PATH`), `null` if none.
+- `$name`: `'jpegoptim'`, `'optipng'`, `'oxipng'`, `'pngquant'`, `'cwebp'`, `'avifenc'` or `'nice'`.
+
+```php
 // A library installed out of the usual folders.
 add_filter('takopic_binary_path', function ($path, $name) {
 	return $name === 'avifenc' ? '/home/me/bin/avifenc' : $path;
 }, 10, 2);
 ```
+
+#### `takopic_job_default_time_limit`
+
+The seconds a background job runs in one request, before the next request takes over. On multisite, the filter
+carries the ID of the site: `takopic_2_job_default_time_limit` on the site 2.
+
+```php
+apply_filters('takopic_job_default_time_limit', int $seconds)
+```
+
+- `$seconds`: `20`.
+
+#### `takopic_job_seconds_between_batches`
+
+A pause after each image of a background job, in seconds. On multisite, the filter carries the ID of the site:
+`takopic_2_job_seconds_between_batches` on the site 2.
+
+```php
+apply_filters('takopic_job_seconds_between_batches', int $seconds)
+```
+
+- `$seconds`: `0`.
 
 ### Contributing
 
