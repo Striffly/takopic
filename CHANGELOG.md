@@ -3,7 +3,7 @@
 The versions of Takopic, newest first. Before 1.0.0, it was
 [Squidge](https://github.com/ainsleyclark/squidge).
 
-## Unreleased
+## 1.0.0 – 2026-11-04
 
 - Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
 - The original images are kept in `uploads/takopic/originals-{key}/`, a folder whose URL cannot be guessed, and every

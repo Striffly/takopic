@@ -7,7 +7,7 @@
  * Author:          Clément Gayot
  * Author URI:      https://github.com/Striffly
  * Text Domain:     takopic
- * Version:         0.1.4
+ * Version:         1.0.0
  * Requires at least: 6.2
  * Requires PHP:    8.2
  * License:         GPLv3 or later
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 }
 
 // The version of Takopic, set by bun run release with the header above.
-define('TAKOPIC_VERSION', '0.1.4');
+define('TAKOPIC_VERSION', '1.0.0');
 define('TAKOPIC_FILE', __FILE__);
 
 require_once __DIR__ . '/autoload.php';
