@@ -5,6 +5,9 @@ The versions of Takopic, newest first. Before 1.0.0, it was
 
 ## Unreleased
 
+- Images no longer listed as "Older settings" for a thumbnail size a plugin registers but never makes:
+  `Re-optimise outdated images` puts them back as optimised, without encoding them again.
+
 ## 1.0.0 – 2026-11-08
 
 - Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.

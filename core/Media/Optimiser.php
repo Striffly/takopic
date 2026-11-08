@@ -380,7 +380,7 @@ class Optimiser
 			$settings = Formats::settings();
 			$metadata = wp_get_attachment_metadata($id);
 			$sizes = get_post_meta($id, Status::SIZES_KEY, true);
-			if ($regenerate || !Status::sizes_current($metadata) || ($sizes !== '' && $sizes !== Status::sizes_signature())) {
+			if ($regenerate || !Status::sizes_current($metadata, $id) || ($sizes !== '' && $sizes !== Status::sizes_signature())) {
 				$metadata = self::regenerate($id);
 				if ($metadata) {
 					self::attachment($id, $metadata, $settings, ['force' => true, 'context' => $context]);

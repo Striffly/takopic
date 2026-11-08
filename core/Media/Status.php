@@ -64,37 +64,62 @@ class Status
 	const SIZES_KEY = '_takopic_sizes';
 
 	/**
+	 * Returns the thumbnail sizes WordPress makes for an
+	 * image: those registered by WordPress, the theme
+	 * and plugins, less those a plugin leaves out
+	 * through intermediate_image_sizes_advanced, as
+	 * WordPress does before making them. E.g. Gravity
+	 * Forms registers sizes it only makes for the images
+	 * of its own fields. Without an image, the sizes of
+	 * any image.
+	 *
+	 * @param array $metadata
+	 * @param int $id
+	 * @return array
+	 * @since 1.0.1
+	 */
+	public static function subsizes($metadata = [], $id = 0)
+	{
+		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- The filter of WordPress, applied as it does before making the thumbnails.
+		$sizes = apply_filters('intermediate_image_sizes_advanced', wp_get_registered_image_subsizes(), is_array($metadata) ? $metadata : [], (int)$id);
+		return is_array($sizes) ? $sizes : [];
+	}
+
+	/**
 	 * Returns a signature of the thumbnail sizes
-	 * registered by WordPress, the theme and plugins,
-	 * and of the maximum image size.
+	 * WordPress makes (see subsizes()), and of the
+	 * maximum image size: a size registered but never
+	 * made leaves it alone.
 	 *
 	 * @return string
 	 * @since 1.0.0
 	 */
 	public static function sizes_signature()
 	{
-		return md5(wp_json_encode([wp_get_registered_image_subsizes(), Settings::get('max_size')]));
+		return md5(wp_json_encode([self::subsizes(), Settings::get('max_size')]));
 	}
 
 	/**
 	 * Determines if the thumbnails of an image match the
-	 * registered sizes: each size exists with the right
-	 * dimensions, unless the image is too small for it
-	 * (the same computation as WordPress). The
-	 * thumbnails of a scaled image are made from the
-	 * image uploaded, rounded differently: 1 pixel off.
+	 * sizes WordPress makes for it (see subsizes()):
+	 * each size exists with the right dimensions, unless
+	 * the image is too small for it (the same
+	 * computation as WordPress). The thumbnails of a
+	 * scaled image are made from the image uploaded,
+	 * rounded differently: 1 pixel off.
 	 *
 	 * @param array $metadata
+	 * @param int $id
 	 * @return bool
 	 * @since 1.0.0
 	 */
-	public static function sizes_current($metadata)
+	public static function sizes_current($metadata, $id = 0)
 	{
 		if (empty($metadata['width']) || empty($metadata['height'])) {
 			return true;
 		}
 		$sizes = isset($metadata['sizes']) ? $metadata['sizes'] : [];
-		foreach (wp_get_registered_image_subsizes() as $name => $size) {
+		foreach (self::subsizes($metadata, $id) as $name => $size) {
 			$expected = image_resize_dimensions($metadata['width'], $metadata['height'], $size['width'], $size['height'], $size['crop']);
 			if (!$expected) {
 				continue;
@@ -116,7 +141,7 @@ class Status
 	 */
 	public static function stamp_sizes($id, $metadata)
 	{
-		if (is_array($metadata) && self::sizes_current($metadata)) {
+		if (is_array($metadata) && self::sizes_current($metadata, $id)) {
 			update_post_meta($id, self::SIZES_KEY, self::sizes_signature());
 		} else {
 			delete_post_meta($id, self::SIZES_KEY);

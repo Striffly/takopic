@@ -301,6 +301,32 @@ class OptimiseTest extends TestCase
 		$this->assertSame(Status::OPTIMISED, Status::of($id));
 	}
 
+	public function test_a_size_never_made_leaves_the_images_optimised()
+	{
+		$id = $this->upload('photo.jpg');
+		$signature = Status::sizes_signature();
+
+		// As Gravity Forms does: a size registered, but left out of the thumbnails WordPress makes.
+		add_image_size('takopic-never-made', 200, 100, true);
+		$skip = function ($sizes) {
+			unset($sizes['takopic-never-made']);
+			return $sizes;
+		};
+		add_filter('intermediate_image_sizes_advanced', $skip);
+		try {
+			$this->assertSame($signature, Status::sizes_signature());
+			$this->assertSame(Status::OPTIMISED, Status::of($id));
+
+			// Optimised without it, an image is up to date, regenerated or not.
+			$new = $this->upload('photo.jpg');
+			$this->assertArrayNotHasKey('takopic-never-made', wp_get_attachment_metadata($new)['sizes']);
+			$this->assertSame(Status::OPTIMISED, Status::of($new));
+		} finally {
+			remove_filter('intermediate_image_sizes_advanced', $skip);
+			remove_image_size('takopic-never-made');
+		}
+	}
+
 	public function test_the_maximum_size_scales_the_image_and_back()
 	{
 		self::set('max_size', 400);
