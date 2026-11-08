@@ -379,7 +379,8 @@ class Commands extends WP_CLI_Command
 	 */
 	private function print_welcome()
 	{
-		WP_CLI::line(WP_CLI::colorize('%G' . __('Welcome to the Takopic CLI...', 'takopic') . '%n' . PHP_EOL));
+		// Not WP_CLI::line(): it echoes, held back until the end by an output buffer a theme or plugin may open.
+		WP_CLI::log(WP_CLI::colorize('%G' . __('Welcome to the Takopic CLI...', 'takopic') . '%n' . PHP_EOL));
 	}
 
 	/**
