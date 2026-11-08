@@ -8,6 +8,7 @@ The versions of Takopic, newest first. Before 1.0.0, it was
 - Images no longer listed as "Older settings" for a thumbnail size a plugin registers but never makes:
   `Re-optimise outdated images` puts them back as optimised, without encoding them again.
 - WP-CLI prints its welcome first, even when the theme or a plugin holds the output back.
+- `wp takopic run` numbers the images it processes, with their ID, e.g. `Processing image 10/256: Sunset (ID 147)`.
 
 ## 1.0.0 – 2026-11-08
 

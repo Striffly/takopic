@@ -159,8 +159,13 @@ class Commands extends WP_CLI_Command
 
 		$counter = 0;
 		$failed = 0;
-		foreach (Status::ids(null) as $id) {
-			WP_CLI::log(WP_CLI::colorize('%B' . __('Processing image:', 'takopic') . ' %n') . get_the_title($id));
+		$ids = Status::ids(null);
+		$total = count($ids);
+		foreach ($ids as $index => $id) {
+			/* translators: 1: the number of the image, 2: the number of images. */
+			$progress = sprintf(__('Processing image %1$d/%2$d:', 'takopic'), $index + 1, $total);
+			/* translators: 1: the title of an image, 2: its ID. */
+			WP_CLI::log(WP_CLI::colorize('%B' . $progress . ' %n') . sprintf(__('%1$s (ID %2$d)', 'takopic'), get_the_title($id), $id));
 			$done = Lock::run($id, function () use ($id, $regenerate, $settings, $force, $thumbnails_only) {
 				$metadata = $regenerate ? Optimiser::regenerate($id) : null;
 				return Optimiser::attachment($id, $metadata, $settings, ['force' => $force || $regenerate, 'thumbnails_only' => $thumbnails_only, 'context' => Optimiser::CLI]);
