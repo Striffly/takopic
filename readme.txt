@@ -113,7 +113,7 @@ Before deactivating, a dialog shows how many images Takopic has optimised and th
 
 * **No external request**: no API, no tracking. The delivery test only requests the images of the site, from its CDN if they are served by one.
 * **No metadata**: the optimised images lose it, GPS position included. The originals keep it.
-* **Private originals**: they are kept in `uploads/takopic/originals-{key}/`, the key drawn at random for each site, so their URL cannot be guessed. A `.htaccess` denies the web access to that folder on Apache and LiteSpeed. On nginx, add a `location ^~ /wp-content/uploads/takopic/originals- { deny all; }` rule to the `server` block of the site (also given on the Delivery tab).
+* **Private originals**: kept in `uploads/takopic/originals-{key}/`, under a key drawn at random for each site. Takopic closes the folder to the web with a `.htaccess` on Apache and LiteSpeed; on nginx, add the rules of the Delivery tab. `Test the delivery` checks it on both.
 * **Originals out of the web root**: set their folder with the `takopic_backup_dir` filter, before optimising any image. Takopic does not move the originals already kept: move the folder yourself when you change it.
 
 == Changelog ==
