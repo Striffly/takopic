@@ -18,3 +18,6 @@ pre-commit:
       glob: "*.css"
       run: bun x stylelint --fix {staged_files}
       stage_fixed: true
+    readme-size:
+      glob: "{readme.txt,CHANGELOG.md}"
+      run: bash tools/release/check-readme.sh

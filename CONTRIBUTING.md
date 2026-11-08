@@ -71,7 +71,8 @@ bun run screenshots -- --url=http://localhost:8086 --user=bench --password=bench
 Needed: [Composer](https://getcomposer.org/), [Bun](https://bun.sh/), [Node.js](https://nodejs.org/) 22 or later and
 `zip`.
 
-Write the notes under `Unreleased` in `CHANGELOG.md` as the changes come: the release writes them in `readme.txt`.
+Write the notes under `Unreleased` in `CHANGELOG.md` as the changes come: the release writes them in `readme.txt`,
+in place of the previous ones, to keep it under the 10 KB of WordPress.org (checked before each commit of either file).
 When a new major WordPress is out, have CI test it with
 `composer update roots/wordpress-no-content wp-phpunit/wp-phpunit`, then update `Tested up to:` in `readme.txt`. Then,
 on `main` or a hotfix branch, once CI passed on it:
@@ -84,7 +85,7 @@ bun run release 1.2.0  # A given version, or 1.2.0-beta.1 for a pre-release.
 
 release-it then:
 
-1. checks CI, the notes and `Tested up to:`;
+1. checks CI, the notes, `Tested up to:` and the size of `readme.txt`;
 2. sets the version everywhere (never by hand), dates the notes, copies them to `readme.txt` and opens an empty
    `Unreleased` above them for the next ones;
 3. commits `:bookmark: Release x.y.z`, tags it and pushes.

@@ -26,6 +26,7 @@
     "before:init": [
       "bash tools/release/check-ci.sh",
       "bash tools/release/check-notes.sh",
+      "bash tools/release/check-readme.sh",
       "bash tools/release/check-wordpress.sh"
     ],
     "after:bump": "bash tools/release/bump.sh ${version}",

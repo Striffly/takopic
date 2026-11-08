@@ -3,10 +3,12 @@
 # tools/release/sync-changelog.sh
 #
 # Writes the changelog of readme.txt from CHANGELOG.md, the only one
-# written by hand. Run by bump.sh once the version is set: each
-# version of Takopic (1.0.0 and later, not the Unreleased notes) becomes a
-# = x.y.z = title, its notes one * line each, as WordPress.org reads
-# them. The versions of Squidge stay in CHANGELOG.md only.
+# written by hand. Run by bump.sh once the version is set: the newest
+# version of Takopic (not the Unreleased notes) becomes a = x.y.z =
+# title, its notes one * line each, as WordPress.org reads them. The
+# older versions, and those of Squidge, stay in CHANGELOG.md only:
+# WordPress.org advises to keep only the current one in readme.txt,
+# under 10 KB (see check-readme.sh).
 
 set -euo pipefail
 
@@ -23,10 +25,11 @@ perl -0777 -i -e '
 		$body =~ s/\n +/ /g;
 		$body =~ s/^- /* /mg;
 		$body =~ s/\s+\z//;
-		$versions .= "= $version =\n$body\n\n";
+		$versions = "= $version =\n$body\n\n";
+		last;
 	}
 	my $readme = <>;
-	$readme =~ s/(^== Changelog ==\n\n).*?(^The versions of Squidge)/$1$versions$2/ms
+	$readme =~ s/(^== Changelog ==\n\n).*?(^The older versions)/$1$versions$2/ms
 		or die "readme.txt: no == Changelog == to write.\n";
 	print $readme;
 ' readme.txt

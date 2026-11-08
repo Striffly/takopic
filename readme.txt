@@ -119,7 +119,7 @@ Before deactivating, a dialog shows how many images Takopic has optimised and th
 
 == Changelog ==
 
-The versions of Squidge, before Takopic, are in the [full changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md).
+The older versions, and those of Squidge before Takopic, are in the [full changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md).
 
 == Credits ==
 
