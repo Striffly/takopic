@@ -86,8 +86,8 @@ WordPress 6.2 and PHP 8.2 or later, and PHP allowed to run the libraries of the 
 
 ## 📦 Installation
 
-1. Download the zip of the latest [release](https://github.com/Striffly/takopic/releases).
-2. Upload it in `Plugins > Add New > Upload Plugin`, and activate it.
+In `Plugins > Add New Plugin`, search for Takopic, then install and activate it. It is on
+[WordPress.org](https://wordpress.org/plugins/takopic/).
 
 After installing:
 

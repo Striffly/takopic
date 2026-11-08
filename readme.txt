@@ -45,6 +45,15 @@ All of them are documented in the [README on GitHub](https://github.com/Striffly
 
 == Installation ==
 
+In `Plugins > Add New Plugin`, search for Takopic, then install and activate it.
+
+After installing:
+
+* **The new uploads** are optimised right away: `Optimise new uploads`, ticked by default.
+* **The images already in the library** wait in the Optimise tab: `Optimise new images` optimises them in the background.
+* **The Overview tab** lists the missing libraries, and how to install them.
+* **WebP and AVIF are not served** until you turn them on in the Delivery tab.
+
 Takopic needs PHP allowed to run the libraries of the server (`proc_open()` or `exec()`):
 
 * JPG: `jpegoptim`. Without it, not compressed.
@@ -56,16 +65,6 @@ Takopic needs PHP allowed to run the libraries of the server (`proc_open()` or `
 On Debian or Ubuntu: `sudo apt install jpegoptim optipng webp libavif-bin`.
 
 On Windows: no JPG and PNG compression. For WebP and AVIF, put the official builds of [`cwebp`](https://developers.google.com/speed/webp/download) and [`avifenc`](https://github.com/AOMediaCodec/libavif/releases) on the `PATH`, or set their path with the `takopic_binary_path` filter.
-
-1. Download the zip of the latest [release](https://github.com/Striffly/takopic/releases).
-2. Upload it in `Plugins > Add New > Upload Plugin`, and activate it.
-
-After installing:
-
-* **The new uploads** are optimised right away: `Optimise new uploads`, ticked by default.
-* **The images already in the library** wait in the Optimise tab: `Optimise new images` optimises them in the background.
-* **The Overview tab** lists the missing libraries, and how to install them.
-* **WebP and AVIF are not served** until you turn them on in the Delivery tab.
 
 == Frequently Asked Questions ==
 
