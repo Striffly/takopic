@@ -311,6 +311,9 @@ class Status
 			'fields' => 'ids',
 			'orderby' => 'ID',
 			'order' => 'ASC',
+			// Never from the query cache of WordPress: a persistent object cache may miss what another process
+			// changed, e.g. WP-CLI keyed elsewhere by W3 Total Cache, and keep counting it the old way.
+			'cache_results' => false,
 		], $args);
 		if ($status === null) {
 			return $args;

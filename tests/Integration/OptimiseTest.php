@@ -379,6 +379,17 @@ class OptimiseTest extends TestCase
 		$this->assertSame([$optimised], Status::ids(Status::OUTDATED));
 	}
 
+	public function test_the_counts_read_the_database_not_the_query_cache()
+	{
+		global $wpdb;
+		$this->upload('photo.jpg');
+		$this->assertSame(1, Status::counts()[Status::OPTIMISED]);
+
+		// Changed behind the object cache, as WP-CLI does when it keys it elsewhere (e.g. W3 Total Cache without --url).
+		$wpdb->delete($wpdb->postmeta, ['meta_key' => WebP::meta_key()]);
+		$this->assertSame(['total' => 1, 'to-optimise' => 1, 'optimised' => 0, 'error' => 0, 'outdated' => 0], Status::counts());
+	}
+
 	public function test_deleting_the_image_deletes_its_files()
 	{
 		$id = $this->upload('photo.jpg');

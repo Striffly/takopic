@@ -9,6 +9,8 @@ The versions of Takopic, newest first. Before 1.0.0, it was
   `Re-optimise outdated images` puts them back as optimised, without encoding them again.
 - WP-CLI prints its welcome first, even when the theme or a plugin holds the output back.
 - `wp takopic run` numbers the images it processes, with their ID, e.g. `Processing image 10/256: Sunset (ID 147)`.
+- The counts of the images stay right with a persistent object cache that missed a change made elsewhere, e.g.
+  by WP-CLI.
 
 ## 1.0.0 – 2026-11-08
 
