@@ -8,7 +8,7 @@
  */
 
 (() => {
-	const {Component, Roll} = window.takopic;
+	const {Component, Roll, Screen} = window.takopic;
 
 	class Count extends Component {
 		vars() {
@@ -40,7 +40,7 @@
 		 * @param {number} value
 		 */
 		show(value) {
-			this.el.textContent = value.toLocaleString();
+			this.el.textContent = Screen.number(value);
 		}
 
 		destroy() {

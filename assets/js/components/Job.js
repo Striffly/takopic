@@ -17,7 +17,7 @@
 
 (() => {
 	const {__, _n, sprintf} = wp.i18n;
-	const {Component, Confetti} = window.takopic;
+	const {Component, Confetti, Screen} = window.takopic;
 
 	class Job extends Component {
 		/**
@@ -61,21 +61,21 @@
 				done: __('Optimisation complete', 'takopic'),
 				cancelled: __('Optimisation cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => Job.emphasise(_n('%s image optimised', '%s images optimised', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image optimised', '%s images optimised', count, 'takopic'), Screen.number(count)),
 			},
 			remove_formats: {
 				label: __('Removing WebP and AVIF', 'takopic'),
 				done: __('WebP and AVIF files removed', 'takopic'),
 				cancelled: __('Removal cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => Job.emphasise(_n('%s image cleaned up', '%s images cleaned up', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image cleaned up', '%s images cleaned up', count, 'takopic'), Screen.number(count)),
 			},
 			restore: {
 				label: __('Restoring the originals', 'takopic'),
 				done: __('Original images restored', 'takopic'),
 				cancelled: __('Restore cancelled', 'takopic'),
 				/* translators: %s: the number of images. */
-				processed: (count) => Job.emphasise(_n('%s image restored', '%s images restored', count, 'takopic'), count.toLocaleString()),
+				processed: (count) => Job.emphasise(_n('%s image restored', '%s images restored', count, 'takopic'), Screen.number(count)),
 			},
 		};
 
@@ -339,15 +339,15 @@
 			this.percent.textContent = `${percent} %`;
 
 			/* translators: 1: the number of images processed, 2: the number of images. */
-			let progress = sprintf(_n('%1$s / %2$s image', '%1$s / %2$s images', job.total, 'takopic'), job.done.toLocaleString(), job.total.toLocaleString());
+			let progress = sprintf(_n('%1$s / %2$s image', '%1$s / %2$s images', job.total, 'takopic'), Screen.number(job.done), Screen.number(job.total));
 			if (job.failed) {
 				/* translators: 1: the progress, e.g. 3 / 12 images, 2: the number of images with errors. */
-				progress = sprintf(_n('%1$s, %2$s with errors', '%1$s, %2$s with errors', job.failed, 'takopic'), progress, job.failed.toLocaleString());
+				progress = sprintf(_n('%1$s, %2$s with errors', '%1$s, %2$s with errors', job.failed, 'takopic'), progress, Screen.number(job.failed));
 			}
 			if (job.waiting) {
 				// Held by another request, e.g. a worker PHP stopped: its lock goes stale within a minute.
 				/* translators: 1: the progress, e.g. 3 / 12 images, 2: a number of seconds. */
-				progress = sprintf(_n('%1$s · an image waits for another request, %2$s second at most', '%1$s · an image waits for another request, %2$s seconds at most', job.waiting, 'takopic'), progress, job.waiting.toLocaleString());
+				progress = sprintf(_n('%1$s · an image waits for another request, %2$s second at most', '%1$s · an image waits for another request, %2$s seconds at most', job.waiting, 'takopic'), progress, Screen.number(job.waiting));
 			}
 			// Pausing or cancelling, the control clicked tells it (setState()).
 			const doing = job.state === 'paused'
@@ -425,10 +425,10 @@
 			this.title.textContent = cancelled ? texts.cancelled : texts.done;
 			this.detail.replaceChildren(...(cancelled ? Job.stopped(job) : [...Job.took(texts.processed(job.done - job.failed - job.missing), job), '.']));
 			/* translators: %s: the number of images. */
-			this.errorsCount.textContent = sprintf(_n('%s could not be optimised:', '%s could not be optimised:', job.failed, 'takopic'), job.failed.toLocaleString());
+			this.errorsCount.textContent = sprintf(_n('%s could not be optimised:', '%s could not be optimised:', job.failed, 'takopic'), Screen.number(job.failed));
 			this.errors.hidden = !job.failed;
 			/* translators: %s: the number of images. */
-			this.missing.textContent = sprintf(_n('%s had no original to restore, it stays compressed.', '%s had no original to restore, they stay compressed.', job.missing, 'takopic'), job.missing.toLocaleString());
+			this.missing.textContent = sprintf(_n('%s had no original to restore, it stays compressed.', '%s had no original to restore, they stay compressed.', job.missing, 'takopic'), Screen.number(job.missing));
 			this.missing.hidden = !job.missing;
 
 			this.el.dataset.result = cancelled ? 'cancelled' : (job.failed || job.missing ? 'warning' : 'success');
@@ -459,7 +459,7 @@
 		 */
 		static stopped(job) {
 			/* translators: 1: the number of images processed, 2: the number of images. */
-			const stopped = Job.emphasise(_n('Stopped after %1$s of %2$s image', 'Stopped after %1$s of %2$s images', job.total, 'takopic'), job.done.toLocaleString(), job.total.toLocaleString());
+			const stopped = Job.emphasise(_n('Stopped after %1$s of %2$s image', 'Stopped after %1$s of %2$s images', job.total, 'takopic'), Screen.number(job.done), Screen.number(job.total));
 			return [...Job.took(stopped, job), `. ${__('The images already processed stay processed.', 'takopic')}`];
 		}
 

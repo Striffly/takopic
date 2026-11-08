@@ -39,7 +39,8 @@ class Ajax
 	/**
 	 * Gives a script of a screen what its requests need
 	 * (see utils/Api.js): the URL of admin-ajax.php and
-	 * the nonce of the screen, with other data.
+	 * the nonce of the screen, with other data, and the
+	 * thousands separator of WordPress.
 	 *
 	 * @param string $handle
 	 * @param string $name The object of the script, e.g. takopicSettings.
@@ -49,9 +50,12 @@ class Ajax
 	 */
 	public static function localize($handle, $name, $nonce, $data = [])
 	{
+		global $wp_locale;
 		wp_localize_script($handle, $name, array_merge([
 			'ajaxurl' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce($nonce),
+			// The numbers the scripts write look like those of number_format_i18n() (see views/Screen.js).
+			'thousands' => html_entity_decode($wp_locale->number_format['thousands_sep'], ENT_QUOTES, 'UTF-8'),
 		], $data));
 	}
 

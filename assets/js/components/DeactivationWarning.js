@@ -14,7 +14,7 @@
 
 (() => {
 	const {_n, sprintf} = wp.i18n;
-	const {Component} = window.takopic;
+	const {Component, Screen} = window.takopic;
 
 	class DeactivationWarning extends Component {
 		vars() {
@@ -64,7 +64,7 @@
 				return;
 			}
 			/* translators: %s: the number of images. */
-			this.images.textContent = sprintf(_n('%s image', '%s images', images, 'takopic'), images.toLocaleString());
+			this.images.textContent = sprintf(_n('%s image', '%s images', images, 'takopic'), Screen.number(images));
 			this.size.textContent = size ? ` (${size})` : '';
 			this.originals.hidden = !images;
 			this.restore.hidden = !images;

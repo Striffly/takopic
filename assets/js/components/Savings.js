@@ -15,7 +15,7 @@
  */
 
 (() => {
-	const {Component, Roll} = window.takopic;
+	const {Component, Roll, Screen} = window.takopic;
 
 	class Savings extends Component {
 		vars() {
@@ -75,7 +75,14 @@
 			// One decimal from the kilobytes on (see Stats::size()); the other separators group the thousands.
 			const decimal = number.match(/([.,])\d$/)?.[1];
 			const value = Number(number.replace(/\D/g, '')) / (decimal ? 10 : 1);
-			const format = (v) => before + (decimal ? v.toFixed(1).replace('.', decimal) : String(Math.round(v))) + after;
+			// The thousands separated as the server writes them, e.g. "1 023,5 Mo" in French.
+			const format = (v) => {
+				if (!decimal) {
+					return before + Screen.number(v) + after;
+				}
+				const [whole, tenth] = v.toFixed(1).split('.');
+				return before + Screen.number(Number(whole)) + decimal + tenth + after;
+			};
 
 			this.roll = new Roll(0, value, (v) => {
 				if (v === value) {

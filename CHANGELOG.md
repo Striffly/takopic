@@ -11,6 +11,7 @@ The versions of Takopic, newest first. Before 1.0.0, it was
 - `wp takopic run` numbers the images it processes, with their ID, e.g. `Processing image 10/256: Sunset (ID 147)`.
 - The counts of the images stay right with a persistent object cache that missed a change made elsewhere, e.g.
   by WP-CLI.
+- The numbers the settings page updates are written as WordPress writes them, e.g. `1 044` in French, not `1,044`.
 
 ## 1.0.0 – 2026-11-08
 
