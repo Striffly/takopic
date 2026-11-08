@@ -5,7 +5,7 @@ Tags: webp, avif, image optimization, compress images, performance
 Requires at least: 6.2
 Tested up to: 7.1
 Requires PHP: 8.2
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -118,17 +118,12 @@ Before deactivating, a dialog shows how many images Takopic has optimised and th
 
 == Changelog ==
 
-= 1.0.0 =
-* Renamed to Takopic, starting again from Squidge 0.1.4: no migration of its data.
-* The original images are kept in `uploads/takopic/originals-{key}/`, a folder whose URL cannot be guessed, and every optimisation starts again from them.
-* WebP and AVIF files keep the extension of their source (`image.jpg.webp`), in `uploads/takopic/formats/`, and can be served on the site with `<picture>` or rewrite rules.
-* Background optimisation of the media library, with pause and cancel, and re-optimisation when the settings or the thumbnail sizes change.
-* Clean up: remove the WebP and AVIF files, or restore the original images.
-* Status column in the media library and readable error notices.
-* CMYK JPG images, AVIF quality settings, CPU limits adjustable by filters.
-* Colour profiles kept in every format when the colours need them (Display P3, Adobe RGB).
-* WebP and AVIF versions of the photos stored sideways turned the right way up, even where WordPress did not turn them.
-* Requires WordPress 6.2 and PHP 8.2.
+= 1.0.1 =
+* Images no longer listed as "Older settings" for a thumbnail size a plugin registers but never makes: `Re-optimise outdated images` puts them back as optimised, without encoding them again.
+* WP-CLI prints its welcome first, even when the theme or a plugin holds the output back.
+* `wp takopic run` numbers the images it processes, with their ID, e.g. `Processing image 10/256: Sunset (ID 147)`.
+* The counts of the images stay right with a persistent object cache that missed a change made elsewhere, e.g. by WP-CLI.
+* The numbers the settings page updates are written as WordPress writes them, e.g. `1 044` in French, not `1,044`.
 
 The older versions, and those of Squidge before Takopic, are in the [full changelog](https://github.com/Striffly/takopic/blob/main/CHANGELOG.md).
 
